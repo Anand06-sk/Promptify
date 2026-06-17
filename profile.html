@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — PromptVerse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .profile-wrapper {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 60px 32px;
+    }
+
+    .profile-header {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 60px;
+    }
+
+    .profile-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      box-shadow: var(--glass-shadow);
+      border-radius: 28px;
+      padding: 40px;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
+      background: var(--grad-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 40px rgba(167, 139, 250, 0.3);
+      border: 4px solid var(--surface);
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .profile-name {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .profile-email {
+      color: var(--text-soft);
+      font-size: 0.98rem;
+    }
+
+    .profile-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-soft);
+      font-weight: 700;
+    }
+
+    .meta-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .profile-actions .btn {
+      flex: 1;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all var(--transition);
+    }
+
+    .stat-box:hover {
+      border-color: var(--purple);
+      background: rgba(167, 139, 250, 0.06);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--purple-deep);
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    /* Bookmarks section */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+
+    .bookmarks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .bookmark-card {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bookmark-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(167, 139, 250, 0.2);
+      border-color: var(--purple);
+    }
+
+    .bookmark-image {
+      width: 100%;
+      height: 160px;
+      background: var(--surface-alt);
+      overflow: hidden;
+    }
+
+    .bookmark-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .bookmark-card:hover .bookmark-image img {
+      transform: scale(1.05);
+    }
+
+    .bookmark-info {
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bookmark-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bookmark-category {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .empty-bookmarks {
+      text-align: center;
+      padding: 60px 40px;
+      background: var(--surface);
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      color: var(--text-soft);
+    }
+
+    .empty-bookmarks i {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      color: var(--purple);
+    }
+
+    .empty-bookmarks p {
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .empty-bookmarks a {
+      color: var(--purple-deep);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .profile-wrapper { padding: 40px 20px; }
+      .profile-header { grid-template-columns: 1fr; }
+      .profile-stats { grid-template-columns: 1fr; }
+      .bookmarks-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .profile-wrapper { padding: 30px 16px; }
+      .profile-card { padding: 24px; }
+      .profile-avatar { width: 90px; height: 90px; font-size: 2.2rem; }
+      .profile-name { font-size: 1.5rem; }
+      .profile-meta { flex-direction: column; gap: 14px; }
+      .bookmarks-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+      .section-title { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background mesh -->
+  <div class="bg-mesh" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </span>
+        <span class="logo-text">Prompt<em>Verse</em></span>
+      </a>
+      <div style="flex: 1;"></div>
+      <div class="nav-actions">
+        <button class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button class="btn btn-outline" id="logoutBtn">
+          <i class="fa-solid fa-sign-out-alt"></i> Logout
+        </button>
+        <a href="index.html" class="btn btn-primary">
+          <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="profile-wrapper">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-card">
+          <div class="profile-avatar" id="profileAvatar">U</div>
+          <div class="profile-info">
+            <div class="profile-name" id="profileName">User</div>
+            <div class="profile-email" id="profileEmail">user@example.com</div>
+          </div>
+          <div class="profile-meta">
+            <div class="meta-item">
+              <span class="meta-label">Joined</span>
+              <span class="meta-value" id="joinDate">Jun 2026</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Bookmarks</span>
+              <span class="meta-value" id="bookmarkCount">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 20px;">Your Stats</h3>
+          <div class="profile-stats">
+            <div class="stat-box">
+              <div class="stat-number" id="totalBookmarks">0</div>
+              <div class="stat-label">Saved Prompts</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="favoriteCategory">—</div>
+              <div class="stat-label">Favorite Category</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="profileStreak">—</div>
+              <div class="stat-label">Active User</div>
+            </div>
+          </div>
+
+          <div class="profile-actions" style="margin-top: 28px;">
+            <button class="btn btn-outline" id="settingsBtn">
+              <i class="fa-solid fa-gear"></i> Settings
+            </button>
+            <button class="btn btn-primary" id="logoutBtnAction">
+              <i class="fa-solid fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookmarks Section -->
+      <section>
+        <h2 class="section-title"><i class="fa-solid fa-bookmark"></i> My Bookmarks</h2>
+        <div id="bookmarksContainer" class="bookmarks-grid"></div>
+        <div id="emptyBookmarks" class="empty-bookmarks" hidden>
+          <i class="fa-solid fa-bookmark"></i>
+          <p>You haven't saved any prompts yet</p>
+          <a href="index.html">Start exploring →</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Auth check and load
+    const user = JSON.parse(localStorage.getItem('pv_user') || 'null');
+    if (!user) {
+      window.location.href = 'auth.html?next=profile.html';
+    }
+
+    // Update UI
+    document.getElementById('profileAvatar').textContent = (user.username || 'U').charAt(0).toUpperCase();
+    document.getElementById('profileName').textContent = user.username || 'User';
+    document.getElementById('profileEmail').textContent = user.email || '';
+
+    // Format join date
+    const joinDate = new Date(user.joinDate);
+    document.getElementById('joinDate').textContent = joinDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+    // Load bookmarks - for this MVP, we'll show the saved IDs
+    const bookmarkIds = JSON.parse(localStorage.getItem('pv_bookmarks') || '[]');
+    document.getElementById('bookmarkCount').textContent = bookmarkIds.length;
+    document.getElementById('totalBookmarks').textContent = bookmarkIds.length;
+
+    if (bookmarkIds.length === 0) {
+      document.getElementById('emptyBookmarks').hidden = false;
+      document.getElementById('bookmarksContainer').hidden = true;
+    } else {
+      document.getElementById('emptyBookmarks').hidden = true;
+      // Display placeholder bookmarks info
+      document.getElementById('bookmarksContainer').innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-soft);">
+          <i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 12px; display: block; color: var(--purple);"></i>
+          <p>You have ${bookmarkIds.length} saved prompt${bookmarkIds.length !== 1 ? 's' : ''}</p>
+          <p style="font-size: 0.9rem; margin-top: 8px;">Full bookmark display coming soon</p>
+        </div>
+      `;
+    }
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkToggleIcon = darkModeToggle.querySelector('i');
+
+    function applyDarkMode(isDark) {
+      document.body.classList.toggle('dark', isDark);
+      localStorage.setItem('pv_dark', isDark ? '1' : '0');
+      darkToggleIcon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    const savedDark = localStorage.getItem('pv_dark') === '1';
+    applyDarkMode(savedDark);
+
+    darkModeToggle.addEventListener('click', () => {
+      applyDarkMode(!document.body.classList.contains('dark'));
+    });
+
+    // Logout handlers
+    const handleLogout = () => {
+      localStorage.removeItem('pv_user');
+      localStorage.removeItem('pv_auth_token');
+      window.location.href = 'index.html';
+    };
+
+    document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+    document.getElementById('logoutBtnAction')?.addEventListener('click', handleLogout);
+
+    // Settings button (placeholder)
+    document.getElementById('settingsBtn')?.addEventListener('click', () => {
+      alert('Settings coming soon!');
+    });
+
+    // Navbar scroll shadow
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.style.boxShadow = window.scrollY > 10 ? '0 8px 24px rgba(139,92,246,0.10)' : 'none';
+    });
+  </script>
+</body>
+</html>
+
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('pv_user');
+      location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
