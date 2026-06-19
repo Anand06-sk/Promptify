@@ -1,658 +1,784 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — PromptVerse</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* ===== Auth Page ===== */
-    .auth-wrapper {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — PromptVerse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ===== Auth Page ===== */
+      .auth-wrapper {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
 
-    .auth-container {
-      width: 100%;
-      max-width: 420px;
-      padding: 24px;
-      z-index: 10;
-    }
+      .auth-container {
+        width: 100%;
+        max-width: 420px;
+        padding: 24px;
+        z-index: 10;
+      }
 
-    .auth-card {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      box-shadow: var(--glass-shadow);
-      border-radius: 28px;
-      padding: 40px;
-      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+      .auth-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
+        box-shadow: var(--glass-shadow);
+        border-radius: 28px;
+        padding: 40px;
+        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    .auth-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
+      .auth-header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
 
-    .auth-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
+      .auth-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
 
-    .auth-logo i {
-      font-size: 1.4rem;
-      background: var(--grad-brand);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+      .auth-logo i {
+        font-size: 1.4rem;
+        background: var(--grad-brand);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
 
-    .auth-logo span {
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      font-weight: 600;
-      background: var(--grad-text);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+      .auth-logo span {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        font-weight: 600;
+        background: var(--grad-text);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
 
-    .auth-title {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
+      .auth-title {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
 
-    .auth-subtitle {
-      color: var(--text-soft);
-      font-size: 0.9rem;
-    }
+      .auth-subtitle {
+        color: var(--text-soft);
+        font-size: 0.9rem;
+      }
 
-    /* Tabs */
-    .auth-tabs {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 28px;
-      background: var(--surface-alt);
-      padding: 4px;
-      border-radius: 12px;
-    }
+      /* Tabs */
+      .auth-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 28px;
+        background: var(--surface-alt);
+        padding: 4px;
+        border-radius: 12px;
+      }
 
-    .auth-tab-btn {
-      flex: 1;
-      padding: 10px 16px;
-      border-radius: 10px;
-      background: transparent;
-      border: none;
-      color: var(--text-soft);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all var(--transition);
-    }
+      .auth-tab-btn {
+        flex: 1;
+        padding: 10px 16px;
+        border-radius: 10px;
+        background: transparent;
+        border: none;
+        color: var(--text-soft);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all var(--transition);
+      }
 
-    .auth-tab-btn.active {
-      background: var(--white);
-      color: var(--purple-deep);
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
-    }
+      .auth-tab-btn.active {
+        background: var(--white);
+        color: var(--purple-deep);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+      }
 
-    body.dark .auth-tab-btn.active {
-      background: var(--surface);
-      color: var(--pink);
-    }
+      body.dark .auth-tab-btn.active {
+        background: var(--surface);
+        color: var(--pink);
+      }
 
-    /* Forms */
-    .auth-form {
-      display: none;
-      animation: fadeIn 0.3s ease;
-    }
+      /* Forms */
+      .auth-form {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
 
-    .auth-form.active {
-      display: block;
-    }
+      .auth-form.active {
+        display: block;
+      }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
+      .form-group {
+        margin-bottom: 18px;
+      }
 
-    .form-label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
 
-    .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 12px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 0.95rem;
-      transition: border-color var(--transition), box-shadow var(--transition);
-    }
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 0.95rem;
+        transition:
+          border-color var(--transition),
+          box-shadow var(--transition);
+      }
 
-    .form-input:focus {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
-    }
+      .form-input:focus {
+        border-color: var(--purple);
+        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+      }
 
-    .form-input::placeholder {
-      color: var(--text-soft);
-    }
+      .form-input::placeholder {
+        color: var(--text-soft);
+      }
 
-    body.dark .form-input {
-      background: var(--surface);
-      border-color: rgba(255, 255, 255, 0.1);
-    }
+      body.dark .form-input {
+        background: var(--surface);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
 
-    .form-error {
-      color: #e11d48;
-      font-size: 0.8rem;
-      margin-top: 4px;
-      display: none;
-    }
+      .form-error {
+        color: #e11d48;
+        font-size: 0.8rem;
+        margin-top: 4px;
+        display: none;
+      }
 
-    .form-error.show {
-      display: block;
-    }
+      .form-error.show {
+        display: block;
+      }
 
-    .form-options {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
-      gap: 12px;
-    }
+      .form-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        gap: 12px;
+      }
 
-    .checkbox-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+      .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    .checkbox-wrapper input {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      accent-color: var(--purple);
-    }
+      .checkbox-wrapper input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--purple);
+      }
 
-    .checkbox-label {
-      cursor: pointer;
-      color: var(--text-soft);
-    }
+      .checkbox-label {
+        cursor: pointer;
+        color: var(--text-soft);
+      }
 
-    .form-link {
-      color: var(--purple-deep);
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: color var(--transition);
-    }
+      .form-link {
+        color: var(--purple-deep);
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: color var(--transition);
+      }
 
-    .form-link:hover {
-      color: var(--purple);
-    }
+      .form-link:hover {
+        color: var(--purple);
+      }
 
-    /* Buttons */
-    .auth-btn {
-      width: 100%;
-      padding: 12px 24px;
-      border-radius: var(--r-pill);
-      font-weight: 600;
-      font-size: 0.95rem;
-      border: none;
-      cursor: pointer;
-      transition: transform var(--transition), box-shadow var(--transition);
-      margin-bottom: 16px;
-    }
+      /* Buttons */
+      .auth-btn {
+        width: 100%;
+        padding: 12px 24px;
+        border-radius: var(--r-pill);
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        transition:
+          transform var(--transition),
+          box-shadow var(--transition);
+        margin-bottom: 16px;
+      }
 
-    .auth-btn-primary {
-      background: var(--grad-brand);
-      color: #fff;
-      box-shadow: 0 8px 24px rgba(167, 139, 250, 0.35);
-    }
+      .auth-btn-primary {
+        background: var(--grad-brand);
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(167, 139, 250, 0.35);
+      }
 
-    .auth-btn-primary:hover {
-      box-shadow: 0 12px 28px rgba(236, 72, 153, 0.4);
-      transform: translateY(-2px);
-    }
+      .auth-btn-primary:hover {
+        box-shadow: 0 12px 28px rgba(236, 72, 153, 0.4);
+        transform: translateY(-2px);
+      }
 
-    .auth-btn-primary:active {
-      transform: scale(0.98);
-    }
+      .auth-btn-primary:active {
+        transform: scale(0.98);
+      }
 
-    .auth-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 24px 0;
-      color: var(--text-soft);
-      font-size: 0.85rem;
-    }
+      .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 24px 0;
+        color: var(--text-soft);
+        font-size: 0.85rem;
+      }
 
-    .auth-divider::before,
-    .auth-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border-color);
-    }
+      .auth-divider::before,
+      .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border-color);
+      }
 
-    .social-login {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
+      .social-login {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
 
-    .social-btn {
-      flex: 1;
-      padding: 12px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 12px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+      .social-btn {
+        flex: 1;
+        padding: 12px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
 
-    .social-btn:hover {
-      border-color: var(--purple);
-      background: rgba(167, 139, 250, 0.06);
-    }
+      .social-btn:hover {
+        border-color: var(--purple);
+        background: rgba(167, 139, 250, 0.06);
+      }
 
-    .auth-footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: var(--text-soft);
-    }
+      .auth-footer {
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-soft);
+      }
 
-    .auth-footer a {
-      color: var(--purple-deep);
-      font-weight: 600;
-      text-decoration: none;
-    }
+      .auth-footer a {
+        color: var(--purple-deep);
+        font-weight: 600;
+        text-decoration: none;
+      }
 
-    .auth-footer a:hover {
-      text-decoration: underline;
-    }
+      .auth-footer a:hover {
+        text-decoration: underline;
+      }
 
-    .back-home {
-      text-align: center;
-      margin-top: 20px;
-    }
+      .back-home {
+        text-align: center;
+        margin-top: 20px;
+      }
 
-    .back-home a {
-      color: var(--text-soft);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color var(--transition);
-    }
+      .back-home a {
+        color: var(--text-soft);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color var(--transition);
+      }
 
-    .back-home a:hover {
-      color: var(--text);
-    }
+      .back-home a:hover {
+        color: var(--text);
+      }
 
-    @media (max-width: 640px) {
-      .auth-container { padding: 16px; }
-      .auth-card { padding: 24px; border-radius: 20px; }
-      .auth-title { font-size: 1.3rem; }
-    }
-  </style>
-</head>
-<body>
-  <div class="bg-mesh" aria-hidden="true">
-    <span class="blob blob-1"></span>
-    <span class="blob blob-2"></span>
-    <span class="blob blob-3"></span>
-  </div>
+      @media (max-width: 640px) {
+        .auth-container {
+          padding: 16px;
+        }
+        .auth-card {
+          padding: 24px;
+          border-radius: 20px;
+        }
+        .auth-title {
+          font-size: 1.3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-mesh" aria-hidden="true">
+      <span class="blob blob-1"></span>
+      <span class="blob blob-2"></span>
+      <span class="blob blob-3"></span>
+    </div>
 
-  <div class="auth-wrapper">
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="auth-header">
-          <div class="auth-logo">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>PromptVerse</span>
-          </div>
-          <h1 class="auth-title" id="authTitle">Welcome back</h1>
-          <p class="auth-subtitle">Sign in to access your personalized gallery</p>
-        </div>
-
-        <div class="auth-tabs">
-          <button class="auth-tab-btn active" data-tab="login">Login</button>
-          <button class="auth-tab-btn" data-tab="signup">Sign Up</button>
-        </div>
-
-        <form class="auth-form active" id="loginForm" data-tab="login">
-          <div class="form-group">
-            <label class="form-label" for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
-            <div class="form-error" id="loginEmailError"></div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="loginPassword">Password</label>
-            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
-            <div class="form-error" id="loginPasswordError"></div>
-          </div>
-
-          <div class="form-options">
-            <div class="checkbox-wrapper">
-              <input type="checkbox" id="rememberMe">
-              <label class="checkbox-label" for="rememberMe">Remember me</label>
+    <div class="auth-wrapper">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-header">
+            <div class="auth-logo">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>PromptVerse</span>
             </div>
-            <a class="form-link" href="#">Forgot password?</a>
+            <h1 class="auth-title" id="authTitle">Welcome back</h1>
+            <p class="auth-subtitle">
+              Sign in to access your personalized gallery
+            </p>
           </div>
 
-          <button type="submit" class="auth-btn auth-btn-primary">Sign In</button>
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" data-tab="login">Login</button>
+            <button class="auth-tab-btn" data-tab="signup">Sign Up</button>
+          </div>
 
-          <div class="auth-divider">or</div>
+          <form class="auth-form active" id="loginForm" data-tab="login">
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">Email</label>
+              <input
+                type="email"
+                id="loginEmail"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+              />
+              <div class="form-error" id="loginEmailError"></div>
+            </div>
 
-          <div class="social-login">
-            <button type="button" class="social-btn" id="googleLoginBtn" title="Sign in with Google">
-              <i class="fa-brands fa-google"></i>
-              <span style="font-size: 0.85rem;">Google</span>
+            <div class="form-group">
+              <label class="form-label" for="loginPassword">Password</label>
+              <input
+                type="password"
+                id="loginPassword"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+              <div class="form-error" id="loginPasswordError"></div>
+            </div>
+
+            <div class="form-options">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" id="rememberMe" />
+                <label class="checkbox-label" for="rememberMe"
+                  >Remember me</label
+                >
+              </div>
+              <a class="form-link" href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="auth-btn auth-btn-primary">
+              Sign In
             </button>
-          </div>
 
-          <div class="auth-footer">
-            Don't have an account? <a href="#" class="switch-tab" data-tab="signup">Create one</a>
-          </div>
-        </form>
+            <div class="auth-divider">or</div>
 
-        <form class="auth-form" id="signupForm" data-tab="signup">
-          <div class="form-group">
-            <label class="form-label" for="signupUsername">Username</label>
-            <input type="text" id="signupUsername" class="form-input" placeholder="your_username" required>
-            <div class="form-error" id="signupUsernameError"></div>
-          </div>
+            <div class="social-login">
+              <button
+                type="button"
+                class="social-btn"
+                id="googleLoginBtn"
+                title="Sign in with Google"
+              >
+                <i class="fa-brands fa-google"></i>
+                <span style="font-size: 0.85rem">Google</span>
+              </button>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label" for="signupEmail">Email</label>
-            <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com" required>
-            <div class="form-error" id="signupEmailError"></div>
-          </div>
+            <div class="auth-footer">
+              Don't have an account?
+              <a href="#" class="switch-tab" data-tab="signup">Create one</a>
+            </div>
+          </form>
 
-          <div class="form-group">
-            <label class="form-label" for="signupPassword">Password</label>
-            <input type="password" id="signupPassword" class="form-input" placeholder="••••••••" required>
-            <div class="form-error" id="signupPasswordError"></div>
-          </div>
+          <form class="auth-form" id="signupForm" data-tab="signup">
+            <div class="form-group">
+              <label class="form-label" for="signupUsername">Username</label>
+              <input
+                type="text"
+                id="signupUsername"
+                class="form-input"
+                placeholder="your_username"
+                required
+              />
+              <div class="form-error" id="signupUsernameError"></div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label" for="signupConfirm">Confirm Password</label>
-            <input type="password" id="signupConfirm" class="form-input" placeholder="••••••••" required>
-            <div class="form-error" id="signupConfirmError"></div>
-          </div>
+            <div class="form-group">
+              <label class="form-label" for="signupEmail">Email</label>
+              <input
+                type="email"
+                id="signupEmail"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+              />
+              <div class="form-error" id="signupEmailError"></div>
+            </div>
 
-          <div class="checkbox-wrapper" style="margin-bottom: 20px;">
-            <input type="checkbox" id="termsAccept" required>
-            <label class="checkbox-label" for="termsAccept">I agree to the <a class="form-link" href="#">Terms of Service</a></label>
-            <div class="form-error" id="signupTermsError"></div>
-          </div>
+            <div class="form-group">
+              <label class="form-label" for="signupPassword">Password</label>
+              <input
+                type="password"
+                id="signupPassword"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+              <div class="form-error" id="signupPasswordError"></div>
+            </div>
 
-          <button type="submit" class="auth-btn auth-btn-primary">Create Account</button>
+            <div class="form-group">
+              <label class="form-label" for="signupConfirm"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                id="signupConfirm"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+              <div class="form-error" id="signupConfirmError"></div>
+            </div>
 
-          <div class="auth-divider">or</div>
+            <div class="checkbox-wrapper" style="margin-bottom: 20px">
+              <input type="checkbox" id="termsAccept" required />
+              <label class="checkbox-label" for="termsAccept"
+                >I agree to the
+                <a class="form-link" href="#">Terms of Service</a></label
+              >
+              <div class="form-error" id="signupTermsError"></div>
+            </div>
 
-          <div class="social-login">
-            <button type="button" class="social-btn" id="googleSignupBtn" title="Sign up with Google">
-              <i class="fa-brands fa-google"></i>
-              <span style="font-size: 0.85rem;">Google</span>
+            <button type="submit" class="auth-btn auth-btn-primary">
+              Create Account
             </button>
-          </div>
 
-          <div class="auth-footer">
-            Already have an account? <a href="#" class="switch-tab" data-tab="login">Sign in</a>
-          </div>
-        </form>
+            <div class="auth-divider">or</div>
 
-        <div class="back-home">
-          <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+            <div class="social-login">
+              <button
+                type="button"
+                class="social-btn"
+                id="googleSignupBtn"
+                title="Sign up with Google"
+              >
+                <i class="fa-brands fa-google"></i>
+                <span style="font-size: 0.85rem">Google</span>
+              </button>
+            </div>
+
+            <div class="auth-footer">
+              Already have an account?
+              <a href="#" class="switch-tab" data-tab="login">Sign in</a>
+            </div>
+          </form>
+
+          <div class="back-home">
+            <a href="index.html"
+              ><i class="fa-solid fa-arrow-left"></i> Back to home</a
+            >
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    class AuthManager {
-      constructor() {
-        this.currentTab = 'login';
-        this.init();
-      }
+    <script type="module">
+      import {
+        loginWithGoogle,
+        loginWithEmail,
+        signupWithEmail,
+      } from "./auth.js";
 
-      init() {
-        this.setupTabSwitching();
-        this.setupFormHandlers();
-        this.setupSocialButtons();
-      }
+      class AuthManager {
+        constructor() {
+          this.currentTab = "login";
+          this.init();
+        }
 
-      setupTabSwitching() {
-        document.querySelectorAll('.auth-tab-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const tab = btn.dataset.tab;
-            this.switchTab(tab);
+        init() {
+          this.setupTabSwitching();
+          this.setupFormHandlers();
+          this.setupSocialButtons();
+        }
+
+        setupTabSwitching() {
+          document.querySelectorAll(".auth-tab-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              e.preventDefault();
+              const tab = btn.dataset.tab;
+              this.switchTab(tab);
+            });
           });
-        });
 
-        document.querySelectorAll('.switch-tab').forEach(link => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const tab = link.dataset.tab;
-            this.switchTab(tab);
+          document.querySelectorAll(".switch-tab").forEach((link) => {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              const tab = link.dataset.tab;
+              this.switchTab(tab);
+            });
           });
-        });
-      }
-
-      switchTab(tab) {
-        this.currentTab = tab;
-        const title = tab === 'login' ? 'Welcome back' : 'Join PromptVerse';
-        document.getElementById('authTitle').textContent = title;
-
-        document.querySelectorAll('.auth-tab-btn').forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.tab === tab);
-        });
-
-        document.querySelectorAll('.auth-form').forEach(form => {
-          form.classList.toggle('active', form.dataset.tab === tab);
-        });
-      }
-
-      setupFormHandlers() {
-        document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
-        document.getElementById('signupForm').addEventListener('submit', (e) => this.handleSignup(e));
-      }
-
-      validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-      }
-
-      handleLogin(e) {
-        e.preventDefault();
-        this.clearErrors('login');
-
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value;
-
-        let valid = true;
-
-        if (!email) {
-          this.showError('loginEmailError', 'Email is required');
-          valid = false;
-        } else if (!this.validateEmail(email)) {
-          this.showError('loginEmailError', 'Invalid email address');
-          valid = false;
         }
 
-        if (!password) {
-          this.showError('loginPasswordError', 'Password is required');
-          valid = false;
-        } else if (password.length < 6) {
-          this.showError('loginPasswordError', 'Password must be at least 6 characters');
-          valid = false;
+        switchTab(tab) {
+          this.currentTab = tab;
+          const title = tab === "login" ? "Welcome back" : "Join PromptVerse";
+          document.getElementById("authTitle").textContent = title;
+
+          document.querySelectorAll(".auth-tab-btn").forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.tab === tab);
+          });
+
+          document.querySelectorAll(".auth-form").forEach((form) => {
+            form.classList.toggle("active", form.dataset.tab === tab);
+          });
         }
 
-        if (valid) {
-          this.completeLogin({ email, username: email.split('@')[0] });
-        }
-      }
-
-      handleSignup(e) {
-        e.preventDefault();
-        this.clearErrors('signup');
-
-        const username = document.getElementById('signupUsername').value.trim();
-        const email = document.getElementById('signupEmail').value.trim();
-        const password = document.getElementById('signupPassword').value;
-        const confirm = document.getElementById('signupConfirm').value;
-        const termsAccept = document.getElementById('termsAccept').checked;
-
-        let valid = true;
-
-        if (!username) {
-          this.showError('signupUsernameError', 'Username is required');
-          valid = false;
-        } else if (username.length < 3) {
-          this.showError('signupUsernameError', 'Username must be at least 3 characters');
-          valid = false;
+        setupFormHandlers() {
+          document
+            .getElementById("loginForm")
+            .addEventListener("submit", (e) => this.handleLogin(e));
+          document
+            .getElementById("signupForm")
+            .addEventListener("submit", (e) => this.handleSignup(e));
         }
 
-        if (!email) {
-          this.showError('signupEmailError', 'Email is required');
-          valid = false;
-        } else if (!this.validateEmail(email)) {
-          this.showError('signupEmailError', 'Invalid email address');
-          valid = false;
+        validateEmail(email) {
+          const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return re.test(email);
         }
 
-        if (!password) {
-          this.showError('signupPasswordError', 'Password is required');
-          valid = false;
-        } else if (password.length < 8) {
-          this.showError('signupPasswordError', 'Password must be at least 8 characters');
-          valid = false;
-        }
-
-        if (password !== confirm) {
-          this.showError('signupConfirmError', 'Passwords do not match');
-          valid = false;
-        }
-
-        if (!termsAccept) {
-          this.showError('signupTermsError', 'You must accept the Terms of Service');
-          valid = false;
-        }
-
-        if (valid) {
-          this.completeLogin({ email, username });
-        }
-      }
-
-      completeLogin(user) {
-        const userData = {
-          ...user,
-          id: 'user_' + Date.now(),
-          joinDate: new Date().toISOString(),
-          bookmarks: []
-        };
-
-        localStorage.setItem('pv_user', JSON.stringify(userData));
-        localStorage.setItem('pv_auth_token', 'token_' + Date.now());
-
-        const params = new URLSearchParams(window.location.search);
-        const next = params.get('next') || 'index.html';
-        const action = params.get('action');
-        const id = params.get('id');
-
-        if (action === 'bookmark' && id) {
-          const current = JSON.parse(localStorage.getItem('pv_bookmarks') || '[]');
-          if (!current.includes(id)) current.push(id);
-          localStorage.setItem('pv_bookmarks', JSON.stringify(current));
-        }
-
-        window.location.href = next;
-      }
-
-      setupSocialButtons() {
-        document.getElementById('googleLoginBtn').addEventListener('click', (e) => {
+        async handleLogin(e) {
           e.preventDefault();
-          this.simulateGoogleLogin();
-        });
-        document.getElementById('googleSignupBtn').addEventListener('click', (e) => {
+          this.clearErrors("login");
+
+          const email = document.getElementById("loginEmail").value.trim();
+          const password = document.getElementById("loginPassword").value;
+
+          let valid = true;
+
+          if (!email) {
+            this.showError("loginEmailError", "Email is required");
+            valid = false;
+          } else if (!this.validateEmail(email)) {
+            this.showError("loginEmailError", "Invalid email address");
+            valid = false;
+          }
+
+          if (!password) {
+            this.showError("loginPasswordError", "Password is required");
+            valid = false;
+          } else if (password.length < 6) {
+            this.showError(
+              "loginPasswordError",
+              "Password must be at least 6 characters",
+            );
+            valid = false;
+          }
+
+          if (valid) {
+            try {
+              const firebaseUser = await loginWithEmail(email, password);
+              this.completeLogin(firebaseUser);
+            } catch (error) {
+              this.showError("loginPasswordError", error.message);
+            }
+          }
+        }
+
+        async handleSignup(e) {
           e.preventDefault();
-          this.simulateGoogleSignup();
-        });
-      }
+          this.clearErrors("signup");
 
-      simulateGoogleLogin() {
-        const user = {
-          username: 'Google User',
-          email: 'user' + Math.random().toString(36).substr(2, 5) + '@gmail.com'
-        };
-        this.completeLogin(user);
-      }
+          const username = document
+            .getElementById("signupUsername")
+            .value.trim();
+          const email = document.getElementById("signupEmail").value.trim();
+          const password = document.getElementById("signupPassword").value;
+          const confirm = document.getElementById("signupConfirm").value;
+          const termsAccept = document.getElementById("termsAccept").checked;
 
-      simulateGoogleSignup() {
-        const user = {
-          username: 'Google User',
-          email: 'user' + Math.random().toString(36).substr(2, 5) + '@gmail.com'
-        };
-        this.completeLogin(user);
-      }
+          let valid = true;
 
-      showError(elementId, message) {
-        const errorEl = document.getElementById(elementId);
-        if (errorEl) {
-          errorEl.textContent = message;
-          errorEl.classList.add('show');
+          if (!username) {
+            this.showError("signupUsernameError", "Username is required");
+            valid = false;
+          } else if (username.length < 3) {
+            this.showError(
+              "signupUsernameError",
+              "Username must be at least 3 characters",
+            );
+            valid = false;
+          }
+
+          if (!email) {
+            this.showError("signupEmailError", "Email is required");
+            valid = false;
+          } else if (!this.validateEmail(email)) {
+            this.showError("signupEmailError", "Invalid email address");
+            valid = false;
+          }
+
+          if (!password) {
+            this.showError("signupPasswordError", "Password is required");
+            valid = false;
+          } else if (password.length < 8) {
+            this.showError(
+              "signupPasswordError",
+              "Password must be at least 8 characters",
+            );
+            valid = false;
+          }
+
+          if (password !== confirm) {
+            this.showError("signupConfirmError", "Passwords do not match");
+            valid = false;
+          }
+
+          if (!termsAccept) {
+            this.showError(
+              "signupTermsError",
+              "You must accept the Terms of Service",
+            );
+            valid = false;
+          }
+
+          if (valid) {
+            try {
+              const firebaseUser = await signupWithEmail(email, password);
+              this.completeLogin(firebaseUser);
+            } catch (error) {
+              this.showError("signupEmailError", error.message);
+            }
+          }
+        }
+
+        completeLogin(firebaseUser) {
+          // Firebase authentication is handled in auth.js
+          // Redirect to next page or home
+          const params = new URLSearchParams(window.location.search);
+          const next = params.get("next") || "index.html";
+          const action = params.get("action");
+          const id = params.get("id");
+
+          if (action === "bookmark" && id) {
+            const current = JSON.parse(
+              localStorage.getItem("pv_bookmarks") || "[]",
+            );
+            if (!current.includes(id)) current.push(id);
+            localStorage.setItem("pv_bookmarks", JSON.stringify(current));
+          }
+
+          window.location.href = next;
+        }
+
+        setupSocialButtons() {
+          document
+            .getElementById("googleLoginBtn")
+            .addEventListener("click", async (e) => {
+              e.preventDefault();
+              try {
+                const firebaseUser = await loginWithGoogle();
+                this.completeLogin(firebaseUser);
+              } catch (error) {
+                this.showError("loginPasswordError", error.message);
+              }
+            });
+          document
+            .getElementById("googleSignupBtn")
+            .addEventListener("click", async (e) => {
+              e.preventDefault();
+              try {
+                const firebaseUser = await loginWithGoogle();
+                this.completeLogin(firebaseUser);
+              } catch (error) {
+                this.showError("signupEmailError", error.message);
+              }
+            });
+        }
+
+        simulateGoogleLogin() {
+          // Replaced with real Firebase Google login in setupSocialButtons()
+        }
+
+        simulateGoogleSignup() {
+          // Replaced with real Firebase Google login in setupSocialButtons()
+        }
+
+        showError(elementId, message) {
+          const errorEl = document.getElementById(elementId);
+          if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.classList.add("show");
+          }
+        }
+
+        clearErrors(prefix) {
+          document
+            .querySelectorAll(`.form-error[id*="${prefix}"]`)
+            .forEach((el) => {
+              el.classList.remove("show");
+              el.textContent = "";
+            });
         }
       }
 
-      clearErrors(prefix) {
-        document.querySelectorAll(`.form-error[id*="${prefix}"]`).forEach(el => {
-          el.classList.remove('show');
-          el.textContent = '';
-        });
-      }
-    }
-
-    const authManager = new AuthManager();
-  </script>
-</body>
+      const authManager = new AuthManager();
+    </script>
+  </body>
 </html>

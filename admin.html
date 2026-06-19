@@ -1,564 +1,1008 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PromptVerse — Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css">
-</head>
-<body class="admin-page">
-
-  <div class="admin-shell">
-
-    <!-- ============================  SIDEBAR  ============================ -->
-    <aside class="admin-sidebar" id="adminSidebar">
-      <div class="sidebar-brand">
-        <div class="brand-logo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/></svg>
-        </div>
-        <div class="brand-text">
-          <span class="brand-name">PromptVerse</span>
-          <span class="brand-tag">Admin</span>
-        </div>
-      </div>
-
-      <div class="sidebar-section-label">Navigation</div>
-      <nav class="admin-nav">
-        <button class="nav-item active" data-section="dashboard">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          </span>
-          <span>Dashboard</span>
-          <span class="nav-active-bar"></span>
-        </button>
-
-        <button class="nav-item" data-section="prompts">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </span>
-          <span>Manage Prompts</span>
-          <span class="nav-count" id="sidebarPromptsCount">0</span>
-        </button>
-
-        <button class="nav-item" data-section="add-prompt">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          </span>
-          <span>Add Prompt</span>
-        </button>
-
-        <div class="sidebar-section-label" style="margin-top:12px">Manage</div>
-
-        <button class="nav-item" data-section="categories">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          </span>
-          <span>Categories</span>
-          <span class="nav-count" id="sidebarCatsCount">0</span>
-        </button>
-
-        <button class="nav-item" data-section="analytics">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
-          </span>
-          <span>Analytics</span>
-        </button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="storage-wrap">
-          <div class="storage-row">
-            <span class="storage-label">localStorage</span>
-            <span class="storage-pct" id="storagePct">0%</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PromptVerse — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body class="admin-page">
+    <div class="admin-shell">
+      <!-- ============================  SIDEBAR  ============================ -->
+      <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+          <div class="brand-logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor" />
+            </svg>
           </div>
-          <div class="storage-track">
-            <div class="storage-fill" id="storageFill"></div>
+          <div class="brand-text">
+            <span class="brand-name">PromptVerse</span>
+            <span class="brand-tag">Admin</span>
           </div>
-          <div class="storage-detail" id="storageUsed">0 KB of 5 MB</div>
         </div>
-        <div class="sidebar-user">
-          <div class="user-avatar">A</div>
-          <div class="user-info">
-            <div class="user-name">Admin</div>
-            <div class="user-role">Super Admin</div>
-          </div>
-          <button id="adminModeToggle" class="theme-toggle" title="Toggle theme">
-            <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="admin-nav">
+          <button class="nav-item active" data-section="dashboard">
+            <span class="nav-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+            </span>
+            <span>Dashboard</span>
+            <span class="nav-active-bar"></span>
           </button>
-        </div>
-      </div>
-    </aside>
 
-    <!-- ============================  MAIN  ============================ -->
-    <div class="admin-main">
-
-      <!-- TOPBAR -->
-      <header class="admin-topbar">
-        <div class="topbar-left">
-          <div class="page-breadcrumb" id="pageBreadcrumb">Dashboard</div>
-          <div class="live-indicator">
-            <span class="live-dot"></span>
-            <span>Live</span>
-          </div>
-        </div>
-        <div class="topbar-center">
-          <div class="search-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="globalSearch" placeholder="Search prompts, categories…" autocomplete="off">
-            <kbd>⌘K</kbd>
-          </div>
-        </div>
-        <div class="topbar-right">
-          <a href="index.html" class="topbar-btn outline-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            View Site
-          </a>
-          <button class="topbar-btn primary-btn" onclick="switchSection('add-prompt')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add Prompt
+          <button class="nav-item" data-section="prompts">
+            <span class="nav-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+            </span>
+            <span>Manage Prompts</span>
+            <span class="nav-count" id="sidebarPromptsCount">0</span>
           </button>
-        </div>
-      </header>
 
-      <!-- CONTENT -->
-      <div class="admin-content">
+          <button class="nav-item" data-section="add-prompt">
+            <span class="nav-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+              </svg>
+            </span>
+            <span>Add Prompt</span>
+          </button>
 
-        <!-- ======================== DASHBOARD ======================== -->
-        <section class="admin-section active" id="dashboard">
-          <div class="section-head">
-            <div>
-              <h2>Dashboard</h2>
-              <p id="dashTimestamp">Loading…</p>
-            </div>
+          <div class="sidebar-section-label" style="margin-top: 12px">
+            Manage
           </div>
 
-          <!-- 4 Stat Cards -->
-          <div class="stat-grid">
-            <div class="stat-card" onclick="switchSection('prompts')" style="--accent:#c084fc">
-              <div class="stat-card-top">
-                <div class="stat-icon" style="--icon-bg:rgba(192,132,252,.12);--icon-stroke:#c084fc">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                </div>
-                <div class="stat-sparkline" id="spark1"></div>
-              </div>
-              <div class="stat-value" id="totalPromptsCount">0</div>
-              <div class="stat-label">Total Prompts</div>
-              <div class="stat-sub" id="statSubPrompts">in your library</div>
-            </div>
+          <button class="nav-item" data-section="categories">
+            <span class="nav-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+                />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+              </svg>
+            </span>
+            <span>Categories</span>
+            <span class="nav-count" id="sidebarCatsCount">0</span>
+          </button>
 
-            <div class="stat-card" style="--accent:#f472b6">
-              <div class="stat-card-top">
-                <div class="stat-icon" style="--icon-bg:rgba(244,114,182,.12);--icon-stroke:#f472b6">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <div class="stat-sparkline" id="spark2"></div>
-              </div>
-              <div class="stat-value" id="totalBookmarksCount">0</div>
-              <div class="stat-label">Total Saves</div>
-              <div class="stat-sub">across all prompts</div>
-            </div>
+          <button class="nav-item" data-section="analytics">
+            <span class="nav-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+                <line x1="2" y1="20" x2="22" y2="20" />
+              </svg>
+            </span>
+            <span>Analytics</span>
+          </button>
+        </nav>
 
-            <div class="stat-card" onclick="switchSection('categories')" style="--accent:#34d399">
-              <div class="stat-card-top">
-                <div class="stat-icon" style="--icon-bg:rgba(52,211,153,.12);--icon-stroke:#34d399">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                </div>
-                <div class="stat-sparkline" id="spark3"></div>
-              </div>
-              <div class="stat-value" id="totalCategoriesCount">0</div>
-              <div class="stat-label">Categories</div>
-              <div class="stat-sub" id="statSubCats">collections</div>
+        <div class="sidebar-footer">
+          <div class="storage-wrap">
+            <div class="storage-row">
+              <span class="storage-label">localStorage</span>
+              <span class="storage-pct" id="storagePct">0%</span>
             </div>
-
-            <div class="stat-card" style="--accent:#fb923c">
-              <div class="stat-card-top">
-                <div class="stat-icon" style="--icon-bg:rgba(251,146,60,.12);--icon-stroke:#fb923c">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </div>
-                <div class="stat-sparkline" id="spark4"></div>
-              </div>
-              <div class="stat-value" id="avgBookmarksCount">0.00</div>
-              <div class="stat-label">Avg Saves / Prompt</div>
-              <div class="stat-sub">engagement rate</div>
+            <div class="storage-track">
+              <div class="storage-fill" id="storageFill"></div>
             </div>
+            <div class="storage-detail" id="storageUsed">0 KB of 5 MB</div>
           </div>
-
-          <!-- Chart + Activity -->
-          <div class="dash-row">
-            <div class="panel" id="chartPanel">
-              <div class="panel-header">
-                <div class="panel-title">Prompt Publishing Activity</div>
-                <div class="panel-tabs">
-                  <button class="ptab active" data-range="week">This Week</button>
-                  <button class="ptab" data-range="month">This Month</button>
-                </div>
-              </div>
-              <div class="chart-area">
-                <canvas id="activityChart"></canvas>
-                <div class="chart-empty" id="chartEmpty" style="display:none">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                  <p>No publishing activity to display yet.</p>
-                  <button class="text-link" onclick="switchSection('add-prompt')">Add your first prompt</button>
-                </div>
-              </div>
+          <div class="sidebar-user">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+              <div class="user-name">Admin</div>
+              <div class="user-role">Super Admin</div>
             </div>
-
-            <div class="panel" id="activityPanel">
-              <div class="panel-header">
-                <div class="panel-title">Recent Activity</div>
-                <span class="panel-live">Live</span>
-              </div>
-              <div class="activity-feed" id="recentActivity">
-                <div class="feed-empty">No activity recorded yet.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Summary Row -->
-          <div class="summary-row">
-            <div class="summary-item">
-              <div class="summary-label">Most Active Category</div>
-              <div class="summary-val" id="topCategory">—</div>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-item">
-              <div class="summary-label">Last Prompt Added</div>
-              <div class="summary-val" id="lastAdded">—</div>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-item">
-              <div class="summary-label">Prompts With Images</div>
-              <div class="summary-val" id="promptsWithImages">0</div>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-item">
-              <div class="summary-label">Category Coverage</div>
-              <div class="summary-val" id="categoryCoverage">0%</div>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-item">
-              <div class="summary-label">Storage Used</div>
-              <div class="summary-val" id="storageDisplay">0 KB</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================== MANAGE PROMPTS ======================== -->
-        <section class="admin-section" id="prompts">
-          <div class="section-head">
-            <div>
-              <h2>Manage Prompts</h2>
-              <p>Browse, edit, and curate your prompt library</p>
-            </div>
-            <button class="topbar-btn primary-btn" onclick="switchSection('add-prompt')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              New Prompt
+            <button
+              id="adminModeToggle"
+              class="theme-toggle"
+              title="Toggle theme"
+            >
+              <svg
+                id="iconMoon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              <svg
+                id="iconSun"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                style="display: none"
+              >
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
             </button>
           </div>
+        </div>
+      </aside>
 
-          <div class="toolbar">
-            <div class="toolbar-left">
-              <div class="search-field">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input id="adminSearch" type="search" placeholder="Search prompts…" autocomplete="off">
-              </div>
-              <select id="categoryFilter" class="filter-select">
-                <option value="all">All Categories</option>
-              </select>
-              <select id="sortFilter" class="filter-select">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="alpha">A → Z</option>
-              </select>
+      <!-- ============================  MAIN  ============================ -->
+      <div class="admin-main">
+        <!-- TOPBAR -->
+        <header class="admin-topbar">
+          <div class="topbar-left">
+            <div class="page-breadcrumb" id="pageBreadcrumb">Dashboard</div>
+            <div class="live-indicator">
+              <span class="live-dot"></span>
+              <span>Live</span>
             </div>
-            <div class="toolbar-right">
-              <div class="view-toggle-group">
-                <button class="view-btn active" id="viewTable" title="Table">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                </button>
-                <button class="view-btn" id="viewGrid" title="Grid">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                </button>
+          </div>
+          <div class="topbar-center">
+            <div class="search-box">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="search"
+                id="globalSearch"
+                placeholder="Search prompts, categories…"
+                autocomplete="off"
+              />
+              <kbd>⌘K</kbd>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <a href="index.html" class="topbar-btn outline-btn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              View Site
+            </a>
+            <button
+              class="topbar-btn primary-btn"
+              onclick="switchSection('add-prompt')"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Prompt
+            </button>
+          </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="admin-content">
+          <!-- ======================== DASHBOARD ======================== -->
+          <section class="admin-section active" id="dashboard">
+            <div class="section-head">
+              <div>
+                <h2>Dashboard</h2>
+                <p id="dashTimestamp">Loading…</p>
               </div>
-              <button class="topbar-btn outline-btn" id="exportBtn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Export JSON
+            </div>
+
+            <!-- 4 Stat Cards -->
+            <div class="stat-grid">
+              <div
+                class="stat-card"
+                onclick="switchSection('prompts')"
+                style="--accent: #c084fc"
+              >
+                <div class="stat-card-top">
+                  <div
+                    class="stat-icon"
+                    style="
+                      --icon-bg: rgba(192, 132, 252, 0.12);
+                      --icon-stroke: #c084fc;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path
+                        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="stat-sparkline" id="spark1"></div>
+                </div>
+                <div class="stat-value" id="totalPromptsCount">0</div>
+                <div class="stat-label">Total Prompts</div>
+                <div class="stat-sub" id="statSubPrompts">in your library</div>
+              </div>
+
+              <div class="stat-card" style="--accent: #f472b6">
+                <div class="stat-card-top">
+                  <div
+                    class="stat-icon"
+                    style="
+                      --icon-bg: rgba(244, 114, 182, 0.12);
+                      --icon-stroke: #f472b6;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <path
+                        d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="stat-sparkline" id="spark2"></div>
+                </div>
+                <div class="stat-value" id="totalBookmarksCount">0</div>
+                <div class="stat-label">Total Saves</div>
+                <div class="stat-sub">across all prompts</div>
+              </div>
+
+              <div
+                class="stat-card"
+                onclick="switchSection('categories')"
+                style="--accent: #34d399"
+              >
+                <div class="stat-card-top">
+                  <div
+                    class="stat-icon"
+                    style="
+                      --icon-bg: rgba(52, 211, 153, 0.12);
+                      --icon-stroke: #34d399;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <path
+                        d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+                      />
+                      <line x1="7" y1="7" x2="7.01" y2="7" />
+                    </svg>
+                  </div>
+                  <div class="stat-sparkline" id="spark3"></div>
+                </div>
+                <div class="stat-value" id="totalCategoriesCount">0</div>
+                <div class="stat-label">Categories</div>
+                <div class="stat-sub" id="statSubCats">collections</div>
+              </div>
+
+              <div class="stat-card" style="--accent: #fb923c">
+                <div class="stat-card-top">
+                  <div
+                    class="stat-icon"
+                    style="
+                      --icon-bg: rgba(251, 146, 60, 0.12);
+                      --icon-stroke: #fb923c;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                  </div>
+                  <div class="stat-sparkline" id="spark4"></div>
+                </div>
+                <div class="stat-value" id="avgBookmarksCount">0.00</div>
+                <div class="stat-label">Avg Saves / Prompt</div>
+                <div class="stat-sub">engagement rate</div>
+              </div>
+            </div>
+
+            <!-- Chart + Activity -->
+            <div class="dash-row">
+              <div class="panel" id="chartPanel">
+                <div class="panel-header">
+                  <div class="panel-title">Prompt Publishing Activity</div>
+                  <div class="panel-tabs">
+                    <button class="ptab active" data-range="week">
+                      This Week
+                    </button>
+                    <button class="ptab" data-range="month">This Month</button>
+                  </div>
+                </div>
+                <div class="chart-area">
+                  <canvas id="activityChart"></canvas>
+                  <div
+                    class="chart-empty"
+                    id="chartEmpty"
+                    style="display: none"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      width="40"
+                      height="40"
+                    >
+                      <line x1="18" y1="20" x2="18" y2="10" />
+                      <line x1="12" y1="20" x2="12" y2="4" />
+                      <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    <p>No publishing activity to display yet.</p>
+                    <button
+                      class="text-link"
+                      onclick="switchSection('add-prompt')"
+                    >
+                      Add your first prompt
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel" id="activityPanel">
+                <div class="panel-header">
+                  <div class="panel-title">Recent Activity</div>
+                  <span class="panel-live">Live</span>
+                </div>
+                <div class="activity-feed" id="recentActivity">
+                  <div class="feed-empty">No activity recorded yet.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Summary Row -->
+            <div class="summary-row">
+              <div class="summary-item">
+                <div class="summary-label">Most Active Category</div>
+                <div class="summary-val" id="topCategory">—</div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item">
+                <div class="summary-label">Last Prompt Added</div>
+                <div class="summary-val" id="lastAdded">—</div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item">
+                <div class="summary-label">Prompts With Images</div>
+                <div class="summary-val" id="promptsWithImages">0</div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item">
+                <div class="summary-label">Category Coverage</div>
+                <div class="summary-val" id="categoryCoverage">0%</div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item">
+                <div class="summary-label">Storage Used</div>
+                <div class="summary-val" id="storageDisplay">0 KB</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ======================== MANAGE PROMPTS ======================== -->
+          <section class="admin-section" id="prompts">
+            <div class="section-head">
+              <div>
+                <h2>Manage Prompts</h2>
+                <p>Browse, edit, and curate your prompt library</p>
+              </div>
+              <button
+                class="topbar-btn primary-btn"
+                onclick="switchSection('add-prompt')"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  width="14"
+                  height="14"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                New Prompt
               </button>
             </div>
-          </div>
 
-          <!-- Table View -->
-          <div class="table-wrap" id="tableContainer">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th style="width:40px"><input type="checkbox" id="selectAll" class="check-input"></th>
-                  <th class="sortable" data-col="title">Title <span class="sort-icon">↕</span></th>
-                  <th class="sortable" data-col="category">Category <span class="sort-icon">↕</span></th>
-                  <th>Tags</th>
-                  <th>Image</th>
-                  <th class="sortable" data-col="date">Date Added <span class="sort-icon">↕</span></th>
-                  <th style="width:120px">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="promptsTableBody"></tbody>
-            </table>
-            <div class="table-empty-state" id="tableEmpty" style="display:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <p>No prompts found.</p>
-              <button class="text-link" onclick="switchSection('add-prompt')">Create your first prompt</button>
-            </div>
-          </div>
-
-          <!-- Grid View -->
-          <div class="grid-view" id="gridContainer" style="display:none">
-            <div class="prompts-card-grid" id="promptsCardGrid"></div>
-          </div>
-
-          <div class="pagination" id="tablePagination"></div>
-        </section>
-
-        <!-- ======================== ADD PROMPT ======================== -->
-        <section class="admin-section" id="add-prompt">
-          <div class="section-head">
-            <div>
-              <h2>Add New Prompt</h2>
-              <p>Publish a prompt to your gallery</p>
-            </div>
-          </div>
-
-          <div class="form-layout">
-            <form class="prompt-form panel" id="addPromptForm" novalidate>
-
-              <div class="form-group">
-                <label for="promptTitle">Prompt Title <span class="req">*</span></label>
-                <input type="text" id="promptTitle" placeholder="e.g., Baroque Portrait in Romantic Style" required autocomplete="off">
-                <span class="field-hint">Give it a descriptive, searchable name</span>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="promptCategory">Category <span class="req">*</span></label>
-                  <select id="promptCategory" required>
-                    <option value="">Select a category</option>
-                  </select>
+            <div class="toolbar">
+              <div class="toolbar-left">
+                <div class="search-field">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input
+                    id="adminSearch"
+                    type="search"
+                    placeholder="Search prompts…"
+                    autocomplete="off"
+                  />
                 </div>
-                <div class="form-group">
-                  <label for="promptImage">Firebase Image URL</label>
-                  <input type="url" id="promptImage" placeholder="https://firebasestorage.googleapis.com/…" autocomplete="off">
-                  <span class="field-hint">Paste the URL generated from Firebase Storage</span>
-                </div>
+                <select id="categoryFilter" class="filter-select">
+                  <option value="all">All Categories</option>
+                </select>
+                <select id="sortFilter" class="filter-select">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="alpha">A → Z</option>
+                </select>
               </div>
-
-              <div class="form-group">
-                <label for="promptText">Prompt Text <span class="req">*</span></label>
-                <div class="textarea-wrap">
-                  <textarea id="promptText" placeholder="Write your full AI prompt here…" rows="8" required></textarea>
-                  <div class="char-counter"><span id="charCount">0</span> chars</div>
+              <div class="toolbar-right">
+                <div class="view-toggle-group">
+                  <button class="view-btn active" id="viewTable" title="Table">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <line x1="3" y1="12" x2="21" y2="12" />
+                      <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                  </button>
+                  <button class="view-btn" id="viewGrid" title="Grid">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="3" y="3" width="7" height="7" />
+                      <rect x="14" y="3" width="7" height="7" />
+                      <rect x="3" y="14" width="7" height="7" />
+                      <rect x="14" y="14" width="7" height="7" />
+                    </svg>
+                  </button>
                 </div>
-              </div>
-
-              <div class="form-group">
-                <label>Tags</label>
-                <div class="tags-input-wrap" id="tagsWrap">
-                  <div class="tags-display" id="tagsDisplay"></div>
-                  <input type="text" id="promptTags" placeholder="Type a tag and press Enter…" autocomplete="off">
-                </div>
-                <span class="field-hint">Press Enter or comma to add. Press Backspace to remove.</span>
-              </div>
-
-              <div class="form-group">
-                <label>Live Preview</label>
-                <div class="prompt-preview" id="addPreviewCard">
-                  <span class="preview-hint">Fill in the form to see a live preview</span>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button type="submit" class="topbar-btn primary-btn btn-lg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
-                  Publish Prompt
+                <button class="topbar-btn outline-btn" id="exportBtn">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    width="14"
+                    height="14"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export JSON
                 </button>
-                <button type="reset" class="topbar-btn outline-btn">Clear Form</button>
               </div>
-              <div class="form-message" id="formMessage"></div>
-            </form>
+            </div>
 
-            <!-- Tips Sidebar -->
-            <div class="tips-panel panel">
-              <div class="tips-section">
-                <div class="tips-title">Writing Tips</div>
-                <ul class="tips-list">
-                  <li>Be specific about style, mood, and lighting conditions</li>
-                  <li>Include artistic references or influences where relevant</li>
-                  <li>Mention aspect ratio (e.g. --ar 16:9 for Midjourney)</li>
-                  <li>Use commas to naturally separate descriptors</li>
-                  <li>Specify the target AI model if the prompt is model-specific</li>
-                </ul>
+            <!-- Table View -->
+            <div class="table-wrap" id="tableContainer">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 40px">
+                      <input
+                        type="checkbox"
+                        id="selectAll"
+                        class="check-input"
+                      />
+                    </th>
+                    <th class="sortable" data-col="title">
+                      Title <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="sortable" data-col="category">
+                      Category <span class="sort-icon">↕</span>
+                    </th>
+                    <th>Tags</th>
+                    <th>Image</th>
+                    <th class="sortable" data-col="date">
+                      Date Added <span class="sort-icon">↕</span>
+                    </th>
+                    <th style="width: 120px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="promptsTableBody"></tbody>
+              </table>
+              <div
+                class="table-empty-state"
+                id="tableEmpty"
+                style="display: none"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  width="48"
+                  height="48"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <p>No prompts found.</p>
+                <button class="text-link" onclick="switchSection('add-prompt')">
+                  Create your first prompt
+                </button>
               </div>
-              <div class="tips-divider"></div>
-              <div class="tips-section">
-                <div class="tips-title">Quick Templates</div>
-                <div class="template-grid">
-                  <button class="template-btn" data-template="portrait">Portrait</button>
-                  <button class="template-btn" data-template="landscape">Landscape</button>
-                  <button class="template-btn" data-template="anime">Anime</button>
-                  <button class="template-btn" data-template="scifi">Sci-Fi</button>
+            </div>
+
+            <!-- Grid View -->
+            <div class="grid-view" id="gridContainer" style="display: none">
+              <div class="prompts-card-grid" id="promptsCardGrid"></div>
+            </div>
+
+            <div class="pagination" id="tablePagination"></div>
+          </section>
+
+          <!-- ======================== ADD PROMPT ======================== -->
+          <section class="admin-section" id="add-prompt">
+            <div class="section-head">
+              <div>
+                <h2>Add New Prompt</h2>
+                <p>Publish a prompt to your gallery</p>
+              </div>
+            </div>
+
+            <div class="form-layout">
+              <form class="prompt-form panel" id="addPromptForm" novalidate>
+                <div class="form-group">
+                  <label for="promptTitle"
+                    >Prompt Title <span class="req">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="promptTitle"
+                    placeholder="e.g., Baroque Portrait in Romantic Style"
+                    required
+                    autocomplete="off"
+                  />
+                  <span class="field-hint"
+                    >Give it a descriptive, searchable name</span
+                  >
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="promptCategory"
+                      >Category <span class="req">*</span></label
+                    >
+                    <select id="promptCategory" required>
+                      <option value="">Select a category</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="promptImage">Image URL</label>
+                    <input
+                      type="url"
+                      id="promptImage"
+                      placeholder="https://firebasestorage.googleapis.com/…"
+                      autocomplete="off"
+                    />
+                    <span class="field-hint"
+                      >Paste the URL generated from Firebase Storage</span
+                    >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="promptText"
+                    >Prompt Text <span class="req">*</span></label
+                  >
+                  <div class="textarea-wrap">
+                    <textarea
+                      id="promptText"
+                      placeholder="Write your full AI prompt here…"
+                      rows="8"
+                      required
+                    ></textarea>
+                    <div class="char-counter">
+                      <span id="charCount">0</span> chars
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Tags</label>
+                  <div class="tags-input-wrap" id="tagsWrap">
+                    <div class="tags-display" id="tagsDisplay"></div>
+                    <input
+                      type="text"
+                      id="promptTags"
+                      placeholder="Type a tag and press Enter…"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <span class="field-hint"
+                    >Press Enter or comma to add. Press Backspace to
+                    remove.</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>Live Preview</label>
+                  <div class="prompt-preview" id="addPreviewCard">
+                    <span class="preview-hint"
+                      >Fill in the form to see a live preview</span
+                    >
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="topbar-btn primary-btn btn-lg">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      width="16"
+                      height="16"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Publish Prompt
+                  </button>
+                  <button type="reset" class="topbar-btn outline-btn">
+                    Clear Form
+                  </button>
+                </div>
+                <div class="form-message" id="formMessage"></div>
+              </form>
+
+              <!-- Tips Sidebar -->
+              <div class="tips-panel panel">
+                <div class="tips-section">
+                  <div class="tips-title">Writing Tips</div>
+                  <ul class="tips-list">
+                    <li>
+                      Be specific about style, mood, and lighting conditions
+                    </li>
+                    <li>
+                      Include artistic references or influences where relevant
+                    </li>
+                    <li>
+                      Mention aspect ratio (e.g. --ar 16:9 for Midjourney)
+                    </li>
+                    <li>Use commas to naturally separate descriptors</li>
+                    <li>
+                      Specify the target AI model if the prompt is
+                      model-specific
+                    </li>
+                  </ul>
+                </div>
+                <div class="tips-divider"></div>
+                <div class="tips-section">
+                  <div class="tips-title">Quick Templates</div>
+                  <div class="template-grid">
+                    <button class="template-btn" data-template="portrait">
+                      Portrait
+                    </button>
+                    <button class="template-btn" data-template="landscape">
+                      Landscape
+                    </button>
+                    <button class="template-btn" data-template="anime">
+                      Anime
+                    </button>
+                    <button class="template-btn" data-template="scifi">
+                      Sci-Fi
+                    </button>
+                  </div>
+                </div>
+                <div class="tips-divider"></div>
+                <div class="tips-section">
+                  <div class="tips-title">Firebase Image Upload</div>
+                  <p class="tips-text">
+                    Upload images to Firebase Storage, copy the download URL,
+                    and paste it in the Image URL field above. The image will
+                    appear on the public gallery automatically.
+                  </p>
                 </div>
               </div>
-              <div class="tips-divider"></div>
-              <div class="tips-section">
-                <div class="tips-title">Firebase Image Upload</div>
-                <p class="tips-text">Upload images to Firebase Storage, copy the download URL, and paste it in the Image URL field above. The image will appear on the public gallery automatically.</p>
+            </div>
+          </section>
+
+          <!-- ======================== CATEGORIES ======================== -->
+          <section class="admin-section" id="categories">
+            <div class="section-head">
+              <div>
+                <h2>Categories</h2>
+                <p>Organise your prompts into browsable collections</p>
               </div>
             </div>
+
+            <div class="categories-grid" id="categoriesGrid"></div>
+
+            <div class="panel add-cat-panel">
+              <div class="panel-header">
+                <div class="panel-title">Create New Category</div>
+              </div>
+              <p class="add-cat-hint">
+                Categories help visitors browse prompts by style or subject on
+                the public site.
+              </p>
+              <div class="add-cat-row">
+                <input
+                  type="text"
+                  id="newCategoryInput"
+                  placeholder="e.g., Fantasy Landscapes"
+                  maxlength="40"
+                  class="cat-input"
+                  autocomplete="off"
+                />
+                <button id="addCategoryBtn" class="topbar-btn primary-btn">
+                  Add Category
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ======================== ANALYTICS ======================== -->
+          <section class="admin-section" id="analytics">
+            <div class="section-head">
+              <div>
+                <h2>Analytics</h2>
+                <p>Insights derived from your stored data</p>
+              </div>
+              <button
+                class="topbar-btn outline-btn"
+                onclick="renderAnalytics()"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="14"
+                  height="14"
+                >
+                  <polyline points="23 4 23 10 17 10" />
+                  <path d="M20.49 15a9 9 0 1 1-.08-9.91" />
+                </svg>
+                Refresh
+              </button>
+            </div>
+
+            <div class="analytics-hero">
+              <div class="astat-card">
+                <div class="astat-label">Total Engagement</div>
+                <div class="astat-value" id="totalEngagement">—</div>
+                <div class="astat-sub">saves + prompt count</div>
+              </div>
+              <div class="astat-card">
+                <div class="astat-label">Publish Rate</div>
+                <div class="astat-value" id="publishRate">—</div>
+                <div class="astat-sub">prompts per week (lifetime)</div>
+              </div>
+              <div class="astat-card">
+                <div class="astat-label">Category Fill Rate</div>
+                <div class="astat-value" id="categoryCoverage2">—</div>
+                <div class="astat-sub">categories with at least 1 prompt</div>
+              </div>
+              <div class="astat-card">
+                <div class="astat-label">Image Coverage</div>
+                <div class="astat-value" id="imageCoverage">—</div>
+                <div class="astat-sub">prompts with a Firebase image</div>
+              </div>
+            </div>
+
+            <div class="analytics-grid">
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Category Distribution</div>
+                </div>
+                <div id="categoryDistribution" class="dist-bars"></div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Top Prompts by Saves</div>
+                </div>
+                <div id="topPrompts" class="top-list"></div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Key Metrics</div>
+                </div>
+                <div id="statisticsData" class="stats-list"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <!-- /admin-content -->
+      </div>
+      <!-- /admin-main -->
+    </div>
+    <!-- /admin-shell -->
+
+    <!-- ============================  EDIT MODAL  ============================ -->
+    <div
+      class="modal"
+      id="editPromptModal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Edit Prompt"
+    >
+      <div class="modal-backdrop" id="editModalOverlay"></div>
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Edit Prompt</h3>
+          <button class="modal-close" id="closeEditModal" aria-label="Close">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <form id="editPromptForm" novalidate>
+          <div class="form-group">
+            <label for="editPromptTitle">Title</label>
+            <input
+              type="text"
+              id="editPromptTitle"
+              required
+              autocomplete="off"
+            />
           </div>
-        </section>
-
-        <!-- ======================== CATEGORIES ======================== -->
-        <section class="admin-section" id="categories">
-          <div class="section-head">
-            <div>
-              <h2>Categories</h2>
-              <p>Organise your prompts into browsable collections</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editPromptCategory">Category</label>
+              <select id="editPromptCategory" required></select>
+            </div>
+            <div class="form-group">
+              <label for="editPromptImage">Firebase Image URL</label>
+              <input type="url" id="editPromptImage" autocomplete="off" />
             </div>
           </div>
-
-          <div class="categories-grid" id="categoriesGrid"></div>
-
-          <div class="panel add-cat-panel">
-            <div class="panel-header">
-              <div class="panel-title">Create New Category</div>
-            </div>
-            <p class="add-cat-hint">Categories help visitors browse prompts by style or subject on the public site.</p>
-            <div class="add-cat-row">
-              <input type="text" id="newCategoryInput" placeholder="e.g., Fantasy Landscapes" maxlength="40" class="cat-input" autocomplete="off">
-              <button id="addCategoryBtn" class="topbar-btn primary-btn">Add Category</button>
-            </div>
+          <div class="form-group">
+            <label for="editPromptText">Prompt Text</label>
+            <textarea id="editPromptText" rows="6" required></textarea>
           </div>
-        </section>
-
-        <!-- ======================== ANALYTICS ======================== -->
-        <section class="admin-section" id="analytics">
-          <div class="section-head">
-            <div>
-              <h2>Analytics</h2>
-              <p>Insights derived from your stored data</p>
-            </div>
-            <button class="topbar-btn outline-btn" onclick="renderAnalytics()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.08-9.91"/></svg>
-              Refresh
+          <div class="form-group">
+            <label for="editPromptTags">Tags (comma-separated)</label>
+            <input type="text" id="editPromptTags" autocomplete="off" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="topbar-btn primary-btn">
+              Save Changes
+            </button>
+            <button
+              type="button"
+              class="topbar-btn outline-btn"
+              id="cancelEditBtn"
+            >
+              Cancel
             </button>
           </div>
-
-          <div class="analytics-hero">
-            <div class="astat-card">
-              <div class="astat-label">Total Engagement</div>
-              <div class="astat-value" id="totalEngagement">—</div>
-              <div class="astat-sub">saves + prompt count</div>
-            </div>
-            <div class="astat-card">
-              <div class="astat-label">Publish Rate</div>
-              <div class="astat-value" id="publishRate">—</div>
-              <div class="astat-sub">prompts per week (lifetime)</div>
-            </div>
-            <div class="astat-card">
-              <div class="astat-label">Category Fill Rate</div>
-              <div class="astat-value" id="categoryCoverage2">—</div>
-              <div class="astat-sub">categories with at least 1 prompt</div>
-            </div>
-            <div class="astat-card">
-              <div class="astat-label">Image Coverage</div>
-              <div class="astat-value" id="imageCoverage">—</div>
-              <div class="astat-sub">prompts with a Firebase image</div>
-            </div>
-          </div>
-
-          <div class="analytics-grid">
-            <div class="panel">
-              <div class="panel-header"><div class="panel-title">Category Distribution</div></div>
-              <div id="categoryDistribution" class="dist-bars"></div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-header"><div class="panel-title">Top Prompts by Saves</div></div>
-              <div id="topPrompts" class="top-list"></div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-header"><div class="panel-title">Key Metrics</div></div>
-              <div id="statisticsData" class="stats-list"></div>
-            </div>
-          </div>
-        </section>
-
-      </div><!-- /admin-content -->
-    </div><!-- /admin-main -->
-  </div><!-- /admin-shell -->
-
-  <!-- ============================  EDIT MODAL  ============================ -->
-  <div class="modal" id="editPromptModal" role="dialog" aria-modal="true" aria-label="Edit Prompt">
-    <div class="modal-backdrop" id="editModalOverlay"></div>
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3>Edit Prompt</h3>
-        <button class="modal-close" id="closeEditModal" aria-label="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <form id="editPromptForm" novalidate>
-        <div class="form-group">
-          <label for="editPromptTitle">Title</label>
-          <input type="text" id="editPromptTitle" required autocomplete="off">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editPromptCategory">Category</label>
-            <select id="editPromptCategory" required></select>
-          </div>
-          <div class="form-group">
-            <label for="editPromptImage">Firebase Image URL</label>
-            <input type="url" id="editPromptImage" autocomplete="off">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="editPromptText">Prompt Text</label>
-          <textarea id="editPromptText" rows="6" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="editPromptTags">Tags (comma-separated)</label>
-          <input type="text" id="editPromptTags" autocomplete="off">
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="topbar-btn primary-btn">Save Changes</button>
-          <button type="button" class="topbar-btn outline-btn" id="cancelEditBtn">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ============================  DELETE MODAL  ============================ -->
-  <div class="modal" id="deleteConfirmModal" role="dialog" aria-modal="true">
-    <div class="modal-backdrop" id="deleteModalOverlay"></div>
-    <div class="modal-box modal-sm">
-      <div class="delete-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-      </div>
-      <h3>Delete Prompt?</h3>
-      <p>This action is permanent and cannot be undone. The prompt will be removed from your library.</p>
-      <div class="form-actions" style="justify-content:center;margin-top:24px">
-        <button class="topbar-btn danger-btn" id="confirmDeleteBtn">Delete Permanently</button>
-        <button class="topbar-btn outline-btn" id="cancelDeleteBtn">Cancel</button>
+        </form>
       </div>
     </div>
-  </div>
 
-  <!-- Toast -->
-  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+    <!-- ============================  DELETE MODAL  ============================ -->
+    <div class="modal" id="deleteConfirmModal" role="dialog" aria-modal="true">
+      <div class="modal-backdrop" id="deleteModalOverlay"></div>
+      <div class="modal-box modal-sm">
+        <div class="delete-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>
+        </div>
+        <h3>Delete Prompt?</h3>
+        <p>
+          This action is permanent and cannot be undone. The prompt will be
+          removed from your library.
+        </p>
+        <div
+          class="form-actions"
+          style="justify-content: center; margin-top: 24px"
+        >
+          <button class="topbar-btn danger-btn" id="confirmDeleteBtn">
+            Delete Permanently
+          </button>
+          <button class="topbar-btn outline-btn" id="cancelDeleteBtn">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <script src="admin.js"></script>
-</body>
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <script type="module" src="admin.js"></script>
+  </body>
 </html>
