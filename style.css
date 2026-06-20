@@ -231,7 +231,7 @@ body.dark .blob { opacity: 0.22; }
 }
 .logo-text em { font-style: italic; background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-.nav-categories { position: relative; flex-shrink: 0; margin-left: auto; }
+.nav-categories { position: relative; flex-shrink: 0; }
 .nav-cat-btn {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.92rem; font-weight: 600;
