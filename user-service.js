@@ -358,7 +358,7 @@ export function getVerificationStatus(user) {
  */
 export async function addBookmark(promptId, promptData) {
   const user = auth.currentUser;
-  
+
   if (!user) {
     throw new Error("User must be logged in to bookmark");
   }
@@ -368,13 +368,7 @@ export async function addBookmark(promptId, promptData) {
   }
 
   try {
-    const bookmarkRef = doc(
-      db,
-      "users",
-      user.uid,
-      "bookmarks",
-      promptId
-    );
+    const bookmarkRef = doc(db, "users", user.uid, "bookmarks", promptId);
 
     await setDoc(bookmarkRef, {
       promptId,
@@ -406,13 +400,7 @@ export async function removeBookmark(promptId) {
   }
 
   try {
-    const bookmarkRef = doc(
-      db,
-      "users",
-      user.uid,
-      "bookmarks",
-      promptId
-    );
+    const bookmarkRef = doc(db, "users", user.uid, "bookmarks", promptId);
 
     await deleteDoc(bookmarkRef);
     console.log("❌ Bookmark removed:", promptId);
@@ -435,13 +423,7 @@ export async function isPromptBookmarked(promptId) {
   }
 
   try {
-    const bookmarkRef = doc(
-      db,
-      "users",
-      user.uid,
-      "bookmarks",
-      promptId
-    );
+    const bookmarkRef = doc(db, "users", user.uid, "bookmarks", promptId);
 
     const bookmarkDoc = await getDoc(bookmarkRef);
     return bookmarkDoc.exists();
