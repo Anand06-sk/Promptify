@@ -514,7 +514,13 @@
           border-radius: 16px;
         }
       }
-    
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
 
       .auth-container {
         width: 100%;
@@ -849,260 +855,175 @@
         }
       }
 
-      /* Verification Pending Screen */
-      .verification-pending {
+      /* Password Reset Modal */
+      .password-reset-overlay {
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
         align-items: center;
         justify-content: center;
-        z-index: 2000;
-        overflow-y: auto;
-        padding: 20px;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
       }
 
-      .verification-pending-container {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        max-width: 500px;
+      .password-reset-overlay.active {
+        display: flex;
       }
 
-      .verification-pending-card {
+      .password-reset-modal {
         background: var(--glass-bg);
         border: 1px solid var(--glass-border);
         backdrop-filter: blur(var(--glass-blur));
         -webkit-backdrop-filter: blur(var(--glass-blur));
         box-shadow: var(--glass-shadow);
-        border-radius: 28px;
-        padding: 48px 40px;
-        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 20px;
+        padding: 32px;
+        width: 90%;
+        max-width: 400px;
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .password-reset-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .password-reset-header i {
+        font-size: 1.8rem;
+        color: var(--purple);
+        background: rgba(167, 139, 250, 0.15);
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+      }
+
+      .password-reset-header-text h2 {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+      }
+
+      .password-reset-header-text p {
+        color: var(--text-soft);
+        font-size: 0.85rem;
+        margin: 0;
+      }
+
+      .password-reset-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .password-reset-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 0.95rem;
+        transition: all var(--transition);
+      }
+
+      .password-reset-input:focus {
+        outline: none;
+        border-color: var(--purple);
+        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+      }
+
+      .password-reset-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        display: none;
+        border-left: 3px solid #dc2626;
+      }
+
+      .password-reset-error.show {
+        display: block;
+      }
+
+      .password-reset-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        display: none;
+        border-left: 3px solid #10b981;
         text-align: center;
       }
 
-      .verification-loading {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 32px;
-        height: 120px;
-      }
-
-      .envelope-icon {
-        font-size: 4rem;
-        color: var(--purple);
-        animation: bounce 2s infinite;
-      }
-
-      .spinner {
-        position: absolute;
-        width: 140px;
-        height: 140px;
-        border: 3px solid rgba(167, 139, 250, 0.1);
-        border-top-color: var(--purple);
-        border-radius: 50%;
-        animation: spin 1.5s linear infinite;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes bounce {
-        0%, 100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-20px);
-        }
-      }
-
-      .verification-pending-card h2 {
-        font-family: var(--font-display);
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0 0 12px 0;
-        color: var(--text);
-      }
-
-      .verification-email-text {
-        color: var(--text-soft);
-        font-size: 0.95rem;
-        margin-bottom: 32px;
-      }
-
-      .verification-email-text strong {
-        color: var(--text);
-        font-weight: 600;
-        word-break: break-all;
-      }
-
-      .verification-steps {
-        background: rgba(167, 139, 250, 0.05);
-        border: 1px solid rgba(167, 139, 250, 0.1);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
-        text-align: left;
-      }
-
-      .step {
-        display: flex;
-        gap: 16px;
-        margin-bottom: 16px;
-      }
-
-      .step:last-child {
-        margin-bottom: 0;
-      }
-
-      .step-number {
-        flex-shrink: 0;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--purple);
-        color: white;
-        border-radius: 50%;
-        font-weight: 600;
-      }
-
-      .step-text p {
-        margin: 0;
-        font-size: 0.9rem;
-      }
-
-      .step-text strong {
+      .password-reset-success.show {
         display: block;
-        color: var(--text);
-        font-weight: 600;
-        margin-bottom: 4px;
       }
 
-      .step-text {
-        color: var(--text-soft);
-      }
-
-      .verification-status {
-        padding: 16px;
-        background: rgba(99, 102, 241, 0.1);
-        border-radius: 12px;
-        margin-bottom: 24px;
-        border-left: 3px solid var(--purple);
-      }
-
-      .verification-status p {
-        margin: 0;
-        color: var(--text-soft);
-        font-size: 0.9rem;
-        font-style: italic;
-      }
-
-      .verification-actions {
+      .password-reset-buttons {
         display: flex;
         gap: 12px;
-        margin-bottom: 16px;
       }
 
-      .verification-btn-primary,
-      .verification-btn-secondary {
+      .password-reset-btn {
         flex: 1;
-        padding: 12px 24px;
-        border: none;
+        padding: 12px;
         border-radius: 12px;
+        border: none;
         font-weight: 600;
-        font-size: 0.95rem;
         cursor: pointer;
         transition: all var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        font-size: 0.95rem;
       }
 
-      .verification-btn-primary {
+      .password-reset-btn-primary {
         background: var(--grad-brand);
         color: white;
         box-shadow: 0 8px 24px rgba(167, 139, 250, 0.35);
       }
 
-      .verification-btn-primary:hover {
+      .password-reset-btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 12px 28px rgba(167, 139, 250, 0.45);
       }
 
-      .verification-btn-primary:disabled {
+      .password-reset-btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .password-reset-btn-primary:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
       }
 
-      .verification-btn-secondary {
+      .password-reset-btn-secondary {
         background: var(--surface-alt);
         color: var(--text);
         border: 1px solid var(--border-color);
       }
 
-      .verification-btn-secondary:hover {
+      .password-reset-btn-secondary:hover {
         background: var(--surface);
       }
 
-      .verification-success {
-        animation: fadeIn 0.3s ease;
-      }
-
-      .success-animation {
-        font-size: 3rem;
-        color: #10b981;
-        margin-bottom: 16px;
-        animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-
-      .verification-success h3 {
-        font-family: var(--font-display);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0 0 8px 0;
-        color: var(--text);
-      }
-
-      .verification-success p {
-        color: var(--text-soft);
-        margin: 0;
-      }
-
       @media (max-width: 640px) {
-        .verification-pending-card {
-          padding: 32px 24px;
-          border-radius: 20px;
-        }
-
-        .verification-pending-card h2 {
-          font-size: 1.5rem;
-        }
-
-        .verification-actions {
-          flex-direction: column;
-        }
-
-        .envelope-icon {
-          font-size: 3rem;
-        }
-
-        .spinner {
-          width: 100px;
-          height: 100px;
+        .password-reset-modal {
+          width: 95%;
+          padding: 24px;
         }
       }
-
     </style>
   </head>
   <body>
@@ -1126,12 +1047,12 @@
             </p>
           </div>
 
-        <div class="auth-tabs">
-          <button class="auth-tab-btn active" data-tab="login" type="button">Login</button>
-          <button class="auth-tab-btn" data-tab="signup" type="button">Sign Up</button>
-        </div>
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" data-tab="login">Login</button>
+            <button class="auth-tab-btn" data-tab="signup">Sign Up</button>
+          </div>
 
-        <form class="auth-form active" id="loginForm" data-tab="login">
+          <form class="auth-form active" id="loginForm" data-tab="login">
             <div class="form-group">
               <label class="form-label" for="loginEmail">Email</label>
               <input
@@ -1151,7 +1072,6 @@
                 id="loginPassword"
                 class="form-input"
                 placeholder="••••••••"
-                autocomplete="current-password"
                 required
               />
               <div class="form-error" id="loginPasswordError"></div>
@@ -1223,7 +1143,6 @@
                 id="signupPassword"
                 class="form-input"
                 placeholder="••••••••"
-                autocomplete="new-password"
                 required
               />
               <div class="form-error" id="signupPasswordError"></div>
@@ -1238,7 +1157,6 @@
                 id="signupConfirm"
                 class="form-input"
                 placeholder="••••••••"
-                autocomplete="new-password"
                 required
               />
               <div class="form-error" id="signupConfirmError"></div>
@@ -1283,6 +1201,42 @@
             >
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Password Reset Modal -->
+      <div class="password-reset-modal">
+        <div class="password-reset-header">
+          <i class="fa-solid fa-lock"></i>
+          <div class="password-reset-header-text">
+            <h2>Reset Password</h2>
+            <p>Enter your email to receive a reset link</p>
+          </div>
+        </div>
+
+        <div class="password-reset-form">
+          <input
+            type="email"
+            id="passwordResetEmail"
+            class="password-reset-input"
+            placeholder="your@email.com"
+            autocomplete="email"
+          />
+          <div class="password-reset-error" id="passwordResetError"></div>
+          <div class="password-reset-success" id="passwordResetSuccess">
+            <i class="fa-solid fa-check-circle"></i> Check your email for the
+            reset link!
+          </div>
+          <div class="password-reset-buttons">
+            <button class="password-reset-btn password-reset-btn-primary" id="sendResetBtn">
+              <i class="fa-solid fa-paper-plane"></i> Send Reset Link
+            </button>
+            <button class="password-reset-btn password-reset-btn-secondary" id="closeResetBtn">
+              <i class="fa-solid fa-xmark"></i> Close
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Password Reset Modal -->
@@ -1352,87 +1306,15 @@
       </div>
     </div>
 
-    <!-- Verification Pending Screen -->
-    <div id="verificationPendingScreen" class="verification-pending" style="display: none">
-      <div class="bg-mesh" aria-hidden="true"></div>
-      <div class="verification-pending-container">
-        <div class="verification-pending-card">
-          <!-- Loading Animation -->
-          <div class="verification-loading">
-            <div class="envelope-icon">
-              <i class="fa-solid fa-envelope"></i>
-            </div>
-            <div class="spinner"></div>
-          </div>
-
-          <h2>Check Your Email</h2>
-          <p class="verification-email-text">Verification email sent to: <strong id="verificationEmailText">email@example.com</strong></p>
-          
-          <div class="verification-steps">
-            <div class="step">
-              <div class="step-number">1</div>
-              <div class="step-text">
-                <p><strong>Check Inbox</strong></p>
-                <p>Look for an email from PromptVerse</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-number">2</div>
-              <div class="step-text">
-                <p><strong>Check Spam</strong></p>
-                <p>If not found, check your spam/junk folder</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-number">3</div>
-              <div class="step-text">
-                <p><strong>Click Link</strong></p>
-                <p>Click the verification link in the email</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="verification-status">
-            <p id="verificationStatusText">Waiting for email verification...</p>
-          </div>
-
-          <div class="verification-actions">
-            <button id="resendVerificationBtn" class="verification-btn-primary">
-              <i class="fa-solid fa-paper-plane"></i> Resend Email
-            </button>
-            <button id="backToAuthBtn" class="verification-btn-secondary">
-              <i class="fa-solid fa-arrow-left"></i> Back
-            </button>
-          </div>
-
-          <div class="verification-success" id="verificationSuccess" style="display: none">
-            <div class="success-animation">
-              <i class="fa-solid fa-check-circle"></i>
-            </div>
-            <h3>Email Verified!</h3>
-            <p>Redirecting to your dashboard...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <script type="module">
-      console.log("🚀 MODULE SCRIPT STARTING - Importing dependencies");
-      
       import {
         loginWithGoogle,
         loginWithEmail,
         signupWithEmail,
         resendVerificationEmail,
         resetPassword,
-        validateEmailDomain,
-        isEmailVerified,
-        waitForEmailVerification,
-        logoutUser,
       } from "./auth.js";
       import { getFriendlyErrorMessage } from "./user-service.js";
-      
-      console.log("✅ IMPORTS SUCCESSFUL - Creating AuthManager");
 
       class AuthManager {
         constructor() {
@@ -1441,123 +1323,51 @@
         }
 
         init() {
-          console.log("🚀 AuthManager.init() - Starting initialization");
           this.setupTabSwitching();
-          console.log("✅ setupTabSwitching() completed");
           this.setupFormHandlers();
-          console.log("✅ setupFormHandlers() completed");
           this.setupSocialButtons();
-          console.log("✅ setupSocialButtons() completed");
           this.setupPasswordReset();
-          console.log("✅ setupPasswordReset() completed");
-          console.log("🎉 AuthManager fully initialized");
         }
 
         setupTabSwitching() {
-          const tabButtons = document.querySelectorAll(".auth-tab-btn");
-          console.log("Tab setup: Found", tabButtons.length, "buttons");
-
-          // Direct onclick approach - most reliable
-          tabButtons.forEach((btn) => {
-            btn.onclick = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const tab = btn.getAttribute("data-tab");
-              console.log("🔴 Tab clicked:", tab);
-              this.switchTab(tab);
-              return false;
-            };
-          });
-
-          // Also add event listeners for redundancy
-          tabButtons.forEach((btn) => {
+          document.querySelectorAll(".auth-tab-btn").forEach((btn) => {
             btn.addEventListener("click", (e) => {
               e.preventDefault();
-              e.stopPropagation();
-              const tab = btn.getAttribute("data-tab");
-              console.log("📘 Tab clicked (listener):", tab);
+              const tab = btn.dataset.tab;
               this.switchTab(tab);
             });
           });
 
-          // Handle "switch-tab" links (like "Create one" in login form)
-          const switchTabLinks = document.querySelectorAll(".switch-tab");
-          switchTabLinks.forEach((link) => {
-            link.onclick = (e) => {
+          document.querySelectorAll(".switch-tab").forEach((link) => {
+            link.addEventListener("click", (e) => {
               e.preventDefault();
-              const tab = link.getAttribute("data-tab");
-              console.log("📗 Switch link clicked:", tab);
+              const tab = link.dataset.tab;
               this.switchTab(tab);
-              return false;
-            };
+            });
           });
         }
 
         switchTab(tab) {
-          console.log("✅ switchTab() called with tab:", tab);
           this.currentTab = tab;
+          const title = tab === "login" ? "Welcome back" : "Join PromptVerse";
+          document.getElementById("authTitle").textContent = title;
 
-          // Update title
-          const titleElement = document.getElementById("authTitle");
-          if (titleElement) {
-            titleElement.textContent = tab === "login" ? "Welcome back" : "Join PromptVerse";
-            console.log("  Title updated to:", titleElement.textContent);
-          }
-
-          // Update all buttons
-          const tabButtons = document.querySelectorAll(".auth-tab-btn");
-          tabButtons.forEach((btn) => {
-            const btnTab = btn.getAttribute("data-tab");
-            if (btnTab === tab) {
-              btn.classList.add("active");
-              console.log(`  Button "${btnTab}" → ACTIVE`);
-            } else {
-              btn.classList.remove("active");
-              console.log(`  Button "${btnTab}" → inactive`);
-            }
+          document.querySelectorAll(".auth-tab-btn").forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.tab === tab);
           });
 
-          // Update all forms
-          const forms = document.querySelectorAll(".auth-form");
-          console.log("  Total forms:", forms.length);
-          forms.forEach((form) => {
-            const formTab = form.getAttribute("data-tab");
-            if (formTab === tab) {
-              form.classList.add("active");
-              const computed = window.getComputedStyle(form);
-              console.log(`  Form "${formTab}" → ACTIVE (display: ${computed.display})`);
-            } else {
-              form.classList.remove("active");
-              const computed = window.getComputedStyle(form);
-              console.log(`  Form "${formTab}" → hidden (display: ${computed.display})`);
-            }
+          document.querySelectorAll(".auth-form").forEach((form) => {
+            form.classList.toggle("active", form.dataset.tab === tab);
           });
         }
 
         setupFormHandlers() {
-          console.log("📋 Setting up form handlers");
-          const loginForm = document.getElementById("loginForm");
-          const signupForm = document.getElementById("signupForm");
-          
-          if (!loginForm) {
-            console.error("❌ Login form not found!");
-          } else {
-            loginForm.addEventListener("submit", (e) => {
-              console.log("🔴 Login form submit event fired");
-              this.handleLogin(e);
-            });
-            console.log("✅ Login form handler attached");
-          }
-          
-          if (!signupForm) {
-            console.error("❌ Signup form not found!");
-          } else {
-            signupForm.addEventListener("submit", (e) => {
-              console.log("🔴 Signup form submit event fired");
-              this.handleSignup(e);
-            });
-            console.log("✅ Signup form handler attached");
-          }
+          document
+            .getElementById("loginForm")
+            .addEventListener("submit", (e) => this.handleLogin(e));
+          document
+            .getElementById("signupForm")
+            .addEventListener("submit", (e) => this.handleSignup(e));
         }
 
         validateEmail(email) {
@@ -1567,13 +1377,10 @@
 
         async handleLogin(e) {
           e.preventDefault();
-          console.log("📝 Login form submitted");
           this.clearErrors("login");
 
           const email = document.getElementById("loginEmail").value.trim();
           const password = document.getElementById("loginPassword").value;
-
-          console.log("📝 Login attempt:", { email, passwordLength: password.length });
 
           let valid = true;
 
@@ -1598,31 +1405,17 @@
 
           if (valid) {
             try {
-              console.log("✅ Login validation passed, signing in...");
               const firebaseUser = await loginWithEmail(email, password);
-              console.log("✅ Login successful:", firebaseUser.email);
               this.completeLogin(firebaseUser);
             } catch (error) {
-              console.error("❌ Login error:", error.code, error.message);
-              
-              // Show specific message for non-existent account
-              if (error.code === "auth/user-not-found") {
-                this.showError("loginEmailError", "You don't have an account. Please sign up first!");
-                console.log("📌 User not found - showing signup prompt");
-              } else {
-                // Show friendly message for other errors
-                const friendlyMessage = getFriendlyErrorMessage(error);
-                this.showError("loginPasswordError", friendlyMessage);
-              }
+              const friendlyMessage = getFriendlyErrorMessage(error);
+              this.showError("loginPasswordError", friendlyMessage);
             }
-          } else {
-            console.log("❌ Login validation failed");
           }
         }
 
         async handleSignup(e) {
           e.preventDefault();
-          console.log("📝 Signup form submitted");
           this.clearErrors("signup");
 
           const username = document
@@ -1632,8 +1425,6 @@
           const password = document.getElementById("signupPassword").value;
           const confirm = document.getElementById("signupConfirm").value;
           const termsAccept = document.getElementById("termsAccept").checked;
-
-          console.log("📝 Form data:", { username, email, passwordLength: password.length, confirm, termsAccept });
 
           let valid = true;
 
@@ -1653,13 +1444,6 @@
             valid = false;
           } else if (!this.validateEmail(email)) {
             this.showError("signupEmailError", "Invalid email address");
-            valid = false;
-          } else if (!validateEmailDomain(email)) {
-            console.warn("❌ Invalid email domain:", email);
-            this.showError(
-              "signupEmailError",
-              "Please use a valid email domain (temporary/fake emails not allowed)",
-            );
             valid = false;
           }
 
@@ -1687,26 +1471,23 @@
             valid = false;
           }
 
-          console.log("📝 Validation result:", valid);
-
           if (valid) {
             try {
-              console.log("✅ All validations passed, creating account...");
               const firebaseUser = await signupWithEmail(
                 email,
                 password,
                 username,
               );
-              console.log("✅ Account created, showing verification pending screen");
-              // Show verification pending screen and wait for email verification
-              await this.showVerificationPending(firebaseUser, email);
+              // Show verification notice before redirecting
+              this.showVerificationNotice();
+              // Redirect after 3 seconds
+              setTimeout(() => {
+                this.completeLogin(firebaseUser);
+              }, 3000);
             } catch (error) {
-              console.error("❌ Signup error:", error);
               const friendlyMessage = getFriendlyErrorMessage(error);
               this.showError("signupEmailError", friendlyMessage);
             }
-          } else {
-            console.log("❌ Validation failed, errors shown on form");
           }
         }
 
@@ -1727,73 +1508,6 @@
           }
 
           window.location.href = next;
-        }
-
-        async showVerificationPending(firebaseUser, email) {
-          // Show verification pending screen and wait for email verification
-          const screen = document.getElementById("verificationPendingScreen");
-          const emailText = document.getElementById("verificationEmailText");
-          const resendBtn = document.getElementById("resendVerificationBtn");
-          const backBtn = document.getElementById("backToAuthBtn");
-          const statusText = document.getElementById("verificationStatusText");
-          const successDiv = document.getElementById("verificationSuccess");
-          const authContainer = document.querySelector(".auth-container");
-
-          // Hide auth container
-          if (authContainer) authContainer.style.display = "none";
-
-          // Show verification pending screen
-          emailText.textContent = email;
-          screen.style.display = "flex";
-
-          // Resend button handler
-          resendBtn.addEventListener("click", async () => {
-            try {
-              resendBtn.disabled = true;
-              resendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Sending...';
-              await resendVerificationEmail();
-              resendBtn.innerHTML = '<i class="fa-solid fa-check"></i> Email Sent!';
-              statusText.textContent = "Verification email resent! Check your inbox or spam folder.";
-              setTimeout(() => {
-                resendBtn.disabled = false;
-                resendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Resend Email';
-              }, 3000);
-            } catch (error) {
-              resendBtn.disabled = false;
-              resendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Resend Email';
-              statusText.textContent = "Error resending email. Please try again.";
-              statusText.style.color = "#dc2626";
-            }
-          });
-
-          // Back button handler
-          backBtn.addEventListener("click", () => {
-            screen.style.display = "none";
-            if (authContainer) authContainer.style.display = "flex";
-            // Switch to login tab
-            const loginTab = document.querySelector('[data-tab="login"]');
-            if (loginTab) loginTab.click();
-          });
-
-          // Wait for email verification (max 5 minutes)
-          const verified = await waitForEmailVerification(5 * 60 * 1000);
-
-          if (verified) {
-            // Show success message
-            document.querySelector(".verification-actions").style.display = "none";
-            statusText.style.display = "none";
-            successDiv.style.display = "block";
-
-            // Redirect after 2 seconds
-            setTimeout(() => {
-              this.completeLogin(firebaseUser);
-            }, 2000);
-          } else {
-            // Timeout - show error message
-            statusText.textContent = "Verification timeout. Please check your email or try again.";
-            statusText.style.color = "#dc2626";
-            resendBtn.style.display = "block";
-          }
         }
 
         showVerificationNotice() {
@@ -1830,56 +1544,19 @@
         }
 
         setupSocialButtons() {
-          // Ensure tabs work first
-          const tabButtons = document.querySelectorAll(".auth-tab-btn");
-          if (tabButtons.length === 0) {
-            console.error("No tab buttons found!");
-            return;
-          }
-
           const googleLoginBtn = document.getElementById("googleLoginBtn");
           const googleSignupBtn = document.getElementById("googleSignupBtn");
 
           if (googleLoginBtn) {
             googleLoginBtn.addEventListener("click", async (e) => {
               e.preventDefault();
-              console.log("🔵 Google Login button clicked");
+              console.log("Google Login button clicked");
               try {
                 const firebaseUser = await loginWithGoogle();
-                console.log("✅ Google auth successful:", firebaseUser.email);
-                
-                // Check if this is a first-time Google user
-                const isFirstTimeUser = this.isFirstTimeGoogleUser(firebaseUser);
-                
-                if (isFirstTimeUser) {
-                  console.log("📌 First-time Google user - redirecting to signup");
-                  this.showError("loginPasswordError", 
-                    "This is your first time! Please complete signup to create your account.");
-                  
-                  // Switch to signup tab
-                  this.switchTab("signup");
-                  
-                  // Pre-fill the signup form with Google email
-                  setTimeout(() => {
-                    const emailField = document.getElementById("signupEmail");
-                    if (emailField) {
-                      emailField.value = firebaseUser.email;
-                    }
-                  }, 300);
-                  
-                  // Logout the temporary account
-                  try {
-                    await logoutUser();
-                  } catch (err) {
-                    console.warn("Could not sign out:", err);
-                  }
-                } else {
-                  // Existing Google user - proceed with login
-                  console.log("✅ Existing Google user - proceeding with login");
-                  this.completeLogin(firebaseUser);
-                }
+                console.log("Google login successful:", firebaseUser.email);
+                this.completeLogin(firebaseUser);
               } catch (error) {
-                console.error("❌ Google login error:", error);
+                console.error("Google login error:", error);
                 const friendlyMessage = getFriendlyErrorMessage(error);
                 this.showError("loginPasswordError", friendlyMessage);
               }
@@ -1891,17 +1568,10 @@
           if (googleSignupBtn) {
             googleSignupBtn.addEventListener("click", async (e) => {
               e.preventDefault();
-              console.log("🟢 Google Signup button clicked");
+              console.log("Google Signup button clicked");
               try {
                 const firebaseUser = await loginWithGoogle();
-                console.log("✅ Google signup successful:", firebaseUser.email);
-                
-                // Pre-fill email field
-                const emailField = document.getElementById("signupEmail");
-                if (emailField && !emailField.value) {
-                  emailField.value = firebaseUser.email;
-                }
-                
+                console.log("Google signup successful:", firebaseUser.email);
                 // Show verification notice (Google accounts may be auto-verified)
                 if (!firebaseUser.emailVerified) {
                   this.showVerificationNotice();
@@ -1910,7 +1580,7 @@
                   this.completeLogin(firebaseUser);
                 }, firebaseUser.emailVerified ? 0 : 2000);
               } catch (error) {
-                console.error("❌ Google signup error:", error);
+                console.error("Google signup error:", error);
                 const friendlyMessage = getFriendlyErrorMessage(error);
                 this.showError("signupEmailError", friendlyMessage);
               }
@@ -1918,30 +1588,6 @@
           } else {
             console.warn("googleSignupBtn not found in DOM");
           }
-        }
-        
-        // Helper function to detect first-time Google users
-        isFirstTimeGoogleUser(firebaseUser) {
-          if (!firebaseUser || !firebaseUser.metadata) {
-            return false;
-          }
-          
-          const creationTime = new Date(firebaseUser.metadata.creationTime).getTime();
-          const lastSignInTime = new Date(firebaseUser.metadata.lastSignInTime).getTime();
-          
-          // If creation time and last sign in time are very close (within 5 seconds),
-          // it's a first-time user
-          const timeDiff = Math.abs(lastSignInTime - creationTime);
-          const isFirstTime = timeDiff < 5000; // 5 seconds
-          
-          console.log("🔍 User metadata:", {
-            created: new Date(creationTime),
-            lastSignIn: new Date(lastSignInTime),
-            timeDiffMs: timeDiff,
-            isFirstTime
-          });
-          
-          return isFirstTime;
         }
 
         setupPasswordReset() {
@@ -2100,173 +1746,6 @@
       }
 
       const authManager = new AuthManager();
-      window.authManager = authManager; // Make globally accessible for debugging
-      
-      console.log("🎉 AuthManager created and assigned to window.authManager");
-      console.log("authManager.handleLogin type:", typeof authManager.handleLogin);
-      console.log("authManager.handleSignup type:", typeof authManager.handleSignup);
-
-      // Ensure CSS is applied for form visibility
-      const style = document.createElement("style");
-      style.textContent = `
-        .auth-form {
-          display: none !important;
-        }
-        .auth-form.active {
-          display: block !important;
-        }
-      `;
-      document.head.appendChild(style);
-
-      // ============================================
-      // ATTACH FORM HANDLERS (after AuthManager exists)
-      // ============================================
-      
-      const loginForm = document.getElementById("loginForm");
-      const signupForm = document.getElementById("signupForm");
-      
-      if (loginForm && signupForm) {
-        console.log("📋 Attaching form handlers in module scope");
-        
-        // Login form submission
-        loginForm.addEventListener("submit", function(e) {
-          console.log("🔴 LOGIN FORM SUBMIT EVENT FIRED");
-          e.preventDefault();
-          e.stopPropagation();
-          
-          console.log("✅ Calling authManager.handleLogin()");
-          authManager.handleLogin(e).catch(err => {
-            console.error("❌ handleLogin error:", err);
-          });
-          return false;
-        }, true);
-        console.log("✅ Login form handler attached (module scope)");
-        
-        // Signup form submission  
-        signupForm.addEventListener("submit", function(e) {
-          console.log("🟢 SIGNUP FORM SUBMIT EVENT FIRED");
-          e.preventDefault();
-          e.stopPropagation();
-          
-          console.log("✅ Calling authManager.handleSignup()");
-          authManager.handleSignup(e).catch(err => {
-            console.error("❌ handleSignup error:", err);
-          });
-          return false;
-        }, true);
-        console.log("✅ Signup form handler attached (module scope)");
-      } else {
-        console.error("❌ Could not find form elements in module scope!");
-        console.log("loginForm:", loginForm ? "found" : "NOT FOUND");
-        console.log("signupForm:", signupForm ? "found" : "NOT FOUND");
-      }
-
-      // Debug logging
-      console.log("✅ Module script complete - all initialized");
-      console.log("AuthManager initialized");
-      console.log("Tab buttons:", document.querySelectorAll(".auth-tab-btn").length);
-      console.log("Forms:", document.querySelectorAll(".auth-form").length);
-    </script>
-
-    <!-- Non-module script for direct tab handling (simpler, more reliable) -->
-    <script>
-      console.log("⚡ Running direct tab setup script");
-      
-      // ============================================
-      // TAB SWITCHING
-      // ============================================
-      function switchTab(tab) {
-        console.log("✨ Direct switchTab called:", tab);
-        
-        const buttons = document.querySelectorAll(".auth-tab-btn");
-        const forms = document.querySelectorAll(".auth-form");
-        
-        // Update title
-        const titleEl = document.getElementById("authTitle");
-        if (titleEl) {
-          titleEl.textContent = tab === "login" ? "Welcome back" : "Join PromptVerse";
-        }
-        
-        // Update buttons and forms
-        buttons.forEach(btn => {
-          const btnTab = btn.getAttribute("data-tab");
-          if (btnTab === tab) {
-            btn.classList.add("active");
-          } else {
-            btn.classList.remove("active");
-          }
-        });
-        
-        forms.forEach(form => {
-          const formTab = form.getAttribute("data-tab");
-          if (formTab === tab) {
-            form.classList.add("active");
-          } else {
-            form.classList.remove("active");
-          }
-        });
-        
-        // Clear all form errors when switching tabs
-        clearAllErrors();
-        
-        // Clear form fields when switching tabs (so old data doesn't persist)
-        const loginForm = document.getElementById("loginForm");
-        const signupForm = document.getElementById("signupForm");
-        if (loginForm) {
-          loginForm.reset();
-          console.log("🧹 Login form cleared");
-        }
-        if (signupForm) {
-          signupForm.reset();
-          console.log("🧹 Signup form cleared");
-        }
-        
-        console.log("✨ Tab switched to:", tab);
-      }
-      
-      function clearAllErrors() {
-        console.log("🧹 Clearing all form errors");
-        const errorElements = document.querySelectorAll(".form-error");
-        errorElements.forEach(el => {
-          el.classList.remove("show");
-          el.textContent = "";
-        });
-      }
-      
-      // Attach click handlers to tab buttons
-      const tabButtons = document.querySelectorAll(".auth-tab-btn");
-      console.log("⚡ Found", tabButtons.length, "tab buttons");
-      
-      tabButtons.forEach((btn, index) => {
-        const tab = btn.getAttribute("data-tab");
-        console.log(`  Button ${index}: data-tab="${tab}"`);
-        
-        btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log("🔵 Tab button clicked:", tab);
-          switchTab(tab);
-          return false;
-        });
-      });
-      
-      // Attach click handlers to switch-tab links
-      const switchLinks = document.querySelectorAll(".switch-tab");
-      console.log("⚡ Found", switchLinks.length, "switch-tab links");
-      
-      switchLinks.forEach(link => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const tab = link.getAttribute("data-tab");
-          console.log("🟡 Switch link clicked:", tab);
-          switchTab(tab);
-          return false;
-        });
-      });
-      
-      console.log("⚡ Direct tab setup complete");
-      window.switchTab = switchTab; // Make globally accessible
-      window.clearAllErrors = clearAllErrors;
     </script>
   </body>
 </html>
