@@ -78,6 +78,101 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   let PROMPTS = [];
 
   /* ---------------------------------------------------------
+     2B. SEARCH INDEX: Firebase-powered tokenized search
+  --------------------------------------------------------- */
+  // Map of promptId -> array of searchable words (lowercase)
+  // Built once after prompts load, used for fast filtering
+  const searchIndex = new Map();
+
+  /**
+   * Build search index from all prompts
+   * Extracts and normalizes all searchable terms:
+   * - Title words
+   * - Category name words
+   * - All individual tags
+   *
+   * Called after loading prompts from Firebase
+   * Enables fast, tokenized searching without re-parsing
+   */
+  function buildSearchIndex() {
+    searchIndex.clear();
+
+    PROMPTS.forEach((prompt) => {
+      const words = new Set();
+
+      // Extract title words
+      if (prompt.title) {
+        prompt.title
+          .toLowerCase()
+          .split(/\s+/)
+          .forEach((word) => {
+            if (word.trim()) words.add(word.trim());
+          });
+      }
+
+      // Extract category name words
+      if (prompt.category && catNameById[prompt.category]) {
+        catNameById[prompt.category]
+          .toLowerCase()
+          .split(/\s+/)
+          .forEach((word) => {
+            if (word.trim()) words.add(word.trim());
+          });
+      }
+
+      // Extract individual tags (stored as array in Firebase)
+      if (Array.isArray(prompt.tags) && prompt.tags.length > 0) {
+        prompt.tags.forEach((tag) => {
+          if (tag && typeof tag === "string") {
+            tag
+              .toLowerCase()
+              .split(/[\s,]+/) // Split by space or comma
+              .forEach((word) => {
+                if (word.trim()) words.add(word.trim());
+              });
+          }
+        });
+      }
+
+      // Store normalized words for this prompt
+      searchIndex.set(prompt.id, Array.from(words));
+    });
+
+    console.log("🔍 Search index built:", searchIndex.size, "prompts indexed");
+  }
+
+  /**
+   * Check if a prompt matches the search terms
+   * Supports:
+   * - Partial word matching (e.g., "cut" matches "cute")
+   * - Multi-word search (e.g., "cute couple" checks all words)
+   * - Case-insensitive matching
+   *
+   * @param {Object} prompt - The prompt to check
+   * @param {string} searchTerm - User's search input
+   * @returns {boolean} True if prompt matches search terms
+   */
+  function searchMatches(prompt, searchTerm) {
+    if (!searchTerm || !searchTerm.trim()) return true;
+
+    const searchWords = searchTerm
+      .toLowerCase()
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
+
+    if (searchWords.length === 0) return true;
+
+    const promptWords = searchIndex.get(prompt.id) || [];
+
+    // For multi-word search: at least one word should match
+    // This provides breadth of matching for user friendliness
+    return searchWords.some((searchWord) =>
+      promptWords.some((promptWord) => promptWord.startsWith(searchWord)),
+    );
+  }
+
+  /* ---------------------------------------------------------
      3. STATE
   --------------------------------------------------------- */
   const state = {
@@ -333,16 +428,19 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     }
   }
 
+  /**
+   * Get filtered prompts based on active category and search term
+   * Uses Firebase-powered tokenized search index for fast matching
+   * Supports:
+   * - Partial word matching across title, category, and tags
+   * - Multi-word search (at least one word must match)
+   * - Case-insensitive matching
+   */
   function getFilteredPrompts() {
     return PROMPTS.filter((p) => {
       const matchesCategory =
         !state.activeCategory || p.category === state.activeCategory;
-      const term = state.searchTerm.trim().toLowerCase();
-      const matchesSearch =
-        !term ||
-        p.title.toLowerCase().includes(term) ||
-        p.prompt.toLowerCase().includes(term) ||
-        catNameById[p.category].toLowerCase().includes(term);
+      const matchesSearch = searchMatches(p, state.searchTerm);
       return matchesCategory && matchesSearch;
     });
   }
@@ -649,7 +747,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   /* ---------------------------------------------------------
-     8. SEARCH
+     8. SEARCH — Firebase-powered with real-time filtering
   --------------------------------------------------------- */
   function setSearch(value) {
     state.searchTerm = value;
@@ -661,6 +759,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
         .scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // Form submit handler - search only on Enter or Explore click
   $("#heroSearchForm").addEventListener("submit", (e) => {
     e.preventDefault();
     setSearch($("#heroSearchInput").value);
@@ -860,10 +959,11 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
           firestorePrompts.push({
             id: data.id || doc.id,
-            category: data.category || "uncategorized",
+            category: (data.category || "uncategorized").toLowerCase(), // Normalize to lowercase for category filtering
             title: data.title,
             img: data.image || "",
             prompt: data.prompt,
+            tags: Array.isArray(data.tags) ? data.tags : [], // Include tags from Firebase
             bookmarks: data.bookmarks || 0,
             date: data.dateAdded
               ? new Date(data.dateAdded).toISOString().split("T")[0]
@@ -897,6 +997,10 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   async function init() {
     // Load prompts from Firestore first - critical for data sync
     await loadPromptsFromFirestore();
+
+    // Build search index after loading prompts
+    // Enables fast Firebase-powered search with title, category, and tags
+    buildSearchIndex();
 
     // restore dark mode
     const savedDark = localStorage.getItem("pv_dark") === "1";
