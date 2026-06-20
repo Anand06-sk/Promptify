@@ -562,25 +562,8 @@
             });
           }
         } else {
-          statusContainer.innerHTML = `
-          <div style="
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: 1px solid #6ee7b7;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #065f46;
-          ">
-            <i class="fa-solid fa-check-circle" style="font-size: 1.2rem;"></i>
-            <div>
-              <p style="font-weight: 600; margin: 0;">Email Verified</p>
-              <p style="font-size: 0.9rem; margin: 4px 0 0 0;">Your account is fully verified</p>
-            </div>
-          </div>
-        `;
+          // If verified, hide the verification status container
+          statusContainer.hidden = true;
         }
       }
 
