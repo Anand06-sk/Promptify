@@ -12,14 +12,6 @@ import {
   listenToUserLikeStatus,
 } from "./firestore-service.js";
 
-import {
-  addBookmark,
-  removeBookmark,
-  isPromptBookmarked,
-  getUserBookmarks,
-  getBookmarkCount,
-} from "./user-service.js";
-
 import { auth } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
@@ -31,16 +23,12 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
   // Monitor auth state changes
   let currentUser = null;
-  onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, (user) => {
     currentUser = user;
     console.log(
       "Auth state changed:",
-      currentUser ? "Logged in as " + currentUser.email : "Logged out",
+      currentUser ? "Logged in" : "Logged out",
     );
-    // Load bookmarks from Firebase when user logs in/out
-    await loadUserBookmarks();
-    // Update UI when auth state changes
-    updateAuthUI();
   });
 
   /* ---------------------------------------------------------
@@ -78,127 +66,20 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   let PROMPTS = [];
 
   /* ---------------------------------------------------------
-     2B. SEARCH INDEX: Firebase-powered tokenized search
-  --------------------------------------------------------- */
-  // Map of promptId -> array of searchable words (lowercase)
-  // Built once after prompts load, used for fast filtering
-  const searchIndex = new Map();
-
-  /**
-   * Build search index from all prompts
-   * Extracts and normalizes all searchable terms:
-   * - Title words
-   * - Category name words
-   * - All individual tags
-   *
-   * Called after loading prompts from Firebase
-   * Enables fast, tokenized searching without re-parsing
-   */
-  function buildSearchIndex() {
-    searchIndex.clear();
-
-    PROMPTS.forEach((prompt) => {
-      const words = new Set();
-
-      // Extract title words
-      if (prompt.title) {
-        prompt.title
-          .toLowerCase()
-          .split(/\s+/)
-          .forEach((word) => {
-            if (word.trim()) words.add(word.trim());
-          });
-      }
-
-      // Extract category name words
-      if (prompt.category && catNameById[prompt.category]) {
-        catNameById[prompt.category]
-          .toLowerCase()
-          .split(/\s+/)
-          .forEach((word) => {
-            if (word.trim()) words.add(word.trim());
-          });
-      }
-
-      // Extract individual tags (stored as array in Firebase)
-      if (Array.isArray(prompt.tags) && prompt.tags.length > 0) {
-        prompt.tags.forEach((tag) => {
-          if (tag && typeof tag === "string") {
-            tag
-              .toLowerCase()
-              .split(/[\s,]+/) // Split by space or comma
-              .forEach((word) => {
-                if (word.trim()) words.add(word.trim());
-              });
-          }
-        });
-      }
-
-      // Store normalized words for this prompt
-      searchIndex.set(prompt.id, Array.from(words));
-    });
-
-    console.log("🔍 Search index built:", searchIndex.size, "prompts indexed");
-  }
-
-  /**
-   * Check if a prompt matches the search terms
-   * Supports:
-   * - Partial word matching (e.g., "cut" matches "cute")
-   * - Multi-word search (e.g., "cute couple" checks all words)
-   * - Case-insensitive matching
-   *
-   * @param {Object} prompt - The prompt to check
-   * @param {string} searchTerm - User's search input
-   * @returns {boolean} True if prompt matches search terms
-   */
-  function searchMatches(prompt, searchTerm) {
-    if (!searchTerm || !searchTerm.trim()) return true;
-
-    const searchWords = searchTerm
-      .toLowerCase()
-      .trim()
-      .split(/\s+/)
-      .filter((w) => w.length > 0);
-
-    if (searchWords.length === 0) return true;
-
-    const promptWords = searchIndex.get(prompt.id) || [];
-
-    // For multi-word search: at least one word should match
-    // This provides breadth of matching for user friendliness
-    return searchWords.some((searchWord) =>
-      promptWords.some((promptWord) => promptWord.startsWith(searchWord)),
-    );
-  }
-
-  /* ---------------------------------------------------------
      3. STATE
   --------------------------------------------------------- */
   const state = {
     activeCategory: null,
     searchTerm: "",
-    bookmarks: new Set(), // Will be populated from Firebase
+    bookmarks: new Set(
+      JSON.parse(localStorage.getItem("pv_bookmarks") || "[]"),
+    ),
   };
 
-  // Load user's bookmarks from Firebase
-  async function loadUserBookmarks() {
-    if (!currentUser) {
-      state.bookmarks.clear();
-      updateBookmarkCount();
-      return;
-    }
-
-    try {
-      const userBookmarks = await getUserBookmarks();
-      state.bookmarks = new Set(userBookmarks.map((b) => b.promptId || b.id));
-      console.log("📚 Loaded", state.bookmarks.size, "bookmarks from Firebase");
-      updateBookmarkCount();
-    } catch (error) {
-      console.error("Error loading bookmarks:", error);
-      state.bookmarks.clear();
-    }
-  }
+  const saveBookmarks = () => {
+    localStorage.setItem("pv_bookmarks", JSON.stringify([...state.bookmarks]));
+    updateBookmarkCount();
+  };
 
   /* ---------------------------------------------------------
      4. DOM REFS
@@ -210,7 +91,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
      AUTH HELPERS
   --------------------------------------------------------- */
   function isLoggedIn() {
-    return !!currentUser;
+    return !!localStorage.getItem("pv_user");
   }
 
   function redirectToAuth(next = "/", action = "", id = "") {
@@ -246,15 +127,11 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
   async function createPromptCard(p) {
     // VALIDATE: Skip incomplete prompts - no fake/untitled cards
-    if (
-      !p ||
-      !p.title ||
-      !p.title.trim() ||
-      !p.prompt ||
-      !p.prompt.trim() ||
-      !p.id
-    ) {
-      console.warn("[Card Validation] Skipping incomplete prompt:", p);
+    if (!p || !p.title || !p.title.trim() || !p.prompt || !p.prompt.trim() || !p.id) {
+      console.warn(
+        "[Card Validation] Skipping incomplete prompt:",
+        p,
+      );
       return null;
     }
 
@@ -319,7 +196,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
     // Save button
     const saveBtn = card.querySelector(".card-save-btn");
-    saveBtn.addEventListener("click", async (e) => {
+    saveBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!isLoggedIn()) {
         // redirect to auth page and request bookmark after login
@@ -332,18 +209,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
         );
         return;
       }
-
-      // Pass prompt data when toggling bookmark
-      const promptData = {
-        promptId: p.id,
-        title: p.title,
-        category: p.category,
-        image: p.img,
-        prompt: p.prompt,
-        date: p.date,
-      };
-
-      await toggleBookmark(p.id, promptData);
+      toggleBookmark(p.id);
       saveBtn.classList.toggle("saved", state.bookmarks.has(p.id));
     });
 
@@ -428,41 +294,29 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     }
   }
 
-  /**
-   * Get filtered prompts based on active category and search term
-   * Uses Firebase-powered tokenized search index for fast matching
-   * Supports:
-   * - Partial word matching across title, category, and tags
-   * - Multi-word search (at least one word must match)
-   * - Case-insensitive matching
-   */
   function getFilteredPrompts() {
     return PROMPTS.filter((p) => {
       const matchesCategory =
         !state.activeCategory || p.category === state.activeCategory;
-      const matchesSearch = searchMatches(p, state.searchTerm);
+      const term = state.searchTerm.trim().toLowerCase();
+      const matchesSearch =
+        !term ||
+        p.title.toLowerCase().includes(term) ||
+        p.prompt.toLowerCase().includes(term) ||
+        catNameById[p.category].toLowerCase().includes(term);
       return matchesCategory && matchesSearch;
     });
   }
 
   function renderTrending() {
-    // Filter by active category and search term, then sort by engagement
     const filtered = getFilteredPrompts();
-    const trending = [...filtered]
-      .sort((a, b) => {
-        const scoreA = (a.views || 0) + (a.likes || 0) + (a.bookmarks || 0);
-        const scoreB = (b.views || 0) + (b.likes || 0) + (b.bookmarks || 0);
-        return scoreB - scoreA;
-      })
-      .slice(0, 10);
-
     trendingGrid.innerHTML = "";
-    if (trending.length === 0) {
+    if (filtered.length === 0) {
       emptyState.hidden = false;
     } else {
       emptyState.hidden = true;
       // Create cards asynchronously
-      Promise.all(trending.map((p) => createPromptCard(p)))
+      Promise.all(filtered.map((p) => createPromptCard(p)))
         .then((cards) =>
           cards
             .filter((card) => card !== null) // Skip incomplete prompts that returned null
@@ -471,48 +325,39 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
         .catch((err) => console.error("Error rendering trending cards:", err));
     }
 
-    // Display filter info
+    // active filter bar
     if (state.activeCategory || state.searchTerm) {
       activeFilterBar.hidden = false;
       const parts = [];
       if (state.activeCategory) parts.push(catNameById[state.activeCategory]);
-      if (state.searchTerm) parts.push(`"${state.searchTerm}"`);
-      activeFilterText.textContent = "Showing: " + parts.join(" + ");
+      if (state.searchTerm) parts.push(`“${state.searchTerm}”`);
+      activeFilterText.textContent = `Showing: ${parts.join(" + ")}`;
     } else {
-      activeFilterBar.hidden = false;
-      activeFilterText.textContent = "Showing: Trending Prompts by Engagement";
+      activeFilterBar.hidden = true;
     }
   }
 
   function renderBookmarkedRow() {
-    // Filter by active category and search term, then sort by bookmarks
-    const filtered = getFilteredPrompts();
-    const top = [...filtered]
+    const top = [...PROMPTS]
       .sort((a, b) => b.bookmarks - a.bookmarks)
       .slice(0, 10);
     bookmarkedRow.innerHTML = "";
     Promise.all(top.map((p) => createPromptCard(p)))
-      .then((cards) =>
-        cards
-          .filter((card) => card !== null) // Skip incomplete prompts that returned null
-          .forEach((card) => bookmarkedRow.appendChild(card)),
-      )
+      .then((cards) => cards
+        .filter((card) => card !== null) // Skip incomplete prompts that returned null
+        .forEach((card) => bookmarkedRow.appendChild(card)))
       .catch((err) => console.error("Error rendering bookmarked cards:", err));
   }
 
   function renderLatestRow() {
-    // Filter by active category and search term, then sort by date
-    const filtered = getFilteredPrompts();
-    const latest = [...filtered]
+    const latest = [...PROMPTS]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 10);
     latestRow.innerHTML = "";
     Promise.all(latest.map((p) => createPromptCard(p)))
-      .then((cards) =>
-        cards
-          .filter((card) => card !== null) // Skip incomplete prompts that returned null
-          .forEach((card) => latestRow.appendChild(card)),
-      )
+      .then((cards) => cards
+        .filter((card) => card !== null) // Skip incomplete prompts that returned null
+        .forEach((card) => latestRow.appendChild(card)))
       .catch((err) => console.error("Error rendering latest cards:", err));
   }
 
@@ -567,7 +412,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   function setCategory(id) {
     state.activeCategory = state.activeCategory === id ? null : id;
     renderCategories();
-    renderAllCardSections();
+    renderTrending();
     document
       .getElementById("trending")
       .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -577,38 +422,24 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     bookmarkCountEl.textContent = state.bookmarks.size;
   }
 
-  async function toggleBookmark(id, promptData = {}) {
-    if (!currentUser) {
-      redirectToAuth("/index.html");
-      return;
+  function toggleBookmark(id) {
+    if (state.bookmarks.has(id)) {
+      state.bookmarks.delete(id);
+      showToast("Removed from bookmarks", "fa-solid fa-bookmark-slash");
+    } else {
+      state.bookmarks.add(id);
+      showToast("Saved to bookmarks", "fa-solid fa-bookmark");
     }
-
-    try {
-      if (state.bookmarks.has(id)) {
-        // Remove bookmark
-        await removeBookmark(id);
-        state.bookmarks.delete(id);
-        showToast("Removed from bookmarks", "fa-solid fa-bookmark-slash");
-      } else {
-        // Add bookmark
-        await addBookmark(id, promptData);
-        state.bookmarks.add(id);
-        showToast("Saved to bookmarks", "fa-solid fa-bookmark");
-      }
-
-      // Refresh all rendered cards' bookmark state
-      $$(".card-save-btn").forEach((btn) => {
-        const bid = btn.dataset.id;
-        const saved = state.bookmarks.has(bid);
-        btn.classList.toggle("saved", saved);
-        btn.querySelector("i").className =
-          `fa-${saved ? "solid" : "regular"} fa-bookmark`;
-      });
-      if (currentModalId === id) syncModalBookmarkButton(id);
-    } catch (error) {
-      console.error("Error toggling bookmark:", error);
-      showToast("Error updating bookmark", "fa-solid fa-exclamation-circle");
-    }
+    saveBookmarks();
+    // refresh all rendered cards' bookmark state
+    $$(".card-save-btn").forEach((btn) => {
+      const bid = btn.dataset.id;
+      const saved = state.bookmarks.has(bid);
+      btn.classList.toggle("saved", saved);
+      btn.querySelector("i").className =
+        `fa-${saved ? "solid" : "regular"} fa-bookmark`;
+    });
+    if (currentModalId === id) syncModalBookmarkButton(id);
   }
 
   /* ---------------------------------------------------------
@@ -693,23 +524,8 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     }
   });
 
-  $("#modalBookmarkBtn").addEventListener("click", async () => {
-    if (!currentModalId) return;
-    const p = PROMPTS.find((x) => x.id === currentModalId);
-    if (!p) return;
-
-    // Pass prompt data when toggling bookmark
-    const promptData = {
-      promptId: p.id,
-      title: p.title,
-      category: p.category,
-      image: p.img,
-      prompt: p.prompt,
-      date: p.date,
-    };
-
-    await toggleBookmark(currentModalId, promptData);
-    syncModalBookmarkButton(currentModalId);
+  $("#modalBookmarkBtn").addEventListener("click", () => {
+    if (currentModalId) toggleBookmark(currentModalId);
   });
 
   // Modal like button handler
@@ -761,19 +577,18 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   /* ---------------------------------------------------------
-     8. SEARCH — Firebase-powered with real-time filtering
+     8. SEARCH
   --------------------------------------------------------- */
   function setSearch(value) {
     state.searchTerm = value;
     $("#heroSearchInput").value = value;
-    renderAllCardSections();
+    renderTrending();
     if (value)
       document
         .getElementById("trending")
         .scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  // Form submit handler - search only on Enter or Explore click
   $("#heroSearchForm").addEventListener("submit", (e) => {
     e.preventDefault();
     setSearch($("#heroSearchInput").value);
@@ -792,7 +607,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     state.searchTerm = "";
     $("#heroSearchInput").value = "";
     renderCategories();
-    renderAllCardSections();
+    renderTrending();
   });
 
   /* ---------------------------------------------------------
@@ -853,8 +668,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
      12. AUTH UI: Navbar visibility based on login state
   --------------------------------------------------------- */
   function updateAuthUI() {
-    // Use Firebase currentUser instead of localStorage
-    const loggedIn = !!currentUser;
+    const loggedIn = isLoggedIn();
     const loginBtn = $("#loginBtn");
     const profileMenuWrapper = $("#profileMenuWrapper");
     const navBookmarkBtn = $("#navBookmarkBtn");
@@ -864,8 +678,10 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
       profileMenuWrapper.style.display = "flex";
       navBookmarkBtn.style.display = "flex";
 
-      // Display Firebase user data (already set by index.html's auth listener)
-      // No need to override - let index.html handle profile info
+      // Load user data
+      const user = JSON.parse(localStorage.getItem("pv_user"));
+      $("#profileUsername").textContent = user.username || "User";
+      $("#profileEmail").textContent = user.email || "";
     } else {
       loginBtn.style.display = "inline-flex";
       profileMenuWrapper.style.display = "none";
@@ -877,14 +693,15 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   const profileMenuBtn = $("#profileMenuBtn");
   const profileDropdown = $("#profileDropdown");
 
-  if (profileMenuBtn && profileDropdown) {
-    // Navigate to profile.html when profile button is clicked
-    profileMenuBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      window.location.href = "profile.html";
-    });
-  }
+  profileMenuBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isHidden = profileDropdown.hasAttribute("hidden");
+    if (isHidden) {
+      profileDropdown.removeAttribute("hidden");
+    } else {
+      profileDropdown.setAttribute("hidden", "");
+    }
+  });
 
   // Close profile menu on click outside
   document.addEventListener("click", (e) => {
@@ -893,8 +710,15 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     }
   });
 
-  // Logout is now handled in index.html with Firebase authentication
-  // No need for manual localStorage cleanup
+  // Handle logout
+  const logoutBtn = $("#logoutBtn");
+  logoutBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem("pv_user");
+    localStorage.removeItem("pv_auth_token");
+    updateAuthUI();
+    showToast("Logged out successfully", "fa-solid fa-sign-out-alt");
+  });
 
   // Handle "My Bookmarks" link
   const myBookmarksLink = $("#myBookmarksLink");
@@ -959,7 +783,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
         const firestorePrompts = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
-
+          
           // ONLY load complete prompts with required fields
           // Skip any incomplete documents
           if (!data.title || !data.prompt) {
@@ -973,14 +797,11 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
           firestorePrompts.push({
             id: data.id || doc.id,
-            category: (data.category || "uncategorized").toLowerCase(), // Normalize to lowercase for category filtering
+            category: data.category || "uncategorized",
             title: data.title,
             img: data.image || "",
             prompt: data.prompt,
-            tags: Array.isArray(data.tags) ? data.tags : [], // Include tags from Firebase
             bookmarks: data.bookmarks || 0,
-            views: data.views || 0,
-            likes: data.likes || 0,
             date: data.dateAdded
               ? new Date(data.dateAdded).toISOString().split("T")[0]
               : new Date().toISOString().split("T")[0],
@@ -996,7 +817,9 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
           );
           return true;
         } else {
-          console.log("[Public Site] No complete prompts found in Firestore");
+          console.log(
+            "[Public Site] No complete prompts found in Firestore",
+          );
         }
       } else {
         console.log("[Public Site] Firestore prompts collection is empty");
@@ -1013,15 +836,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   async function init() {
     // Load prompts from Firestore first - critical for data sync
     await loadPromptsFromFirestore();
-
-    // Build search index after loading prompts
-    // Enables fast Firebase-powered search with title, category, and tags
-    buildSearchIndex();
-
-    // Dispatch event with prompt count
-    window.dispatchEvent(new CustomEvent('promptsLoaded', {
-      detail: { promptCount: PROMPTS.length }
-    }));
 
     // restore dark mode
     const savedDark = localStorage.getItem("pv_dark") === "1";

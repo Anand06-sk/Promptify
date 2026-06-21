@@ -1,619 +1,289 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PromptVerse — Discover AI Prompts That Spark Ideas</title>
-    <meta
-      name="description"
-      content="Browse, save, and copy stunning AI prompts for chatbots and image generators. Couples, anime, caricature, action figure prompts and more."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <!-- ===== Animated background mesh ===== -->
-    <div class="bg-mesh" aria-hidden="true">
-      <span class="blob blob-1"></span>
-      <span class="blob blob-2"></span>
-      <span class="blob blob-3"></span>
-    </div>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptVerse — Discover AI Prompts That Spark Ideas</title>
+<meta name="description" content="Browse, save, and copy stunning AI prompts for chatbots and image generators. Couples, anime, caricature, action figure prompts and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <!-- ===== NAVBAR ===== -->
-    <header class="navbar" id="navbar">
-      <div class="navbar-inner">
-        <a href="#top" class="logo">
-          <span class="logo-mark">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-          </span>
-          <span class="logo-text">Prompt<em>Verse</em></span>
-        </a>
+<!-- ===== Animated background mesh ===== -->
+<div class="bg-mesh" aria-hidden="true">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+</div>
 
-        <div class="nav-actions">
-          <nav class="nav-categories" aria-label="Categories">
-            <button class="nav-cat-btn" id="navCatToggle">
-              Categories <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="nav-cat-dropdown" id="navCatDropdown"></div>
-          </nav>
+<!-- ===== NAVBAR ===== -->
+<header class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="#top" class="logo">
+      <span class="logo-mark">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </span>
+      <span class="logo-text">Prompt<em>Verse</em></span>
+    </a>
 
-          <button
-            class="icon-btn"
-            id="darkModeToggle"
-            aria-label="Toggle dark mode"
-            title="Toggle dark mode"
-          >
-            <i class="fa-solid fa-moon"></i>
-          </button>
-          <button
-            class="icon-btn nav-bookmark-btn"
-            id="navBookmarkBtn"
-            aria-label="View bookmarks"
-            title="Bookmarks"
-            style="display: none"
-          >
-            <i class="fa-solid fa-bookmark"></i>
-            <span class="badge" id="bookmarkCount">0</span>
-          </button>
-          <div
-            class="profile-menu-wrapper"
-            id="profileMenuWrapper"
-            style="display: none"
-          >
-            <button
-              class="icon-btn"
-              id="profileMenuBtn"
-              aria-label="Profile menu"
-              title="Profile"
-            >
-              <i class="fa-solid fa-user-circle"></i>
-            </button>
-            <div class="profile-dropdown" id="profileDropdown" hidden>
-              <div class="profile-dropdown-header">
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=default"
-                  alt="Avatar"
-                  class="profile-avatar"
-                />
-                <div class="profile-dropdown-info">
-                  <p class="profile-username" id="profileUsername">User</p>
-                  <p class="profile-email" id="profileEmail">
-                    user@example.com
-                  </p>
-                </div>
-              </div>
-              <div class="profile-dropdown-divider"></div>
-              <a href="profile.html" class="profile-dropdown-item">
-                <i class="fa-solid fa-user"></i> My Profile
-              </a>
-              <a href="#" class="profile-dropdown-item" id="myBookmarksLink">
-                <i class="fa-solid fa-bookmark"></i> My Bookmarks
-              </a>
-              <a href="#" class="profile-dropdown-item">
-                <i class="fa-solid fa-gear"></i> Settings
-              </a>
-              <div class="profile-dropdown-divider"></div>
-              <button class="profile-dropdown-item logout-btn" id="logoutBtn">
-                <i class="fa-solid fa-sign-out-alt"></i> Logout
-              </button>
+    <nav class="nav-categories" aria-label="Categories">
+      <button class="nav-cat-btn" id="navCatToggle">
+        Categories <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="nav-cat-dropdown" id="navCatDropdown"></div>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button class="icon-btn nav-bookmark-btn" id="navBookmarkBtn" aria-label="View bookmarks" title="Bookmarks" style="display: none;">
+        <i class="fa-solid fa-bookmark"></i>
+        <span class="badge" id="bookmarkCount">0</span>
+      </button>
+      <div class="profile-menu-wrapper" id="profileMenuWrapper" style="display: none;">
+        <button class="icon-btn" id="profileMenuBtn" aria-label="Profile menu" title="Profile">
+          <i class="fa-solid fa-user-circle"></i>
+        </button>
+        <div class="profile-dropdown" id="profileDropdown" hidden>
+          <div class="profile-dropdown-header">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Avatar" class="profile-avatar">
+            <div class="profile-dropdown-info">
+              <p class="profile-username" id="profileUsername">User</p>
+              <p class="profile-email" id="profileEmail">user@example.com</p>
             </div>
           </div>
-          <button class="btn btn-primary login-btn" id="loginBtn">
-            <i class="fa-solid fa-user"></i> Log in
+          <div class="profile-dropdown-divider"></div>
+          <a href="profile.html" class="profile-dropdown-item">
+            <i class="fa-solid fa-user"></i> My Profile
+          </a>
+          <a href="#" class="profile-dropdown-item" id="myBookmarksLink">
+            <i class="fa-solid fa-bookmark"></i> My Bookmarks
+          </a>
+          <a href="#" class="profile-dropdown-item">
+            <i class="fa-solid fa-gear"></i> Settings
+          </a>
+          <div class="profile-dropdown-divider"></div>
+          <button class="profile-dropdown-item logout-btn" id="logoutBtn">
+            <i class="fa-solid fa-sign-out-alt"></i> Logout
           </button>
         </div>
-
-        <button
-          class="mobile-menu-toggle"
-          id="mobileMenuToggle"
-          aria-label="Open menu"
-        >
-          <i class="fa-solid fa-bars"></i>
-        </button>
       </div>
-    </header>
-
-    <!-- ===== EMAIL VERIFICATION BANNER ===== -->
-    <div
-      id="verificationBanner"
-      style="
-        display: none;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 16px 24px;
-        text-align: center;
-        gap: 16px;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        font-weight: 500;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-      "
-    >
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex: 1;
-          min-width: 200px;
-        "
-      >
-        <i class="fa-solid fa-envelope"></i>
-        <span>Please verify your email to unlock all features</span>
-      </div>
-      <button
-        id="resendVerificationBtn"
-        style="
-          background: rgba(255, 255, 255, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.4);
-          color: white;
-          padding: 8px 16px;
-          border-radius: 8px;
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 0.9rem;
-          transition: all 0.3s ease;
-        "
-        onmouseover="this.style.background = 'rgba(255, 255, 255, 0.3)'"
-        onmouseout="this.style.background = 'rgba(255, 255, 255, 0.2)'"
-      >
-        Resend Email
+      <button class="btn btn-primary login-btn" id="loginBtn">
+        <i class="fa-solid fa-user"></i> Log in
       </button>
     </div>
 
-    <!-- ===== MOBILE DRAWER ===== -->
-    <div class="mobile-drawer" id="mobileDrawer">
-      <div class="mobile-drawer-header">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===== MOBILE DRAWER ===== -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="mobile-drawer-header">
+    <span class="logo-text">Prompt<em>Verse</em></span>
+    <button class="icon-btn" id="closeMobileDrawer" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="mobile-drawer-section">
+    <p class="mobile-drawer-label">Categories</p>
+    <div class="mobile-cat-list" id="mobileCatList"></div>
+  </div>
+  <div class="mobile-drawer-actions">
+    <button class="btn btn-ghost" id="mobileDarkToggle"><i class="fa-solid fa-moon"></i> Dark mode</button>
+    <button class="btn btn-primary" id="mobileLoginBtn"><i class="fa-solid fa-user"></i> Log in</button>
+  </div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<main id="top">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Discover the Trending<br>
+        <span class="hero-highlight">Gemini AI Prompts</span><br>
+        for Image Generation.
+      </h1>
+
+      <form class="hero-search" id="heroSearchForm">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="heroSearchInput" placeholder="Try “90s film photo” or “chibi couple”…" aria-label="Search prompts">
+        <button type="submit" class="btn btn-primary hero-search-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+      </form>
+
+      <div class="hero-tags">
+        <span>Trending:</span>
+        <button class="hero-tag-chip" data-tag="AI Action Figure">AI Action Figure</button>
+        <button class="hero-tag-chip" data-tag="Anime">Anime</button>
+        <button class="hero-tag-chip" data-tag="Barbie Version">Barbie Version</button>
+        <button class="hero-tag-chip" data-tag="90s Photos">90s Photos</button>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-card hero-card-1"></div>
+      <div class="hero-card hero-card-2"></div>
+      <div class="hero-card hero-card-3"></div>
+      <div class="hero-orb"></div>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORIES ===== -->
+  <section class="categories-section" id="categories">
+    <div class="section-head">
+      <h2>Browse by category</h2>
+      <p>Thirteen worlds, one prompt away.</p>
+    </div>
+    <div class="categories-scroll" id="categoriesGrid"></div>
+  </section>
+
+  <!-- ===== TRENDING (MASONRY) ===== -->
+  <section class="prompts-section" id="trending">
+    <div class="section-head">
+      <div>
+        <h2>Trending prompts</h2>
+      </div>
+      <div class="active-filter" id="activeFilterBar" hidden>
+        <span id="activeFilterText"></span>
+        <button id="clearFilterBtn"><i class="fa-solid fa-xmark"></i> Clear</button>
+      </div>
+    </div>
+    <div class="masonry-grid" id="trendingGrid"></div>
+    <p class="empty-state" id="emptyState" hidden><i class="fa-solid fa-ghost"></i> No prompts match your search. Try another keyword.</p>
+  </section>
+
+  <!-- ===== MOST BOOKMARKED ===== -->
+  <section class="prompts-section alt-bg" id="mostBookmarked">
+    <div class="section-head">
+      <div>
+        <h2>Most bookmarked</h2>
+        <p>Loved and saved by the community.</p>
+      </div>
+    </div>
+    <div class="row-scroll" id="bookmarkedRow"></div>
+  </section>
+
+  <!-- ===== LATEST ===== -->
+  <section class="prompts-section" id="latest">
+    <div class="section-head">
+      <div>
+        <h2>Latest prompts</h2>
+        <p>Fresh off the prompt press.</p>
+      </div>
+    </div>
+    <div class="row-scroll" id="latestRow"></div>
+  </section>
+
+  <!-- ===== HERO EYEBROW SECTION ===== -->
+  <section class="hero-eyebrow-section">
+    <span class="hero-eyebrow"><i class="fa-solid fa-sparkles"></i> 12,000+ prompts and counting</span>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#top" class="logo">
+        <span class="logo-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
         <span class="logo-text">Prompt<em>Verse</em></span>
-        <button class="icon-btn" id="closeMobileDrawer" aria-label="Close menu">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="mobile-drawer-section">
-        <p class="mobile-drawer-label">Categories</p>
-        <div class="mobile-cat-list" id="mobileCatList"></div>
-      </div>
-      <div class="mobile-drawer-actions">
-        <button class="btn btn-ghost" id="mobileDarkToggle">
-          <i class="fa-solid fa-moon"></i> Dark mode
-        </button>
-        <button class="btn btn-primary" id="mobileLoginBtn">
-          <i class="fa-solid fa-user"></i> Log in
-        </button>
+      </a>
+      <p>A gallery of AI prompts to spark your next creation. Built for dreamers, made for sharing.</p>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest"></i></a>
       </div>
     </div>
-    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="#trending">Trending</a>
+      <a href="#mostBookmarked">Most bookmarked</a>
+      <a href="#latest">Latest</a>
+      <a href="#categories">Categories</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms of use</a>
+      <a href="#">Cookie policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 PromptVerse. All prompts are AI-generated illustrations for inspiration only.</p>
+  </div>
+</footer>
 
-    <main id="top">
-      <!-- ===== HERO ===== -->
-      <section class="hero">
-        <div class="hero-content">
-          <h1 class="hero-title">
-            Discover the Trending<br />
-            <span class="hero-highlight">Gemini AI Prompts</span><br />
-            for Image Generation.
-          </h1>
-
-          <form class="hero-search" id="heroSearchForm">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input
-              type="text"
-              id="heroSearchInput"
-              placeholder="Try “90s film photo” or “chibi couple”…"
-              aria-label="Search prompts"
-            />
-            <button type="submit" class="btn btn-primary hero-search-btn">
-              Explore <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </form>
-
-          <div class="hero-tags">
-            <span>Trending:</span>
-            <button class="hero-tag-chip" data-tag="AI Action Figure">
-              AI Action Figure
-            </button>
-            <button class="hero-tag-chip" data-tag="Anime">Anime</button>
-            <button class="hero-tag-chip" data-tag="Barbie Version">
-              Barbie Version
-            </button>
-            <button class="hero-tag-chip" data-tag="90s Photos">
-              90s Photos
-            </button>
-          </div>
+<!-- ===== PROMPT DETAIL MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="promptModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-grid">
+      <div class="modal-image-wrap">
+        <img id="modalImage" src="" alt="">
+        <span class="modal-category-chip" id="modalCategoryChip"></span>
+      </div>
+      <div class="modal-info">
+        <h3 id="modalTitle"></h3>
+        <div class="modal-meta">
+          <span><i class="fa-solid fa-bookmark"></i> <span id="modalBookmarkCount"></span> saves</span>
+          <span><i class="fa-solid fa-eye"></i> <span id="modalViews">0</span> views</span>
+          <span><i class="fa-solid fa-heart"></i> <span id="modalLikes">0</span> likes</span>
+          <span><i class="fa-solid fa-clock"></i> <span id="modalDate"></span></span>
         </div>
 
-        <div class="hero-visual" aria-hidden="true">
-          <div class="hero-card hero-card-1"></div>
-          <div class="hero-card hero-card-2"></div>
-          <div class="hero-card hero-card-3"></div>
-          <div class="hero-orb"></div>
+        <p class="modal-label">Prompt</p>
+        <div class="modal-prompt-box">
+          <p id="modalPromptText"></p>
         </div>
-      </section>
 
-      <!-- ===== CATEGORIES ===== -->
-      <section class="categories-section" id="categories">
-        <div class="section-head">
-          <h2>Browse by category</h2>
-          <p>Thirteen worlds, one prompt away.</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="modalCopyBtn">
+            <i class="fa-solid fa-copy"></i> Copy prompt
+          </button>
+          <button class="btn btn-outline" id="modalBookmarkBtn">
+            <i class="fa-regular fa-bookmark"></i> Save
+          </button>
+          <button class="btn btn-outline" id="modalLikeBtn">
+            <i class="fa-regular fa-heart"></i> Like
+          </button>
         </div>
-        <div class="categories-scroll" id="categoriesGrid"></div>
-      </section>
 
-      <!-- ===== TRENDING (MASONRY) ===== -->
-      <section class="prompts-section" id="trending">
-        <div class="section-head">
-          <div>
-            <h2>Trending prompts</h2>
-          </div>
-          <div class="active-filter" id="activeFilterBar" hidden>
-            <span id="activeFilterText"></span>
-            <button id="clearFilterBtn">
-              <i class="fa-solid fa-xmark"></i> Clear
-            </button>
-          </div>
-        </div>
-        <div class="masonry-grid" id="trendingGrid"></div>
-        <p class="empty-state" id="emptyState" hidden>
-          <i class="fa-solid fa-ghost"></i> No prompts match your search. Try
-          another keyword.
-        </p>
-      </section>
-
-      <!-- ===== MOST BOOKMARKED ===== -->
-      <section class="prompts-section alt-bg" id="mostBookmarked">
-        <div class="section-head">
-          <div>
-            <h2>Most bookmarked</h2>
-            <p>Loved and saved by the community.</p>
-          </div>
-        </div>
-        <div class="row-scroll" id="bookmarkedRow"></div>
-      </section>
-
-      <!-- ===== LATEST ===== -->
-      <section class="prompts-section" id="latest">
-        <div class="section-head">
-          <div>
-            <h2>Latest prompts</h2>
-            <p>Fresh off the prompt press.</p>
-          </div>
-        </div>
-        <div class="row-scroll" id="latestRow"></div>
-      </section>
-
-      <!-- ===== HERO EYEBROW SECTION ===== -->
-      <section class="hero-eyebrow-section">
-        <span class="hero-eyebrow"
-          ><i class="fa-solid fa-sparkles"></i> <span id="promptCount">12,000+</span> prompts and
-          counting</span
-        >
-      </section>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="#top" class="logo">
-            <span class="logo-mark"
-              ><i class="fa-solid fa-wand-magic-sparkles"></i
-            ></span>
-            <span class="logo-text">Prompt<em>Verse</em></span>
+        <p class="modal-label">Open with</p>
+        <div class="modal-ai-actions">
+          <a href="#" target="_blank" rel="noopener" class="btn btn-ai chatgpt" id="modalChatGPTBtn">
+            <i class="fa-solid fa-comment-dots"></i> ChatGPT
           </a>
-          <p>
-            A gallery of AI prompts to spark your next creation. Built for
-            dreamers, made for sharing.
-          </p>
-          <div class="footer-socials">
-            <a href="#" aria-label="Instagram"
-              ><i class="fa-brands fa-instagram"></i
-            ></a>
-            <a href="#" aria-label="X / Twitter"
-              ><i class="fa-brands fa-x-twitter"></i
-            ></a>
-            <a href="#" aria-label="TikTok"
-              ><i class="fa-brands fa-tiktok"></i
-            ></a>
-            <a href="#" aria-label="Pinterest"
-              ><i class="fa-brands fa-pinterest"></i
-            ></a>
-          </div>
+          <a href="#" target="_blank" rel="noopener" class="btn btn-ai gemini" id="modalGeminiBtn">
+            <i class="fa-solid fa-star"></i> Gemini
+          </a>
         </div>
-        <div class="footer-col">
-          <h4>Explore</h4>
-          <a href="#trending">Trending</a>
-          <a href="#mostBookmarked">Most bookmarked</a>
-          <a href="#latest">Latest</a>
-          <a href="#categories">Categories</a>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <a href="#">About</a>
-          <a href="#">Careers</a>
-          <a href="#">Blog</a>
-          <a href="#">Contact</a>
-        </div>
-        <div class="footer-col">
-          <h4>Legal</h4>
-          <a href="#">Privacy policy</a>
-          <a href="#">Terms of use</a>
-          <a href="#">Cookie policy</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>
-          © 2026 PromptVerse. All prompts are AI-generated illustrations for
-          inspiration only.
-        </p>
-      </div>
-    </footer>
 
-    <!-- ===== PROMPT DETAIL MODAL ===== -->
-    <div class="modal-overlay" id="modalOverlay">
-      <div
-        class="modal"
-        id="promptModal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modalTitle"
-      >
-        <button class="modal-close" id="modalClose" aria-label="Close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="modal-grid">
-          <div class="modal-image-wrap">
-            <img id="modalImage" src="" alt="" />
-            <span class="modal-category-chip" id="modalCategoryChip"></span>
-          </div>
-          <div class="modal-info">
-            <h3 id="modalTitle"></h3>
-            <div class="modal-meta">
-              <span
-                ><i class="fa-solid fa-bookmark"></i>
-                <span id="modalBookmarkCount"></span> saves</span
-              >
-              <span
-                ><i class="fa-solid fa-eye"></i>
-                <span id="modalViews">0</span> views</span
-              >
-              <span
-                ><i class="fa-solid fa-heart"></i>
-                <span id="modalLikes">0</span> likes</span
-              >
-              <span
-                ><i class="fa-solid fa-clock"></i> <span id="modalDate"></span
-              ></span>
-            </div>
-
-            <p class="modal-label">Prompt</p>
-            <div class="modal-prompt-box">
-              <p id="modalPromptText"></p>
-            </div>
-
-            <div class="modal-actions">
-              <button class="btn btn-primary" id="modalCopyBtn">
-                <i class="fa-solid fa-copy"></i> Copy prompt
-              </button>
-              <button class="btn btn-outline" id="modalBookmarkBtn">
-                <i class="fa-regular fa-bookmark"></i> Save
-              </button>
-              <button class="btn btn-outline" id="modalLikeBtn">
-                <i class="fa-regular fa-heart"></i> Like
-              </button>
-            </div>
-
-            <p class="modal-label">Open with</p>
-            <div class="modal-ai-actions">
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
-                class="btn btn-ai chatgpt"
-                id="modalChatGPTBtn"
-              >
-                <i class="fa-solid fa-comment-dots"></i> ChatGPT
-              </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
-                class="btn btn-ai gemini"
-                id="modalGeminiBtn"
-              >
-                <i class="fa-solid fa-star"></i> Gemini
-              </a>
-            </div>
-
-            <div class="modal-toast" id="modalToast">Copied to clipboard!</div>
-          </div>
-        </div>
+        <div class="modal-toast" id="modalToast">Copied to clipboard!</div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- toast for general notifications -->
-    <div class="global-toast" id="globalToast"></div>
+<!-- toast for general notifications -->
+<div class="global-toast" id="globalToast"></div>
 
-    <script type="module">
-      import { logoutUser } from "./auth.js";
-      import { auth } from "./firebase-config.js";
-      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-      import { resendVerificationEmail } from "./auth.js";
-
-      // Listen to auth state changes
-      onAuthStateChanged(auth, (user) => {
-        console.log("Auth state changed. User:", user ? user.email : "null");
-
-        const loginBtn = document.getElementById("loginBtn");
-        const mobileLoginBtn = document.getElementById("mobileLoginBtn");
-        const profileMenuWrapper =
-          document.getElementById("profileMenuWrapper");
-        const verificationBanner =
-          document.getElementById("verificationBanner");
-
-        if (user) {
-          // User is logged in
-          console.log("User is logged in, showing profile menu");
-          loginBtn.style.display = "none";
-          mobileLoginBtn.style.display = "none";
-          profileMenuWrapper.style.display = "flex";
-
-          // Display user info
-          const displayName = user.displayName || user.email.split("@")[0];
-          document.getElementById("profileUsername").textContent = displayName;
-          document.getElementById("profileEmail").textContent = user.email;
-
-          // Set avatar if available
-          if (user.photoURL) {
-            const avatarImg = document.querySelector(".profile-avatar");
-            if (avatarImg) avatarImg.src = user.photoURL;
-          }
-
-          // Show verification banner if email not verified
-          if (!user.emailVerified && verificationBanner) {
-            verificationBanner.style.display = "flex";
-            const resendBtn = document.getElementById("resendVerificationBtn");
-            if (resendBtn) {
-              resendBtn.addEventListener("click", async () => {
-                try {
-                  await resendVerificationEmail();
-                  alert("Verification email resent! Check your inbox.");
-                } catch (error) {
-                  alert("Error resending verification: " + error.message);
-                }
-              });
-            }
-          }
-        } else {
-          // User is logged out
-          console.log("User is logged out, showing login button");
-          loginBtn.style.display = "block";
-          mobileLoginBtn.style.display = "block";
-          profileMenuWrapper.style.display = "none";
-          if (verificationBanner) {
-            verificationBanner.style.display = "none";
-          }
-        }
-      });
-
-      // Login button handlers
-      document.getElementById("loginBtn").addEventListener("click", () => {
-        window.location.href = "auth.html?next=index.html";
-      });
-
-      document
-        .getElementById("mobileLoginBtn")
-        .addEventListener("click", () => {
-          window.location.href = "auth.html?next=index.html";
-        });
-
-      // Logout button handler
-      document
-        .getElementById("logoutBtn")
-        .addEventListener("click", async () => {
-          try {
-            await logoutUser();
-            // onAuthStateChanged listener will handle the UI update
-          } catch (error) {
-            console.error("Logout failed:", error);
-          }
-        });
-
-      // Profile menu toggle
-      const profileMenuBtn = document.getElementById("profileMenuBtn");
-      const profileDropdown = document.getElementById("profileDropdown");
-
-      // Add CSS for desktop categories grid layout
-      function addCategoriesGridCSS() {
-        const styleId = 'categories-grid-styles';
-        if (!document.getElementById(styleId)) {
-          const style = document.createElement('style');
-          style.id = styleId;
-          style.textContent = `
-            /* Desktop: Grid layout for categories */
-            @media (min-width: 1024px) {
-              .categories-scroll {
-                display: grid !important;
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 16px;
-                padding: 12px 0;
-                overflow-x: visible !important;
-              }
-            }
-            
-            /* Tablet and Mobile: Keep horizontal scroll */
-            @media (max-width: 1023px) {
-              .categories-scroll {
-                display: flex !important;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-              }
-            }
-          `;
-          document.head.appendChild(style);
-        }
-      }
-
-      // Call CSS setup on page load
-      addCategoriesGridCSS();
-
-      if (profileMenuBtn && profileDropdown) {
-        // Navigate to profile.html when profile button is clicked
-        profileMenuBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          window.location.href = "profile.html";
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener("click", (e) => {
-          const wrapper = document.getElementById("profileMenuWrapper");
-          if (wrapper && !wrapper.contains(e.target)) {
-            profileDropdown.setAttribute("hidden", "");
-          }
-        });
-      }
-
-      // My Bookmarks link handler
-      const myBookmarksLink = document.getElementById("myBookmarksLink");
-      if (myBookmarksLink) {
-        myBookmarksLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          // Trigger bookmark view in script.js
-          window.dispatchEvent(new CustomEvent("viewBookmarks"));
-          // Also close the dropdown
-          if (profileDropdown) profileDropdown.setAttribute("hidden", "");
-        });
-      }
-    </script>
-
-    <script type="module" src="script.js"></script>
-
-    <script>
-      // Update prompt count dynamically based on actual data
-      document.addEventListener('DOMContentLoaded', () => {
-        const promptCountEl = document.getElementById('promptCount');
-        if (promptCountEl && window.promptData && window.promptData.length) {
-          promptCountEl.textContent = window.promptData.length.toLocaleString() + '+';
-        }
-      });
-      
-      // Listen for custom event from script.js to update count with actual prompt data
-      window.addEventListener('promptsLoaded', (event) => {
-        const promptCountEl = document.getElementById('promptCount');
-        if (promptCountEl && event.detail && event.detail.promptCount) {
-          promptCountEl.textContent = event.detail.promptCount.toLocaleString() + '+';
-        }
-      });
-    </script>
-  </body>
+<script type="module" src="script.js"></script>
+</body>
 </html>
