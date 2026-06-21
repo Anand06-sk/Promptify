@@ -446,14 +446,23 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   function renderTrending() {
+    // Filter by active category and search term, then sort by engagement
     const filtered = getFilteredPrompts();
+    const trending = [...filtered]
+      .sort((a, b) => {
+        const scoreA = (a.views || 0) + (a.likes || 0) + (a.bookmarks || 0);
+        const scoreB = (b.views || 0) + (b.likes || 0) + (b.bookmarks || 0);
+        return scoreB - scoreA;
+      })
+      .slice(0, 10);
+
     trendingGrid.innerHTML = "";
-    if (filtered.length === 0) {
+    if (trending.length === 0) {
       emptyState.hidden = false;
     } else {
       emptyState.hidden = true;
       // Create cards asynchronously
-      Promise.all(filtered.map((p) => createPromptCard(p)))
+      Promise.all(trending.map((p) => createPromptCard(p)))
         .then((cards) =>
           cards
             .filter((card) => card !== null) // Skip incomplete prompts that returned null
@@ -462,20 +471,23 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
         .catch((err) => console.error("Error rendering trending cards:", err));
     }
 
-    // active filter bar
+    // Display filter info
     if (state.activeCategory || state.searchTerm) {
       activeFilterBar.hidden = false;
       const parts = [];
       if (state.activeCategory) parts.push(catNameById[state.activeCategory]);
-      if (state.searchTerm) parts.push(`“${state.searchTerm}”`);
-      activeFilterText.textContent = `Showing: ${parts.join(" + ")}`;
+      if (state.searchTerm) parts.push(`"${state.searchTerm}"`);
+      activeFilterText.textContent = "Showing: " + parts.join(" + ");
     } else {
-      activeFilterBar.hidden = true;
+      activeFilterBar.hidden = false;
+      activeFilterText.textContent = "Showing: Trending Prompts by Engagement";
     }
   }
 
   function renderBookmarkedRow() {
-    const top = [...PROMPTS]
+    // Filter by active category and search term, then sort by bookmarks
+    const filtered = getFilteredPrompts();
+    const top = [...filtered]
       .sort((a, b) => b.bookmarks - a.bookmarks)
       .slice(0, 10);
     bookmarkedRow.innerHTML = "";
@@ -489,7 +501,9 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   function renderLatestRow() {
-    const latest = [...PROMPTS]
+    // Filter by active category and search term, then sort by date
+    const filtered = getFilteredPrompts();
+    const latest = [...filtered]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 10);
     latestRow.innerHTML = "";
@@ -553,7 +567,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   function setCategory(id) {
     state.activeCategory = state.activeCategory === id ? null : id;
     renderCategories();
-    renderTrending();
+    renderAllCardSections();
     document
       .getElementById("trending")
       .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -752,7 +766,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   function setSearch(value) {
     state.searchTerm = value;
     $("#heroSearchInput").value = value;
-    renderTrending();
+    renderAllCardSections();
     if (value)
       document
         .getElementById("trending")
@@ -778,7 +792,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     state.searchTerm = "";
     $("#heroSearchInput").value = "";
     renderCategories();
-    renderTrending();
+    renderAllCardSections();
   });
 
   /* ---------------------------------------------------------
@@ -965,6 +979,8 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
             prompt: data.prompt,
             tags: Array.isArray(data.tags) ? data.tags : [], // Include tags from Firebase
             bookmarks: data.bookmarks || 0,
+            views: data.views || 0,
+            likes: data.likes || 0,
             date: data.dateAdded
               ? new Date(data.dateAdded).toISOString().split("T")[0]
               : new Date().toISOString().split("T")[0],
