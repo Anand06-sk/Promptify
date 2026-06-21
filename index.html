@@ -233,15 +233,9 @@
         </div>
 
         <div class="hero-visual" aria-hidden="true">
-          <div class="hero-card hero-card-1">
-          
-          </div>
-          <div class="hero-card hero-card-2">
-            
-          </div>
-          <div class="hero-card hero-card-3">
-            
-          </div>
+          <div class="hero-card hero-card-1"></div>
+          <div class="hero-card hero-card-2"></div>
+          <div class="hero-card hero-card-3"></div>
           <div class="hero-orb"></div>
         </div>
       </section>
@@ -300,8 +294,8 @@
       <!-- ===== HERO EYEBROW SECTION ===== -->
       <section class="hero-eyebrow-section">
         <span class="hero-eyebrow"
-          ><i class="fa-solid fa-sparkles"></i>
-          <span id="promptCount">12,000+</span> prompts and counting</span
+          ><i class="fa-solid fa-sparkles"></i> <span id="promptCount">12,000+</span> prompts and
+          counting</span
         >
       </section>
     </main>
@@ -540,9 +534,9 @@
 
       // Add CSS for desktop categories grid layout
       function addCategoriesGridCSS() {
-        const styleId = "categories-grid-styles";
+        const styleId = 'categories-grid-styles';
         if (!document.getElementById(styleId)) {
-          const style = document.createElement("style");
+          const style = document.createElement('style');
           style.id = styleId;
           style.textContent = `
             /* Desktop: Grid layout for categories */
@@ -605,16 +599,19 @@
     <script type="module" src="script.js"></script>
 
     <script>
-      // Update prompt count dynamically based on actual data from Firestore
-      window.addEventListener("promptsLoaded", (event) => {
-        const promptCountEl = document.getElementById("promptCount");
+      // Update prompt count dynamically based on actual data
+      document.addEventListener('DOMContentLoaded', () => {
+        const promptCountEl = document.getElementById('promptCount');
+        if (promptCountEl && window.promptData && window.promptData.length) {
+          promptCountEl.textContent = window.promptData.length.toLocaleString() + '+';
+        }
+      });
+      
+      // Listen for custom event from script.js to update count with actual prompt data
+      window.addEventListener('promptsLoaded', (event) => {
+        const promptCountEl = document.getElementById('promptCount');
         if (promptCountEl && event.detail && event.detail.promptCount) {
-          const formattedCount = event.detail.promptCount.toLocaleString();
-          promptCountEl.textContent = formattedCount + "+";
-          console.log(
-            "[PromptVerse] Updated prompt count to:",
-            formattedCount + "+",
-          );
+          promptCountEl.textContent = event.detail.promptCount.toLocaleString() + '+';
         }
       });
     </script>
