@@ -269,6 +269,28 @@
         </p>
       </section>
 
+      <!-- ===== MOST LIKED ===== -->
+      <section class="prompts-section alt-bg" id="mostLiked">
+        <div class="section-head">
+          <div>
+            <h2>Most liked</h2>
+            <p>Fan favorites across the community.</p>
+          </div>
+        </div>
+        <div class="row-scroll" id="likedRow"></div>
+      </section>
+
+      <!-- ===== MOST VIEWED ===== -->
+      <section class="prompts-section" id="mostViewed">
+        <div class="section-head">
+          <div>
+            <h2>Most viewed</h2>
+            <p>The prompts everyone's checking out.</p>
+          </div>
+        </div>
+        <div class="row-scroll" id="viewedRow"></div>
+      </section>
+
       <!-- ===== MOST BOOKMARKED ===== -->
       <section class="prompts-section alt-bg" id="mostBookmarked">
         <div class="section-head">
@@ -294,8 +316,8 @@
       <!-- ===== HERO EYEBROW SECTION ===== -->
       <section class="hero-eyebrow-section">
         <span class="hero-eyebrow"
-          ><i class="fa-solid fa-sparkles"></i> <span id="promptCount">12,000+</span> prompts and
-          counting</span
+          ><i class="fa-solid fa-sparkles"></i>
+          <span id="promptCount">12,000+</span> prompts and counting</span
         >
       </section>
     </main>
@@ -534,9 +556,9 @@
 
       // Add CSS for desktop categories grid layout
       function addCategoriesGridCSS() {
-        const styleId = 'categories-grid-styles';
+        const styleId = "categories-grid-styles";
         if (!document.getElementById(styleId)) {
-          const style = document.createElement('style');
+          const style = document.createElement("style");
           style.id = styleId;
           style.textContent = `
             /* Desktop: Grid layout for categories */
@@ -600,18 +622,20 @@
 
     <script>
       // Update prompt count dynamically based on actual data
-      document.addEventListener('DOMContentLoaded', () => {
-        const promptCountEl = document.getElementById('promptCount');
+      document.addEventListener("DOMContentLoaded", () => {
+        const promptCountEl = document.getElementById("promptCount");
         if (promptCountEl && window.promptData && window.promptData.length) {
-          promptCountEl.textContent = window.promptData.length.toLocaleString() + '+';
+          promptCountEl.textContent =
+            window.promptData.length.toLocaleString() + "+";
         }
       });
-      
+
       // Listen for custom event from script.js to update count with actual prompt data
-      window.addEventListener('promptsLoaded', (event) => {
-        const promptCountEl = document.getElementById('promptCount');
+      window.addEventListener("promptsLoaded", (event) => {
+        const promptCountEl = document.getElementById("promptCount");
         if (promptCountEl && event.detail && event.detail.promptCount) {
-          promptCountEl.textContent = event.detail.promptCount.toLocaleString() + '+';
+          promptCountEl.textContent =
+            event.detail.promptCount.toLocaleString() + "+";
         }
       });
     </script>
