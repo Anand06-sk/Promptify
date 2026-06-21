@@ -103,6 +103,8 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   const trendingGrid = $("#trendingGrid");
+  const likedRow = $("#likedRow");
+  const viewedRow = $("#viewedRow");
   const bookmarkedRow = $("#bookmarkedRow");
   const latestRow = $("#latestRow");
   const categoriesGrid = $("#categoriesGrid");
@@ -355,8 +357,42 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
       .catch((err) => console.error("Error rendering bookmarked cards:", err));
   }
 
+  function renderLikedRow() {
+    // Filter by active category and search term, then sort by likes
+    const filtered = getFilteredPrompts();
+    const top = [...filtered]
+      .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+      .slice(0, 10);
+    likedRow.innerHTML = "";
+    Promise.all(top.map((p) => createPromptCard(p)))
+      .then((cards) =>
+        cards
+          .filter((card) => card !== null) // Skip incomplete prompts that returned null
+          .forEach((card) => likedRow.appendChild(card)),
+      )
+      .catch((err) => console.error("Error rendering liked cards:", err));
+  }
+
+  function renderViewedRow() {
+    // Filter by active category and search term, then sort by views
+    const filtered = getFilteredPrompts();
+    const top = [...filtered]
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 10);
+    viewedRow.innerHTML = "";
+    Promise.all(top.map((p) => createPromptCard(p)))
+      .then((cards) =>
+        cards
+          .filter((card) => card !== null) // Skip incomplete prompts that returned null
+          .forEach((card) => viewedRow.appendChild(card)),
+      )
+      .catch((err) => console.error("Error rendering viewed cards:", err));
+  }
+
   function renderLatestRow() {
-    const latest = [...PROMPTS]
+    // Filter by active category and search term, then sort by date
+    const filtered = getFilteredPrompts();
+    const latest = [...filtered]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 10);
     latestRow.innerHTML = "";
@@ -371,6 +407,8 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
   function renderAllCardSections() {
     renderTrending();
+    renderLikedRow();
+    renderViewedRow();
     renderBookmarkedRow();
     renderLatestRow();
   }
@@ -842,6 +880,17 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   async function init() {
     // Load prompts from Firestore first - critical for data sync
     await loadPromptsFromFirestore();
+
+    // Build search index after loading prompts
+    // Enables fast Firebase-powered search with title, category, and tags
+    buildSearchIndex();
+
+    // Dispatch event with prompt count
+    window.dispatchEvent(
+      new CustomEvent("promptsLoaded", {
+        detail: { promptCount: PROMPTS.length },
+      }),
+    );
 
     // restore dark mode
     const savedDark = localStorage.getItem("pv_dark") === "1";
