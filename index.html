@@ -233,9 +233,15 @@
         </div>
 
         <div class="hero-visual" aria-hidden="true">
-          <div class="hero-card hero-card-1"></div>
-          <div class="hero-card hero-card-2"></div>
-          <div class="hero-card hero-card-3"></div>
+          <div class="hero-card hero-card-1">
+          
+          </div>
+          <div class="hero-card hero-card-2">
+            
+          </div>
+          <div class="hero-card hero-card-3">
+            
+          </div>
           <div class="hero-orb"></div>
         </div>
       </section>
@@ -294,8 +300,8 @@
       <!-- ===== HERO EYEBROW SECTION ===== -->
       <section class="hero-eyebrow-section">
         <span class="hero-eyebrow"
-          ><i class="fa-solid fa-sparkles"></i> 12,000+ prompts and
-          counting</span
+          ><i class="fa-solid fa-sparkles"></i>
+          <span id="promptCount">12,000+</span> prompts and counting</span
         >
       </section>
     </main>
@@ -532,6 +538,40 @@
       const profileMenuBtn = document.getElementById("profileMenuBtn");
       const profileDropdown = document.getElementById("profileDropdown");
 
+      // Add CSS for desktop categories grid layout
+      function addCategoriesGridCSS() {
+        const styleId = "categories-grid-styles";
+        if (!document.getElementById(styleId)) {
+          const style = document.createElement("style");
+          style.id = styleId;
+          style.textContent = `
+            /* Desktop: Grid layout for categories */
+            @media (min-width: 1024px) {
+              .categories-scroll {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 16px;
+                padding: 12px 0;
+                overflow-x: visible !important;
+              }
+            }
+            
+            /* Tablet and Mobile: Keep horizontal scroll */
+            @media (max-width: 1023px) {
+              .categories-scroll {
+                display: flex !important;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+              }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+      }
+
+      // Call CSS setup on page load
+      addCategoriesGridCSS();
+
       if (profileMenuBtn && profileDropdown) {
         // Navigate to profile.html when profile button is clicked
         profileMenuBtn.addEventListener("click", (e) => {
@@ -563,5 +603,20 @@
     </script>
 
     <script type="module" src="script.js"></script>
+
+    <script>
+      // Update prompt count dynamically based on actual data from Firestore
+      window.addEventListener("promptsLoaded", (event) => {
+        const promptCountEl = document.getElementById("promptCount");
+        if (promptCountEl && event.detail && event.detail.promptCount) {
+          const formattedCount = event.detail.promptCount.toLocaleString();
+          promptCountEl.textContent = formattedCount + "+";
+          console.log(
+            "[PromptVerse] Updated prompt count to:",
+            formattedCount + "+",
+          );
+        }
+      });
+    </script>
   </body>
 </html>

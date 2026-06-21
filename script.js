@@ -1018,6 +1018,18 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     // Enables fast Firebase-powered search with title, category, and tags
     buildSearchIndex();
 
+    // Dispatch event with actual prompt count to update UI dynamically
+    const promptCount = PROMPTS.length > 0 ? PROMPTS.length : 0;
+    window.dispatchEvent(
+      new CustomEvent("promptsLoaded", {
+        detail: { promptCount },
+      }),
+    );
+    console.log(
+      "[PromptVerse] Dispatched promptsLoaded event with count:",
+      promptCount,
+    );
+
     // restore dark mode
     const savedDark = localStorage.getItem("pv_dark") === "1";
     applyDarkMode(savedDark);
