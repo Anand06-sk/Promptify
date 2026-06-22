@@ -269,6 +269,50 @@
         </p>
       </section>
 
+      <!-- ===== MOST LIKED ===== -->
+      <section class="prompts-section alt-bg" id="mostLiked">
+        <div class="section-head">
+          <div>
+            <h2>Most liked</h2>
+            <p>Fan favorites across the community.</p>
+          </div>
+        </div>
+        <div class="row-scroll" id="likedRow"></div>
+      </section>
+
+      <!-- ===== MOST VIEWED ===== -->
+      <section class="prompts-section" id="mostViewed">
+        <div class="section-head">
+          <div>
+            <h2>Most viewed</h2>
+            <p>The prompts everyone's checking out.</p>
+          </div>
+        </div>
+        <div class="row-scroll" id="viewedRow"></div>
+      </section>
+
+      <!-- ===== MOST LIKED ===== -->
+      <section class="prompts-section alt-bg" id="mostLiked">
+        <div class="section-head">
+          <div>
+            <h2>Most liked</h2>
+            <p>Fan favorites across the community.</p>
+          </div>
+        </div>
+        <div class="row-scroll" id="likedRow"></div>
+      </section>
+
+      <!-- ===== MOST VIEWED ===== -->
+      <section class="prompts-section" id="mostViewed">
+        <div class="section-head">
+          <div>
+            <h2>Most viewed</h2>
+            <p>The prompts everyone's checking out.</p>
+          </div>
+        </div>
+        <div class="row-scroll" id="viewedRow"></div>
+      </section>
+
       <!-- ===== MOST VIEWED ===== -->
       <section class="prompts-section alt-bg" id="mostBookmarked">
         <div class="section-head">
@@ -294,8 +338,8 @@
       <!-- ===== HERO EYEBROW SECTION ===== -->
       <section class="hero-eyebrow-section">
         <span class="hero-eyebrow"
-          ><i class="fa-solid fa-sparkles"></i> 12,000+ prompts and
-          counting</span
+          ><i class="fa-solid fa-sparkles"></i>
+          <span id="promptCount">12,000+</span> prompts and counting</span
         >
       </section>
     </main>
@@ -532,6 +576,40 @@
       const profileMenuBtn = document.getElementById("profileMenuBtn");
       const profileDropdown = document.getElementById("profileDropdown");
 
+      // Add CSS for desktop categories grid layout
+      function addCategoriesGridCSS() {
+        const styleId = "categories-grid-styles";
+        if (!document.getElementById(styleId)) {
+          const style = document.createElement("style");
+          style.id = styleId;
+          style.textContent = `
+            /* Desktop: Grid layout for categories */
+            @media (min-width: 1024px) {
+              .categories-scroll {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 16px;
+                padding: 12px 0;
+                overflow-x: visible !important;
+              }
+            }
+            
+            /* Tablet and Mobile: Keep horizontal scroll */
+            @media (max-width: 1023px) {
+              .categories-scroll {
+                display: flex !important;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+              }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+      }
+
+      // Call CSS setup on page load
+      addCategoriesGridCSS();
+
       if (profileMenuBtn && profileDropdown) {
         // Navigate to profile.html when profile button is clicked
         profileMenuBtn.addEventListener("click", (e) => {
@@ -563,5 +641,25 @@
     </script>
 
     <script type="module" src="script.js"></script>
+
+    <script>
+      // Update prompt count dynamically based on actual data
+      document.addEventListener("DOMContentLoaded", () => {
+        const promptCountEl = document.getElementById("promptCount");
+        if (promptCountEl && window.promptData && window.promptData.length) {
+          promptCountEl.textContent =
+            window.promptData.length.toLocaleString() + "+";
+        }
+      });
+
+      // Listen for custom event from script.js to update count with actual prompt data
+      window.addEventListener("promptsLoaded", (event) => {
+        const promptCountEl = document.getElementById("promptCount");
+        if (promptCountEl && event.detail && event.detail.promptCount) {
+          promptCountEl.textContent =
+            event.detail.promptCount.toLocaleString() + "+";
+        }
+      });
+    </script>
   </body>
 </html>
