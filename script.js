@@ -72,6 +72,25 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   ];
 
   const catNameById = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.name]));
+  
+  // Create mapping from category display names to IDs for Firebase data conversion
+  const catIdByName = Object.fromEntries(CATEGORIES.map((c) => [c.name, c.id]));
+
+  /**
+   * Convert Firebase category name (display name like "AI Caricature") 
+   * to category ID (like "caricature")
+   */
+  function getCategoryId(firestoreCategoryName) {
+    if (!firestoreCategoryName) return "uncategorized";
+    // First try direct lookup in mapping
+    if (catIdByName[firestoreCategoryName]) {
+      return catIdByName[firestoreCategoryName];
+    }
+    // Fallback: try lowercase matching
+    const lowerName = firestoreCategoryName.toLowerCase();
+    const matchedCat = CATEGORIES.find(c => c.name.toLowerCase() === lowerName);
+    return matchedCat ? matchedCat.id : "uncategorized";
+  }
 
   /* ---------------------------------------------------------
      2. DATA: Prompts (loaded from Firestore only)
@@ -1183,7 +1202,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
           firestorePrompts.push({
             id: data.id || doc.id,
-            category: (data.category || "uncategorized").toLowerCase(), // Normalize to lowercase for category filtering
+            category: getCategoryId(data.category), // Use the mapping function to convert display name to ID
             title: data.title,
             img: data.image || "",
             prompt: data.prompt,
