@@ -670,6 +670,31 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   let currentModalId = null;
   const modalOverlay = $("#modalOverlay");
 
+  /**
+   * Detect user's platform (iOS, Android, or Desktop)
+   * @returns {string} 'ios' | 'android' | 'desktop'
+   */
+  function detectPlatform() {
+    const ua = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) return "ios";
+    if (/android/.test(ua)) return "android";
+    return "desktop";
+  }
+
+  /**
+   * Open ChatGPT in new tab
+   */
+  function openChatGPT(prompt) {
+    window.open("https://chat.openai.com", "_blank", "noopener,noreferrer");
+  }
+
+  /**
+   * Open Gemini in new tab
+   */
+  function openGemini(prompt) {
+    window.open("https://gemini.google.com/app", "_blank", "noopener,noreferrer");
+  }
+
   function openModal(id) {
     const p = PROMPTS.find((x) => x.id === id);
     if (!p) return;
@@ -685,10 +710,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     $("#modalTitle").textContent = p.title;
     $("#modalDate").textContent = formatDate(p.date);
     $("#modalPromptText").textContent = p.prompt;
-
-    const encoded = encodeURIComponent(p.prompt);
-    $("#modalChatGPTBtn").href = `https://chat.openai.com/?q=${encoded}`;
-    $("#modalGeminiBtn").href = `https://gemini.google.com/app?q=${encoded}`;
 
     // Fetch and display metrics from Firestore (views, likes, bookmarks)
     getPromptMetrics(id).then((metrics) => {
@@ -799,6 +820,22 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     const toast = $("#modalToast");
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 1800);
+  });
+
+  // Modal ChatGPT button handler - Open with app-first strategy
+  $("#modalChatGPTBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    const p = PROMPTS.find((x) => x.id === currentModalId);
+    if (!p) return;
+    openChatGPT(p.prompt);
+  });
+
+  // Modal Gemini button handler - Open with app-first strategy
+  $("#modalGeminiBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    const p = PROMPTS.find((x) => x.id === currentModalId);
+    if (!p) return;
+    openGemini(p.prompt);
   });
 
   // Modal share button handler
@@ -1215,4 +1252,23 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   document.addEventListener("DOMContentLoaded", init);
+
+  // Handle opening modal when returning from profile.html
+  document.addEventListener("DOMContentLoaded", () => {
+    const promptIdToOpen = sessionStorage.getItem("openModalPromptId");
+    if (promptIdToOpen) {
+      sessionStorage.removeItem("openModalPromptId");
+      // Wait a bit to ensure DOM is ready, then open modal
+      setTimeout(() => {
+        openModal(promptIdToOpen);
+      }, 500);
+    }
+  });
+
+  // Handle postMessage from profile.html
+  window.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "openPromptModal") {
+      openModal(event.data.promptId);
+    }
+  });
 })();

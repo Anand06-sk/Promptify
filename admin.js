@@ -417,16 +417,15 @@ function switchSection(id) {
 // ============================================================
 function renderDashboard() {
   const prompts = adminState.prompts;
-  const bookmarks = JSON.parse(
-    localStorage.getItem("promptverseBookmarks") || "[]",
-  );
+  // Calculate total bookmarks from Firestore data (each prompt.bookmarks field)
+  const totalBookmarks = calculateTotalBookmarks(prompts);
 
   // Stat cards — real counts only
   animateCount("totalPromptsCount", prompts.length);
-  animateCount("totalBookmarksCount", bookmarks.length);
+  animateCount("totalBookmarksCount", totalBookmarks);
   animateCount("totalCategoriesCount", adminState.categories.length);
 
-  const avg = prompts.length ? bookmarks.length / prompts.length : 0;
+  const avg = prompts.length ? totalBookmarks / prompts.length : 0;
   document.getElementById("avgBookmarksCount").textContent = avg.toFixed(2);
 
   // Sub-labels
@@ -486,6 +485,19 @@ function renderDashboard() {
   drawSparklines();
   updateStorageBar();
   updateSidebarCounts();
+}
+
+// ============================================================
+// HELPER — Calculate Total Bookmarks from Firestore
+// ============================================================
+/**
+ * Calculate total bookmarks across all prompts from Firestore data
+ * Each prompt has a 'bookmarks' field tracking its total saves
+ */
+function calculateTotalBookmarks(prompts) {
+  return prompts.reduce((total, prompt) => {
+    return total + (prompt.bookmarks || 0);
+  }, 0);
 }
 
 // ============================================================
@@ -1633,12 +1645,11 @@ async function deleteCategory(cat) {
 // ============================================================
 function renderAnalytics() {
   const prompts = adminState.prompts;
-  const bookmarks = JSON.parse(
-    localStorage.getItem("promptverseBookmarks") || "[]",
-  );
+  // Calculate total bookmarks from Firestore data
+  const totalBookmarks = calculateTotalBookmarks(prompts);
 
   // Hero stats
-  setText("totalEngagement", prompts.length + bookmarks.length);
+  setText("totalEngagement", prompts.length + totalBookmarks);
 
   // Publish rate (prompts per week since first prompt)
   const sorted = [...prompts].sort(
@@ -1702,7 +1713,7 @@ function renderAnalytics() {
       : '<p style="color:var(--text-3);font-size:.82rem;padding:12px 0">No prompts with categories yet.</p>';
   }
 
-  // Top prompts by saves
+  // Top prompts by saves (read from Firestore bookmarks field)
   const topEl = document.getElementById("topPrompts");
   if (topEl) {
     if (!prompts.length) {
@@ -1710,14 +1721,12 @@ function renderAnalytics() {
         '<div class="top-item" style="justify-content:center;color:var(--text-3);border:none">No prompts yet.</div>';
     } else {
       const ranked = [...prompts].sort((a, b) => {
-        const savesB = bookmarks.filter((id) => id === b.id).length;
-        const savesA = bookmarks.filter((id) => id === a.id).length;
-        return savesB - savesA;
+        return (b.bookmarks || 0) - (a.bookmarks || 0);
       });
       topEl.innerHTML = ranked
         .slice(0, 7)
         .map((p, i) => {
-          const saves = bookmarks.filter((id) => id === p.id).length;
+          const saves = p.bookmarks || 0;
           return `
           <div class="top-item">
             <span class="top-item-rank">#${i + 1}</span>
@@ -1729,18 +1738,18 @@ function renderAnalytics() {
     }
   }
 
-  // Key metrics
+  // Key metrics (read from Firestore bookmarks field)
   const statsEl = document.getElementById("statisticsData");
   if (statsEl) {
     const withTags = prompts.filter((p) => (p.tags || []).length > 0).length;
     const avgSaves = prompts.length
-      ? (bookmarks.length / prompts.length).toFixed(2)
+      ? (totalBookmarks / prompts.length).toFixed(2)
       : "0.00";
     const noImg = prompts.filter((p) => !p.image).length;
 
     const rows = [
       ["Total Prompts", prompts.length],
-      ["Total Saves (Bookmarks)", bookmarks.length],
+      ["Total Saves (Bookmarks)", totalBookmarks],
       ["Active Categories", adminState.categories.length],
       ["Categories With Prompts", filled],
       ["Avg Saves per Prompt", avgSaves],

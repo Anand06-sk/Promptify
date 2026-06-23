@@ -54,16 +54,17 @@
           >
             <i class="fa-solid fa-moon"></i>
           </button>
-          <button
+          <a
+            href="profile.html#bookmarks"
             class="icon-btn nav-bookmark-btn"
             id="navBookmarkBtn"
             aria-label="View bookmarks"
             title="Bookmarks"
-            style="display: none"
+            style="display: none; text-decoration: none; color: inherit;"
           >
             <i class="fa-solid fa-bookmark"></i>
             <span class="badge" id="bookmarkCount">0</span>
-          </button>
+          </a>
           <div
             class="profile-menu-wrapper"
             id="profileMenuWrapper"
@@ -483,24 +484,20 @@
 
             <p class="modal-label">Open with</p>
             <div class="modal-ai-actions">
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
+              <button
+                type="button"
                 class="btn btn-ai chatgpt"
                 id="modalChatGPTBtn"
               >
                 <i class="fa-solid fa-comment-dots"></i> ChatGPT
-              </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
+              </button>
+              <button
+                type="button"
                 class="btn btn-ai gemini"
                 id="modalGeminiBtn"
               >
                 <i class="fa-solid fa-star"></i> Gemini
-              </a>
+              </button>
             </div>
 
             <div class="modal-toast" id="modalToast">Copied to clipboard!</div>
