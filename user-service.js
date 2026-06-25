@@ -4,6 +4,10 @@ import { db, auth } from "./firebase-config.js";
 import {
   sendEmailVerification,
   sendPasswordResetEmail,
+  updatePassword,
+  reauthenticateWithCredential,
+  deleteUser,
+  EmailAuthProvider,
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import {
   doc,
@@ -17,6 +21,10 @@ import {
   query,
   where,
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import {
+  incrementBookmarkCount,
+  decrementBookmarkCount,
+} from "./firestore-service.js";
 
 /**
  * Friendly error messages mapping Firebase error codes
@@ -376,6 +384,9 @@ export async function addBookmark(promptId, promptData) {
       bookmarkedAt: serverTimestamp(),
     });
 
+    // Increment global bookmark count for the prompt
+    await incrementBookmarkCount(promptId);
+
     console.log("📌 Prompt bookmarked:", promptId);
   } catch (error) {
     console.error("Error adding bookmark:", error);
@@ -403,6 +414,10 @@ export async function removeBookmark(promptId) {
     const bookmarkRef = doc(db, "users", user.uid, "bookmarks", promptId);
 
     await deleteDoc(bookmarkRef);
+
+    // Decrement global bookmark count for the prompt
+    await decrementBookmarkCount(promptId);
+
     console.log("❌ Bookmark removed:", promptId);
   } catch (error) {
     console.error("Error removing bookmark:", error);
@@ -481,5 +496,239 @@ export async function getBookmarkCount() {
   } catch (error) {
     console.error("Error getting bookmark count:", error);
     return 0;
+  }
+}
+
+/**
+ * Save user profile information (Date of Birth, Gender, Bio)
+ * @param {string} dateOfBirth - ISO date string (YYYY-MM-DD)
+ * @param {string} gender - "male" | "female" | "other"
+ * @param {string} bio - Optional bio text
+ * @returns {Promise<void>}
+ */
+export async function saveProfileInfo(dateOfBirth, gender, bio = "") {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {
+      dateOfBirth: dateOfBirth || null,
+      gender: gender || null,
+      bio: bio || "",
+      updatedAt: serverTimestamp(),
+    });
+    console.log("Profile info saved for user:", user.uid);
+  } catch (error) {
+    console.error("Error saving profile info:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get user profile information
+ * @returns {Promise<Object>} Profile data {dateOfBirth, gender, bio}
+ */
+export async function getProfileInfo() {
+  const user = auth.currentUser;
+
+  if (!user) {
+    return { dateOfBirth: null, gender: null, bio: "" };
+  }
+
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      return {
+        dateOfBirth: data.dateOfBirth || null,
+        gender: data.gender || null,
+        bio: data.bio || "",
+      };
+    }
+
+    return { dateOfBirth: null, gender: null, bio: "" };
+  } catch (error) {
+    console.error("Error fetching profile info:", error);
+    return { dateOfBirth: null, gender: null, bio: "" };
+  }
+}
+
+/**
+ * Check if user's profile is complete (has DOB and Gender)
+ * @returns {Promise<boolean>}
+ */
+export async function isProfileComplete() {
+  const profile = await getProfileInfo();
+  return !!(profile.dateOfBirth && profile.gender);
+}
+
+/**
+ * Update user password
+ * Requires current password for security (only works with email/password auth)
+ * Google-only users cannot change password unless they created an email/password account
+ * @param {string} currentPassword - User's current password
+ * @param {string} newPassword - New password (min 8 chars)
+ * @returns {Promise<{success: boolean, message: string}>}
+ */
+export async function updateUserPassword(currentPassword, newPassword) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
+  // Check if user has email/password provider
+  const hasEmailProvider = user.providerData.some(
+    (provider) => provider.providerId === "password",
+  );
+
+  if (!hasEmailProvider) {
+    return {
+      success: false,
+      message:
+        "You signed in with Google. Password changes are not available for Google-only accounts.",
+    };
+  }
+
+  try {
+    // Re-authenticate user with current password
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    // Update password
+    await updatePassword(user, newPassword);
+
+    console.log("Password updated successfully for user:", user.uid);
+    return {
+      success: true,
+      message: "Password updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating password:", error);
+
+    // Map Firebase error to friendly message
+    let message = "Error updating password";
+    if (error.code === "auth/wrong-password") {
+      message = "Current password is incorrect";
+    } else if (error.code === "auth/weak-password") {
+      message = "New password must be at least 8 characters long";
+    } else if (error.code === "auth/too-many-requests") {
+      message = "Too many failed attempts. Try again later";
+    }
+
+    return {
+      success: false,
+      message: message,
+    };
+  }
+}
+
+/**
+ * Delete user account
+ * Deletes both Firebase Auth account and Firestore user profile
+ * Preserves: prompt stats (likes, bookmarks, views), prompt data, admin content
+ * Requires recent authentication - will prompt for password if needed
+ * @returns {Promise<{success: boolean, message: string}>}
+ */
+export async function deleteUserAccount() {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
+  try {
+    // Check if user needs re-authentication
+    // This is a safety check - Firebase will handle it during deletion if needed
+    const hasEmailProvider = user.providerData.some(
+      (provider) => provider.providerId === "password",
+    );
+
+    // If user has email/password, they may need to re-auth
+    // We'll let the caller handle the re-auth dialog if needed
+    // For now, attempt deletion - Firebase will throw if re-auth needed
+
+    // Delete Firestore user profile (only personal data)
+    // Keep prompt statistics intact
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await deleteDoc(userRef);
+      console.log("Firestore user profile deleted:", user.uid);
+    } catch (profileError) {
+      console.warn("Could not delete Firestore profile:", profileError);
+      // Continue with auth deletion even if Firestore delete fails
+    }
+
+    // Delete Firebase Auth account
+    await deleteUser(user);
+
+    console.log("User account deleted successfully:", user.uid);
+
+    return {
+      success: true,
+      message: "Your account has been deleted",
+    };
+  } catch (error) {
+    console.error("Error deleting account:", error);
+
+    // Check if re-authentication is needed
+    if (
+      error.code === "auth/requires-recent-login" ||
+      error.message.includes("CREDENTIAL_TOO_OLD")
+    ) {
+      return {
+        success: false,
+        message: "REAUTHENTICATE_NEEDED",
+        error: error,
+      };
+    }
+
+    let message = "Error deleting account";
+    if (error.code === "auth/wrong-password") {
+      message = "Password is incorrect";
+    } else if (error.code === "auth/too-many-requests") {
+      message = "Too many failed attempts. Try again later";
+    }
+
+    return {
+      success: false,
+      message: message,
+      error: error,
+    };
+  }
+}
+
+/**
+ * Re-authenticate user with email and password
+ * Used before sensitive operations like deleting account or changing password
+ * @param {string} email - User's email
+ * @param {string} password - User's password
+ * @returns {Promise<{success: boolean}>}
+ */
+export async function reauthenticateUser(email, password) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
+  try {
+    const credential = EmailAuthProvider.credential(email, password);
+    await reauthenticateWithCredential(user, credential);
+    console.log("User re-authenticated successfully");
+    return { success: true };
+  } catch (error) {
+    console.error("Re-authentication failed:", error);
+    return {
+      success: false,
+      message: "Re-authentication failed. Please check your credentials.",
+      error: error,
+    };
   }
 }

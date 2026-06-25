@@ -1,10 +1,7 @@
 // File: firestore-service.js
 // Firestore Operations for Views and Likes Tracking
 
-import {
-  db,
-  auth
-} from './firebase-config.js';
+import { db, auth } from "./firebase-config.js";
 
 import {
   collection,
@@ -18,12 +15,12 @@ import {
   query,
   where,
   getDocs,
-  serverTimestamp
-} from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 /**
  * FIRESTORE SCHEMA
- * 
+ *
  * Collection: prompts
  * Document: {promptId}
  * {
@@ -38,7 +35,7 @@ import {
  *   likes: number (default: 0),
  *   createdAt: timestamp
  * }
- * 
+ *
  * Collection: likes
  * Document: {userId}_{promptId}
  * {
@@ -48,18 +45,19 @@ import {
  * }
  */
 
-const PROMPTS_COLLECTION = 'prompts';
-const LIKES_COLLECTION = 'likes';
+const PROMPTS_COLLECTION = "prompts";
+const LIKES_COLLECTION = "likes";
 
 /**
  * Get a unique anonymous user ID
  * Creates and stores in localStorage if doesn't exist
  */
 function getAnonymousUserId() {
-  let anonId = localStorage.getItem('pv_anonId');
+  let anonId = localStorage.getItem("pv_anonId");
   if (!anonId) {
-    anonId = 'anon_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-    localStorage.setItem('pv_anonId', anonId);
+    anonId =
+      "anon_" + Math.random().toString(36).substr(2, 9) + "_" + Date.now();
+    localStorage.setItem("pv_anonId", anonId);
   }
   return anonId;
 }
@@ -81,23 +79,23 @@ function getUserIdentifier() {
 export async function recordPromptView(promptId) {
   try {
     const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
-    
+
     // Use atomic increment
     await updateDoc(promptRef, {
       views: increment(1),
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
-    
+
     console.log(`View recorded for prompt: ${promptId}`);
     return { success: true };
   } catch (error) {
-    console.error('Error recording view:', error);
-    
+    console.error("Error recording view:", error);
+
     // If prompt doesn't exist, create it
-    if (error.code === 'not-found') {
+    if (error.code === "not-found") {
       return createPromptDocument(promptId);
     }
-    
+
     return { success: false, error: error.message };
   }
 }
@@ -108,21 +106,22 @@ export async function recordPromptView(promptId) {
 export async function createPromptDocument(promptId, promptData = {}) {
   try {
     const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
-    
+
     const docData = {
       id: promptId,
       views: 0,
       likes: 0,
+      bookmarks: 0,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      ...promptData
+      ...promptData,
     };
-    
+
     await setDoc(promptRef, docData);
     console.log(`Prompt document created: ${promptId}`);
     return { success: true };
   } catch (error) {
-    console.error('Error creating prompt document:', error);
+    console.error("Error creating prompt document:", error);
     return { success: false, error: error.message };
   }
 }
@@ -134,21 +133,24 @@ export async function getPromptMetrics(promptId) {
   try {
     const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
     const docSnapshot = await getDoc(promptRef);
-    
+
     if (docSnapshot.exists()) {
       const data = docSnapshot.data();
+      const bookmarks = Math.max(0, data.bookmarks || 0); // Ensure non-negative
+
       return {
-        views: data.views || 0,
-        likes: data.likes || 0
+        views: Math.max(0, data.views || 0),
+        likes: Math.max(0, data.likes || 0),
+        bookmarks: bookmarks,
       };
     } else {
       // Create document if it doesn't exist
       await createPromptDocument(promptId);
-      return { views: 0, likes: 0 };
+      return { views: 0, likes: 0, bookmarks: 0 };
     }
   } catch (error) {
-    console.error('Error getting prompt metrics:', error);
-    return { views: 0, likes: 0, error: error.message };
+    console.error("Error getting prompt metrics:", error);
+    return { views: 0, likes: 0, bookmarks: 0, error: error.message };
   }
 }
 
@@ -159,15 +161,15 @@ export async function getPromptMetrics(promptId) {
  */
 export async function getUserLikeStatus(promptId) {
   const userIdentifier = getUserIdentifier();
-  
+
   try {
     const likeDocId = `${userIdentifier}_${promptId}`;
     const likeRef = doc(db, LIKES_COLLECTION, likeDocId);
     const docSnapshot = await getDoc(likeRef);
-    
+
     return { liked: docSnapshot.exists() };
   } catch (error) {
-    console.error('Error checking like status:', error);
+    console.error("Error checking like status:", error);
     return { liked: false, error: error.message };
   }
 }
@@ -175,11 +177,11 @@ export async function getUserLikeStatus(promptId) {
 /**
  * Toggle like/unlike for a prompt
  * Works for both authenticated and anonymous users
- * 
+ *
  * If user already liked:
  *   - Remove like document
  *   - Decrement likes count
- * 
+ *
  * If user hasn't liked:
  *   - Create like document
  *   - Increment likes count
@@ -187,29 +189,29 @@ export async function getUserLikeStatus(promptId) {
 export async function togglePromptLike(promptId) {
   const userIdentifier = getUserIdentifier();
   const user = auth.currentUser;
-  
+
   try {
     const likeDocId = `${userIdentifier}_${promptId}`;
     const likeRef = doc(db, LIKES_COLLECTION, likeDocId);
     const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
-    
+
     // Check if user already liked
     const likeSnapshot = await getDoc(likeRef);
     const alreadyLiked = likeSnapshot.exists();
-    
+
     if (alreadyLiked) {
       // Unlike: Remove like document and decrement count
       await deleteDoc(likeRef);
       await updateDoc(promptRef, {
         likes: increment(-1),
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
-      
+
       console.log(`Unlike recorded for prompt: ${promptId}`);
       return {
         success: true,
         liked: false,
-        message: 'Like removed'
+        message: "Like removed",
       };
     } else {
       // Like: Create like document and increment count
@@ -217,27 +219,122 @@ export async function togglePromptLike(promptId) {
         userId: userIdentifier,
         isAnonymous: !user,
         promptId: promptId,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
       });
-      
+
       await updateDoc(promptRef, {
         likes: increment(1),
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
-      
+
       console.log(`Like recorded for prompt: ${promptId}`);
       return {
         success: true,
         liked: true,
-        message: 'Like added'
+        message: "Like added",
       };
     }
   } catch (error) {
-    console.error('Error toggling like:', error);
+    console.error("Error toggling like:", error);
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
+  }
+}
+
+// ========== BOOKMARK TRACKING ==========
+
+/**
+ * Ensure a prompt document exists and has bookmarks field initialized
+ * Safe operation - won't overwrite existing data
+ */
+async function ensurePromptDocExists(promptId) {
+  try {
+    const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
+    const promptSnap = await getDoc(promptRef);
+
+    if (!promptSnap.exists()) {
+      // Create document with bookmarks initialized
+      await setDoc(promptRef, {
+        id: promptId,
+        views: 0,
+        likes: 0,
+        bookmarks: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      console.log(`✅ Created prompt document: ${promptId}`);
+      return true;
+    } else if (promptSnap.data().bookmarks === undefined) {
+      // Document exists but bookmarks field missing - add it
+      await updateDoc(promptRef, {
+        bookmarks: 0,
+      });
+      console.log(`✅ Added bookmarks field to: ${promptId}`);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error ensuring prompt doc:", error);
+    throw error;
+  }
+}
+
+/**
+ * Safely increment bookmark count for a prompt
+ * Ensures document and field exist before incrementing
+ */
+export async function incrementBookmarkCount(promptId) {
+  try {
+    // First ensure the document and bookmarks field exist
+    await ensurePromptDocExists(promptId);
+
+    // Now safely increment
+    const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
+    await updateDoc(promptRef, {
+      bookmarks: increment(1),
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`✅ Bookmark incremented for: ${promptId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error incrementing bookmark count:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Safely decrement bookmark count for a prompt
+ * Ensures document exists and prevents going below 0
+ */
+export async function decrementBookmarkCount(promptId) {
+  try {
+    // First ensure the document and bookmarks field exist
+    await ensurePromptDocExists(promptId);
+
+    const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
+    const promptSnap = await getDoc(promptRef);
+
+    if (promptSnap.exists()) {
+      const currentBookmarks = promptSnap.data().bookmarks || 0;
+
+      // Only decrement if greater than 0
+      if (currentBookmarks > 0) {
+        await updateDoc(promptRef, {
+          bookmarks: increment(-1),
+          updatedAt: serverTimestamp(),
+        });
+        console.log(`✅ Bookmark decremented for: ${promptId}`);
+      } else {
+        console.log(`⚠️ Bookmark count already 0 for: ${promptId}`);
+      }
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error decrementing bookmark count:", error);
+    return { success: false, error: error.message };
   }
 }
 
@@ -245,29 +342,34 @@ export async function togglePromptLike(promptId) {
 
 /**
  * Listen to prompt metrics changes in real-time
- * Calls callback whenever views or likes change
+ * Calls callback whenever views, likes, or bookmarks change
  */
 export function listenToPromptMetrics(promptId, callback) {
   try {
     const promptRef = doc(db, PROMPTS_COLLECTION, promptId);
-    
-    const unsubscribe = onSnapshot(promptRef, (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        callback({
-          views: data.views || 0,
-          likes: data.likes || 0
-        });
-      } else {
-        callback({ views: 0, likes: 0 });
-      }
-    }, (error) => {
-      console.error('Error listening to prompt metrics:', error);
-    });
-    
+
+    const unsubscribe = onSnapshot(
+      promptRef,
+      (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          callback({
+            views: Math.max(0, data.views || 0),
+            likes: Math.max(0, data.likes || 0),
+            bookmarks: Math.max(0, data.bookmarks || 0),
+          });
+        } else {
+          callback({ views: 0, likes: 0, bookmarks: 0 });
+        }
+      },
+      (error) => {
+        console.error("Error listening to prompt metrics:", error);
+      },
+    );
+
     return unsubscribe;
   } catch (error) {
-    console.error('Error setting up real-time listener:', error);
+    console.error("Error setting up real-time listener:", error);
     return () => {};
   }
 }
@@ -278,20 +380,24 @@ export function listenToPromptMetrics(promptId, callback) {
  */
 export function listenToUserLikeStatus(promptId, callback) {
   const userIdentifier = getUserIdentifier();
-  
+
   try {
     const likeDocId = `${userIdentifier}_${promptId}`;
     const likeRef = doc(db, LIKES_COLLECTION, likeDocId);
-    
-    const unsubscribe = onSnapshot(likeRef, (doc) => {
-      callback({ liked: doc.exists() });
-    }, (error) => {
-      console.error('Error listening to like status:', error);
-    });
-    
+
+    const unsubscribe = onSnapshot(
+      likeRef,
+      (doc) => {
+        callback({ liked: doc.exists() });
+      },
+      (error) => {
+        console.error("Error listening to like status:", error);
+      },
+    );
+
     return unsubscribe;
   } catch (error) {
-    console.error('Error setting up like status listener:', error);
+    console.error("Error setting up like status listener:", error);
     return () => {};
   }
 }
@@ -308,13 +414,13 @@ export function listenToAllPromptMetrics(promptIds, callback) {
         callback(promptId, metrics);
       });
     });
-    
+
     // Return function to unsubscribe from all listeners
     return () => {
       unsubscribers.forEach((unsub) => unsub());
     };
   } catch (error) {
-    console.error('Error setting up bulk listeners:', error);
+    console.error("Error setting up bulk listeners:", error);
     return () => {};
   }
 }
@@ -330,7 +436,7 @@ export async function initializePromptsInFirestore(prompts) {
     for (const prompt of prompts) {
       const promptRef = doc(db, PROMPTS_COLLECTION, prompt.id);
       const docSnapshot = await getDoc(promptRef);
-      
+
       // Only create if doesn't exist
       if (!docSnapshot.exists()) {
         await setDoc(promptRef, {
@@ -339,25 +445,76 @@ export async function initializePromptsInFirestore(prompts) {
           category: prompt.category,
           image: prompt.img,
           prompt: prompt.prompt,
-          bookmarks: prompt.bookmarks,
+          bookmarks: prompt.bookmarks || 0,
           date: prompt.date,
           views: 0,
           likes: 0,
           createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
         });
       }
     }
-    
-    console.log('Prompts initialized in Firestore');
+
+    console.log("Prompts initialized in Firestore");
     return { success: true };
   } catch (error) {
-    console.error('Error initializing prompts:', error);
+    console.error("Error initializing prompts:", error);
     return { success: false, error: error.message };
   }
 }
 
 // ========== UTILITY FUNCTIONS ==========
+
+/**
+ * Initialize bookmarks field for all existing prompts (migration)
+ * Ensures all prompts have bookmarks: 0 field
+ * Runs safely without overwriting existing data
+ */
+export async function initializeBookmarksField() {
+  try {
+    console.log("🔄 Starting bookmarks field migration...");
+    const promptsRef = collection(db, PROMPTS_COLLECTION);
+    const snapshot = await getDocs(promptsRef);
+
+    let updated = 0;
+    const updates = [];
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      // Only update if bookmarks field is missing or invalid
+      if (
+        data.bookmarks === undefined ||
+        data.bookmarks === null ||
+        typeof data.bookmarks !== "number"
+      ) {
+        console.log(`📝 Updating bookmarks for: ${doc.id}`);
+        updates.push(
+          updateDoc(doc.ref, {
+            bookmarks: 0,
+          }).catch((err) => console.error(`Error updating ${doc.id}:`, err)),
+        );
+        updated++;
+      }
+    });
+
+    // Wait for all updates to complete
+    if (updates.length > 0) {
+      await Promise.all(updates);
+      console.log(
+        `✅ Bookmarks migration complete! Updated ${updated} prompts`,
+      );
+    } else {
+      console.log(
+        `✅ All ${snapshot.size} prompts already have valid bookmarks field`,
+      );
+    }
+
+    return { success: true, updated, total: snapshot.size };
+  } catch (error) {
+    console.error("❌ Error in bookmarks migration:", error);
+    return { success: false, error: error.message };
+  }
+}
 
 /**
  * Get all likes by user
@@ -366,13 +523,13 @@ export async function getUserLikes(userId) {
   try {
     const q = query(
       collection(db, LIKES_COLLECTION),
-      where('userId', '==', userId)
+      where("userId", "==", userId),
     );
     const querySnapshot = await getDocs(q);
-    
-    return querySnapshot.docs.map(doc => doc.data().promptId);
+
+    return querySnapshot.docs.map((doc) => doc.data().promptId);
   } catch (error) {
-    console.error('Error getting user likes:', error);
+    console.error("Error getting user likes:", error);
     return [];
   }
 }
@@ -383,16 +540,16 @@ export async function getUserLikes(userId) {
 export async function getTopPromptsByViews(limit = 10) {
   try {
     const q = query(
-      collection(db, PROMPTS_COLLECTION)
+      collection(db, PROMPTS_COLLECTION),
       // Note: Firestore requires composite index for orderBy on multiple fields
       // For now, we'll fetch and sort in JavaScript
     );
     const querySnapshot = await getDocs(q);
-    
-    const prompts = querySnapshot.docs.map(doc => doc.data());
+
+    const prompts = querySnapshot.docs.map((doc) => doc.data());
     return prompts.sort((a, b) => b.views - a.views).slice(0, limit);
   } catch (error) {
-    console.error('Error getting top prompts:', error);
+    console.error("Error getting top prompts:", error);
     return [];
   }
 }
@@ -404,11 +561,11 @@ export async function getTopPromptsByLikes(limit = 10) {
   try {
     const q = query(collection(db, PROMPTS_COLLECTION));
     const querySnapshot = await getDocs(q);
-    
-    const prompts = querySnapshot.docs.map(doc => doc.data());
+
+    const prompts = querySnapshot.docs.map((doc) => doc.data());
     return prompts.sort((a, b) => b.likes - a.likes).slice(0, limit);
   } catch (error) {
-    console.error('Error getting top prompts:', error);
+    console.error("Error getting top prompts:", error);
     return [];
   }
 }

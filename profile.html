@@ -30,7 +30,7 @@
       .profile-banner {
         position: relative;
         width: 100%;
-        height: 280px;
+        min-height: 340px;
         background-size: cover;
         background-position: center;
         border-radius: 24px;
@@ -60,13 +60,13 @@
 
       .profile-header-overlay {
         position: absolute;
-        bottom: 0;
+        top: 18px;
         left: 32px;
         right: 32px;
         display: flex;
-        align-items: flex-end;
+        align-items: flex-start;
         gap: 24px;
-        padding-bottom: 24px;
+        padding-top: 0;
         z-index: 3;
       }
 
@@ -93,10 +93,52 @@
 
       .profile-header-info {
         flex: 1;
+        min-width: 0;
         display: flex;
         flex-direction: column;
         gap: 8px;
         color: white;
+      }
+
+      .banner-profile-details {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        display: none;
+      }
+
+      .banner-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 16px;
+        font-size: 0.85rem;
+      }
+
+      .banner-detail-full {
+        grid-column: 1 / -1;
+      }
+
+      .banner-detail-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+      }
+
+      .banner-detail-value {
+        color: rgba(255, 255, 255, 0.95);
+        line-height: 1.5;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .profile-email {
+        margin-top: 14px;
+        color: rgba(255, 255, 255, 0.85);
       }
 
       .profile-name {
@@ -364,19 +406,20 @@
         }
 
         .profile-banner {
-          height: 240px;
+          min-height: 380px;
+          height: auto;
         }
 
         .profile-header-overlay {
           position: relative;
-          flex-direction: column;
-          align-items: center;
-          justify-content: flex-start;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          justify-content: space-between;
           bottom: auto;
           left: 0;
           right: 0;
           gap: 16px;
-          padding: 30px 24px 24px;
+          padding: 24px 24px 18px;
         }
 
         .profile-avatar {
@@ -388,7 +431,10 @@
         }
 
         .profile-header-info {
-          text-align: center;
+          flex: 1;
+          min-width: 0;
+          max-width: 580px;
+          text-align: left;
           gap: 10px;
         }
 
@@ -399,7 +445,7 @@
         .profile-actions-header {
           margin-left: 0;
           width: 100%;
-          justify-content: center;
+          justify-content: flex-end;
           gap: 12px;
           padding-top: 8px;
         }
@@ -423,7 +469,8 @@
         }
 
         .profile-banner {
-          height: 200px;
+          min-height: 420px;
+          height: auto;
           border-radius: 16px;
         }
 
@@ -432,24 +479,28 @@
           left: 0;
           right: 0;
           bottom: auto;
-          flex-direction: column;
-          align-items: center;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: flex-start;
           justify-content: flex-start;
           gap: 14px;
-          padding: 28px 16px 16px;
+          padding: 18px 16px 16px;
         }
 
         .profile-avatar {
-          width: 100px;
-          height: 100px;
-          min-width: 100px;
-          font-size: 2.2rem;
+          width: 68px;
+          height: 68px;
+          min-width: 68px;
+          font-size: 1.55rem;
           border-width: 4px;
+          margin-bottom: 0;
         }
 
         .profile-header-info {
-          text-align: center;
+          text-align: left;
           gap: 8px;
+          width: calc(100% - 88px);
+          min-width: 0;
         }
 
         .profile-name {
@@ -458,15 +509,34 @@
 
         .profile-email {
           font-size: 0.85rem;
+          margin-top: 10px;
+        }
+
+        #bannerProfileDetails {
+          width: 100%;
+        }
+
+        .banner-detail-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .banner-detail-full {
+          grid-column: 1 / -1;
         }
 
         .profile-actions-header {
-          justify-content: center;
-          gap: 12px;
+          justify-content: flex-end;
           width: 100%;
+          gap: 10px;
           margin-left: 0;
-          padding-top: 6px;
+          padding-top: 8px;
         }
+
+        .profile-actions-header .icon-action-btn {
+          width: 40px;
+          height: 40px;
+        }
+      }
 
         .profile-stats {
           grid-template-columns: 1fr;
@@ -498,6 +568,373 @@
           height: 130px;
         }
       }
+
+      /* ===== PROFILE MODAL STYLES ===== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1000;
+      }
+
+      .modal-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal {
+        background: var(--surface);
+        border-radius: 24px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 900px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+      }
+
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .modal-image-wrap {
+        position: relative;
+        min-height: 340px;
+        background: var(--surface-alt);
+      }
+
+      .modal-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        min-height: 340px;
+        max-height: 88vh;
+      }
+
+      .modal-category-chip {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--purple-deep);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 20px;
+      }
+
+      .modal-info {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow-y: auto;
+        max-height: 88vh;
+        position: relative;
+      }
+
+      .modal-info h3 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: var(--font-display);
+        color: var(--text);
+      }
+
+      .modal-meta {
+        display: flex;
+        gap: 20px;
+        font-size: 0.9rem;
+        color: var(--text-soft);
+        flex-wrap: wrap;
+      }
+
+      .modal-meta span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .modal-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-soft);
+        margin-bottom: 10px;
+        margin: 0;
+      }
+
+      .modal-prompt-box {
+        background: var(--surface-alt);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 20px;
+        max-height: 160px;
+        overflow-y: auto;
+      }
+
+      .modal-prompt-box p {
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: var(--text);
+        margin: 0;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 26px;
+      }
+
+      .modal-actions .btn {
+        flex: 1;
+      }
+
+      .modal-ai-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-outline:hover {
+        background: var(--surface-alt);
+        border-color: var(--purple);
+      }
+
+      .btn-ai {
+        border: 1px solid var(--border-color);
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
+
+      .btn-ai.chatgpt {
+        background: #10a37f;
+        color: white;
+        border: none;
+      }
+
+      .btn-ai.chatgpt:hover {
+        background: #0d8e6f;
+      }
+
+      .btn-ai.gemini {
+        background: linear-gradient(135deg, #4285f4 0%, #ea4335 100%);
+        color: white;
+        border: none;
+      }
+
+      .btn-ai.gemini:hover {
+        opacity: 0.9;
+      }
+
+      .share-menu {
+        position: absolute;
+        top: 60px;
+        right: 32px;
+        width: 200px;
+        background: var(--surface);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        animation: slideDown 0.2s ease;
+        display: none;
+        z-index: 1000;
+      }
+
+      .share-menu.show {
+        display: block;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .share-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--text);
+        text-decoration: none;
+        transition: background 0.2s ease, color 0.2s ease;
+        font-size: 0.95rem;
+        width: 100%;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .share-option:last-child {
+        border-bottom: none;
+      }
+
+      .share-option:hover {
+        background: var(--surface-alt);
+        color: var(--purple);
+      }
+
+      .share-option i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      .modal-toast {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(120px);
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .modal-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 900px) {
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-image-wrap {
+          min-height: 280px;
+        }
+
+        .modal-image-wrap img {
+          min-height: 280px;
+        }
+
+        .modal-info {
+          padding: 24px;
+        }
+
+        .modal-info h3 {
+          font-size: 1.5rem;
+        }
+
+        .modal-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-ai-actions {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-image-wrap {
+          min-height: 240px;
+        }
+
+        .modal-image-wrap img {
+          min-height: 240px;
+        }
+
+        .modal-info {
+          padding: 16px;
+        }
+
+        .modal-close {
+          top: 12px;
+          right: 12px;
+          width: 36px;
+          height: 36px;
+          font-size: 1rem;
+        }
+
+        .modal-info h3 {
+          font-size: 1.3rem;
+        }
+      }
+    
     </style>
   </head>
   <body>
@@ -541,16 +978,197 @@
         <!-- Email Verification Status -->
         <div id="verificationStatusContainer" style="margin-bottom: 20px"></div>
 
+        <!-- Profile Completion Banner -->
+        <div id="profileCompletionBanner" style="margin-bottom: 20px; display: none; animation: slideInDown 0.4s ease;">
+          <div style="
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #78350f;
+          ">
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 1.2rem; flex-shrink: 0;"></i>
+            <div style="flex: 1;">
+              <p style="font-weight: 600; margin: 0;">⚠️ Your profile is incomplete. Please complete your profile.</p>
+            </div>
+            <button id="completeNowBtn" style="
+              background: #ea580c;
+              color: white;
+              border: none;
+              padding: 8px 16px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 0.85rem;
+              white-space: nowrap;
+              transition: background 0.3s ease;
+            " onmouseover="this.style.background = '#d97706'" onmouseout="this.style.background = '#ea580c'">
+              Complete Now
+            </button>
+          </div>
+        </div>
+        
+        <!-- Success Notification Toast -->
+        <div id="successNotification" style="
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          border: 1px solid #6ee7b7;
+          border-radius: 12px;
+          padding: 16px 24px;
+          display: none;
+          align-items: center;
+          gap: 12px;
+          color: white;
+          z-index: 2000;
+          box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+          animation: slideInRight 0.4s ease;
+        ">
+          <i class="fa-solid fa-circle-check" style="font-size: 1.3rem; flex-shrink: 0;"></i>
+          <div>
+            <p style="font-weight: 600; margin: 0;" id="successMessage">Changes saved successfully!</p>
+          </div>
+        </div>
+        
+        <!-- Styled Alert Modal -->
+        <div id="styledAlertModal" style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 2000;
+          backdrop-filter: blur(4px);
+        ">
+          <div style="
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 28px 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popUp 0.3s ease;
+          ">
+            <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+              <i class="fa-solid fa-circle-check" style="font-size: 1.5rem; color: #10b981; flex-shrink: 0; margin-top: 2px;"></i>
+              <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 1.2rem; color: var(--text);">Success!</h3>
+                <p id="alertMessage" style="margin: 0; color: var(--text-soft); font-size: 0.95rem;"></p>
+              </div>
+            </div>
+            <button onclick="closeStyledAlert()" style="
+              width: 100%;
+              padding: 12px 20px;
+              background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: transform 0.2s ease;
+            " onmouseover="this.style.transform = 'scale(1.02)'" onmouseout="this.style.transform = 'scale(1)'">
+              OK
+            </button>
+          </div>
+        </div>
+        
+        <style>
+          @keyframes slideInRight {
+            from {
+              transform: translateX(400px);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          @keyframes slideOutRight {
+            from {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateX(400px);
+              opacity: 0;
+            }
+          }
+          @keyframes slideInDown {
+            from {
+              transform: translateY(-20px);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+          @keyframes slideOutDown {
+            from {
+              transform: translateY(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateY(-30px);
+              opacity: 0;
+            }
+          }
+          @keyframes popUp {
+            from {
+              transform: scale(0.9) translateY(-20px);
+              opacity: 0;
+            }
+            to {
+              transform: scale(1) translateY(0);
+              opacity: 1;
+            }
+          }
+        </style>
+
         <!-- Hero Banner Section -->
         <div class="profile-banner-section">
           <div class="profile-banner" id="profileBanner">
             <div class="profile-header-overlay">
               <div class="profile-avatar" id="profileAvatar">U</div>
               <div class="profile-header-info">
-                <div class="profile-name" id="profileName">User</div>
-                <div class="profile-email" id="profileEmail">user@example.com</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="profile-name" id="profileName">User</div>
+                  <button class="icon-action-btn" id="editUsernameBtn" style="width: 32px; height: 32px; font-size: 0.85rem; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);" title="Edit username">
+                    <i class="fa-solid fa-edit"></i>
+                  </button>
+                </div>
+                <!-- Profile Details on Banner -->
+                <div id="bannerProfileDetails" class="banner-profile-details">
+                  <div class="banner-detail-grid">
+                    <div class="banner-detail-full">
+                      <div class="banner-detail-label">Bio</div>
+                      <div id="bannerBio" class="banner-detail-value">—</div>
+                    </div>
+                    <div>
+                      <div class="banner-detail-label">Birth</div>
+                      <div id="bannerDOB" class="banner-detail-value" style="color: white; font-weight: 500;">—</div>
+                    </div>
+                    <div>
+                      <div class="banner-detail-label">Gender</div>
+                      <div id="bannerGender" class="banner-detail-value" style="color: white; font-weight: 500;">—</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="profile-email" id="profileEmail" style="margin-top: 14px; color: rgba(255,255,255,0.85);">user@example.com</div>
               </div>
-              <div class="profile-actions-header">
+              <div class="profile-actions-header" style="display: flex; gap: 8px; align-items: center;">
+                <button class="icon-action-btn" id="profileEditBtn" title="Edit profile details" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
                 <button class="icon-action-btn" id="settingsBtn" title="Settings">
                   <i class="fa-solid fa-gear"></i>
                 </button>
@@ -560,6 +1178,66 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Profile Info Section -->
+        <div id="profileInfoSection" style="max-width: 800px; margin: 0 auto 40px; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur)); box-shadow: var(--glass-shadow); border-radius: 20px; padding: 28px 24px; display: none;">
+          <!-- Header with Edit Button -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <h3 style="margin: 0; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--text);">Edit Profile Details</h3>
+          </div>
+
+          <!-- Display View -->
+          <div id="profileViewMode" style="display: block;">
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 8px;">Bio</div>
+              <p id="profileBio" style="margin: 0; color: var(--text); line-height: 1.6;">—</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+              <div>
+                <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 8px;">Date of Birth</div>
+                <p id="profileDOB" style="margin: 0; color: var(--text);">—</p>
+              </div>
+              <div>
+                <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 8px;">Gender</div>
+                <p id="profileGender" style="margin: 0; color: var(--text);">—</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit View -->
+          <form id="profileInlineEditForm" style="display: none;">
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 8px;">Date of Birth</label>
+              <input type="date" id="profileEditDOB" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 0.95rem;" required />
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 8px;">Gender</label>
+              <select id="profileEditGender" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 0.95rem;" required>
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="prefer-not-to-say">Prefer Not to Say</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 8px;">Bio</label>
+              <textarea id="profileEditBio" maxlength="300" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 0.95rem; resize: vertical; min-height: 80px; font-family: inherit;" placeholder="Tell us about yourself..."></textarea>
+              <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">
+                <span id="profileBioCharCount">0</span>/300
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <button type="submit" class="btn btn-primary" style="flex: 1; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: white; padding: 12px 20px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-save"></i> Save Changes
+              </button>
+              <button type="button" id="profileEditCancelBtn" class="btn" style="flex: 1; background: transparent; border: 1px solid var(--border-color); color: var(--text); padding: 12px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-times"></i> Cancel
+              </button>
+            </div>
+            <div id="profileEditError" style="color: #e11d48; font-size: 0.9rem; margin-top: 12px; display: none;"></div>
+          </form>
         </div>
 
         <!-- Stats Section -->
@@ -579,7 +1257,7 @@
         </div>
 
         <!-- Bookmarks Section -->
-        <section class="bookmarks-section">
+        <section class="bookmarks-section" id="bookmarks">
           <div class="section-header">
             <h2 class="section-title">
               <i class="fa-solid fa-bookmark"></i> My Bookmarks
@@ -597,11 +1275,824 @@
       </div>
     </main>
 
+    <!-- ===== SETTINGS PANEL MODAL ===== -->
+    <div class="modal-overlay" id="settingsModalOverlay" style="display: none; z-index: 1100; position: fixed; inset: 0;">
+      <div class="modal" id="settingsPanel" style="max-width: 600px; z-index: 1101;">
+        <button class="modal-close" id="settingsPanelClose" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div style="padding: 32px; max-height: 85vh; overflow-y: auto;">
+          <h2 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin: 0 0 28px 0;">Settings</h2>
+
+          <!-- Theme Section -->
+          <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h3 style="margin: 0 0 4px 0; color: var(--text); font-weight: 600;">Theme</h3>
+                <p style="margin: 0; font-size: 0.9rem; color: var(--text-soft);">Choose your preferred theme</p>
+              </div>
+              <button id="settingsThemeToggle" style="
+                width: 50px;
+                height: 28px;
+                border-radius: 14px;
+                border: none;
+                background: var(--border-color);
+                cursor: pointer;
+                transition: background 0.3s ease;
+                position: relative;
+              ">
+                <i id="settingsThemeIcon" class="fa-solid fa-moon" style="
+                  position: absolute;
+                  left: 6px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  font-size: 0.8rem;
+                  transition: all 0.3s ease;
+                "></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Account Information Section -->
+          <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+              <h3 style="margin: 0; color: var(--text); font-weight: 600;">Account Information</h3>
+              <button id="editAccountInfoBtn" class="btn" style="padding: 8px 16px; font-size: 0.85rem; background: transparent; border: 1px solid var(--border-color); color: var(--text);">
+                <i class="fa-solid fa-edit"></i> Edit
+              </button>
+            </div>
+            
+            <!-- Read-only view -->
+            <div id="accountInfoReadOnly" style="display: block;">
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft);">Username</label>
+                <p id="settingsUsername" style="margin: 4px 0 0 0; color: var(--text); font-weight: 600;">—</p>
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft);">Date of Birth</label>
+                <p id="settingsDOB" style="margin: 4px 0 0 0; color: var(--text);">—</p>
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft);">Gender</label>
+                <p id="settingsGender" style="margin: 4px 0 0 0; color: var(--text);">—</p>
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft);">Bio</label>
+                <p id="settingsBio" style="margin: 4px 0 0 0; color: var(--text); line-height: 1.5;">—</p>
+              </div>
+            </div>
+
+            <!-- Edit form -->
+            <form id="accountInfoEditForm" style="display: none;">
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); display: block; margin-bottom: 8px;">Date of Birth</label>
+                <input type="date" id="editDOB" style="
+                  width: 100%;
+                  padding: 12px 16px;
+                  border: 1.5px solid var(--border-color);
+                  border-radius: 12px;
+                  background: var(--surface);
+                  color: var(--text);
+                  font-size: 0.95rem;
+                " />
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); display: block; margin-bottom: 8px;">Gender</label>
+                <select id="editGender" style="
+                  width: 100%;
+                  padding: 12px 16px;
+                  border: 1.5px solid var(--border-color);
+                  border-radius: 12px;
+                  background: var(--surface);
+                  color: var(--text);
+                  font-size: 0.95rem;
+                ">
+                  <option value="">Select gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); display: block; margin-bottom: 8px;">Bio (Optional)</label>
+                <textarea id="editBio" maxlength="200" style="
+                  width: 100%;
+                  padding: 12px 16px;
+                  border: 1.5px solid var(--border-color);
+                  border-radius: 12px;
+                  background: var(--surface);
+                  color: var(--text);
+                  font-size: 0.95rem;
+                  resize: vertical;
+                  min-height: 80px;
+                  font-family: inherit;
+                " placeholder="Tell us about yourself..."></textarea>
+                <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">
+                  <span id="bioCharCount">0</span>/200
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                  <i class="fa-solid fa-save"></i> Save Changes
+                </button>
+                <button type="button" id="cancelEditBtn" class="btn" style="flex: 1; background: transparent; border: 1px solid var(--border-color); color: var(--text);">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Change Password Section -->
+          <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border-color);" id="changePasswordSection">
+            <h3 style="margin: 0 0 16px 0; color: var(--text); font-weight: 600;">Change Password</h3>
+            <div id="googleOnlyMessage" style="
+              background: rgba(167, 139, 250, 0.1);
+              border: 1px solid rgba(167, 139, 250, 0.2);
+              border-radius: 12px;
+              padding: 12px 16px;
+              margin-bottom: 16px;
+              color: var(--text-soft);
+              font-size: 0.9rem;
+              display: none;
+            ">
+              <i class="fa-solid fa-info-circle"></i> You're signed in with Google. Set a password to use email/password authentication.
+            </div>
+            <form id="changePasswordForm">
+              <div id="currentPasswordField" style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); display: block; margin-bottom: 8px;">Current Password</label>
+                <input type="password" id="currentPassword" style="
+                  width: 100%;
+                  padding: 12px 16px;
+                  border: 1.5px solid var(--border-color);
+                  border-radius: 12px;
+                  background: var(--surface);
+                  color: var(--text);
+                  font-size: 0.95rem;
+                " />
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); display: block; margin-bottom: 8px;">New Password</label>
+                <input type="password" id="newPassword" style="
+                  width: 100%;
+                  padding: 12px 16px;
+                  border: 1.5px solid var(--border-color);
+                  border-radius: 12px;
+                  background: var(--surface);
+                  color: var(--text);
+                  font-size: 0.95rem;
+                " />
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); display: block; margin-bottom: 8px;">Confirm Password</label>
+                <input type="password" id="confirmPassword" style="
+                  width: 100%;
+                  padding: 12px 16px;
+                  border: 1.5px solid var(--border-color);
+                  border-radius: 12px;
+                  background: var(--surface);
+                  color: var(--text);
+                  font-size: 0.95rem;
+                " />
+                <p id="passwordError" style="color: #e11d48; font-size: 0.8rem; margin-top: 4px; display: none;"></p>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-lock"></i> Update Password
+              </button>
+            </form>
+          </div>
+
+          <!-- Delete Account Section -->
+          <div style="margin-bottom: 0;">
+            <h3 style="margin: 0 0 16px 0; color: var(--text); font-weight: 600;">Danger Zone</h3>
+            <button id="deleteAccountBtn" class="btn" style="
+              width: 100%;
+              background: #ef4444;
+              color: white;
+              border: none;
+              padding: 12px 20px;
+            " onmouseover="this.style.background = '#dc2626'" onmouseout="this.style.background = '#ef4444'">
+              <i class="fa-solid fa-trash"></i> Delete Account
+            </button>
+            <p style="margin: 12px 0 0 0; font-size: 0.85rem; color: var(--text-soft);">
+              This action cannot be undone. All your account data will be permanently deleted.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EDIT USERNAME MODAL ===== -->
+    <div class="modal-overlay" id="editUsernameModalOverlay" style="display: none; z-index: 1050;">
+      <div class="modal" id="editUsernameModal" style="max-width: 450px; z-index: 1051;">
+        <button class="modal-close" id="editUsernameModalClose" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div style="padding: 40px 32px;">
+          <h2 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin: 0 0 8px 0; text-align: center;">Edit Username</h2>
+          <p style="margin: 0 0 24px 0; font-size: 0.95rem; color: var(--text-soft); text-align: center;">Choose a unique username to personalize your profile</p>
+          
+          <form id="editUsernameForm">
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); margin-bottom: 12px;">New Username</label>
+              <input type="text" id="newUsernameInput" style="
+                width: 100%;
+                padding: 14px 16px;
+                border: 2px solid var(--border-color);
+                border-radius: 12px;
+                background: var(--surface-alt);
+                color: var(--text);
+                font-size: 1rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+              " placeholder="Enter new username" maxlength="50" required onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border-color)'" />
+              <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 8px;">
+                <span id="usernameCharCount">0</span>/50 characters
+              </div>
+            </div>
+            
+            <div id="usernameEditError" style="color: #e11d48; font-size: 0.9rem; margin-bottom: 16px; display: none;"></div>
+            
+            <div style="display: flex; gap: 12px;">
+              <button type="submit" class="btn btn-primary" style="flex: 1; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);">
+                <i class="fa-solid fa-check"></i> Update Username
+              </button>
+              <button type="button" id="editUsernameCancel" class="btn btn-outline" style="flex: 1;">
+                <i class="fa-solid fa-times"></i> Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DELETE ACCOUNT CONFIRMATION MODAL ===== -->
+    <div class="modal-overlay" id="deleteConfirmOverlay" style="display: none; z-index: 1200;">
+      <div class="modal" id="deleteConfirmPanel" style="max-width: 400px; z-index: 1201;">
+        <div style="padding: 40px 32px; text-align: center;">
+          <i class="fa-solid fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; display: block; margin-bottom: 16px;"></i>
+          <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin: 0 0 12px 0; color: var(--text);">Delete Account?</h2>
+          <p style="margin: 0 0 20px 0; color: var(--text-soft); line-height: 1.6;">
+            This will permanently delete your account and profile information. Your bookmarks and prompt interactions will be preserved, but your account cannot be recovered.
+          </p>
+          <form id="deleteConfirmForm">
+            <div style="margin-bottom: 16px;">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text); display: block; margin-bottom: 8px;">Enter your email to confirm:</label>
+              <input type="email" id="deleteConfirmEmail" style="
+                width: 100%;
+                padding: 12px 16px;
+                border: 1.5px solid var(--border-color);
+                border-radius: 12px;
+                background: var(--surface);
+                color: var(--text);
+                font-size: 0.95rem;
+              " placeholder="your@email.com" />
+            </div>
+            <div id="deleteConfirmError" style="color: #e11d48; font-size: 0.8rem; margin-bottom: 16px; display: none;"></div>
+            <div style="display: flex; gap: 12px;">
+              <button type="button" id="deleteConfirmCancel" class="btn" style="flex: 1; background: transparent; border: 1px solid var(--border-color); color: var(--text);">
+                Cancel
+              </button>
+              <button type="submit" id="deleteConfirmBtn" class="btn" style="flex: 1; background: #ef4444; color: white;" onmouseover="this.style.background = '#dc2626'" onmouseout="this.style.background = '#ef4444'">
+                <i class="fa-solid fa-trash"></i> Delete Permanently
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    </main>
+
+    <!-- ===== PROMPT DETAIL MODAL (for profile bookmarks) ===== -->
+    <div class="modal-overlay" id="profileModalOverlay">
+      <div
+        class="modal"
+        id="profilePromptModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profileModalTitle"
+      >
+        <button class="modal-close" id="profileModalClose" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="modal-grid">
+          <div class="modal-image-wrap">
+            <img id="profileModalImage" src="" alt="" />
+            <span class="modal-category-chip" id="profileModalCategoryChip"></span>
+          </div>
+          <div class="modal-info">
+            <h3 id="profileModalTitle"></h3>
+            <div class="modal-meta">
+              <span
+                ><i class="fa-solid fa-bookmark"></i>
+                <span id="profileModalBookmarkCount">0</span> saves</span
+              >
+              <span
+                ><i class="fa-solid fa-eye"></i>
+                <span id="profileModalViews">0</span> views</span
+              >
+              <span
+                ><i class="fa-solid fa-heart"></i>
+                <span id="profileModalLikes">0</span> likes</span
+              >
+              <span
+                ><i class="fa-solid fa-clock"></i> <span id="profileModalDate"></span
+              ></span>
+            </div>
+
+            <p class="modal-label">Prompt</p>
+            <div class="modal-prompt-box">
+              <p id="profileModalPromptText" style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"></p>
+            </div>
+
+            <div class="modal-actions">
+              <button class="btn btn-primary" id="profileModalCopyBtn">
+                <i class="fa-solid fa-copy"></i> Copy prompt
+              </button>
+              <button class="btn btn-outline" id="profileModalShareBtn">
+                <i class="fa-solid fa-share-nodes"></i> Share
+              </button>
+              <button class="btn btn-outline" id="profileModalBookmarkBtn">
+                <i class="fa-solid fa-bookmark"></i> Remove
+              </button>
+            </div>
+
+            <!-- Share menu dropdown -->
+            <div class="share-menu" id="profileShareMenu">
+              <a
+                href="#"
+                id="profileShareWhatsApp"
+                class="share-option"
+                data-platform="whatsapp"
+              >
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              </a>
+              <a
+                href="#"
+                id="profileShareTelegram"
+                class="share-option"
+                data-platform="telegram"
+              >
+                <i class="fa-brands fa-telegram"></i> Telegram
+              </a>
+              <a
+                href="#"
+                id="profileShareFacebook"
+                class="share-option"
+                data-platform="facebook"
+              >
+                <i class="fa-brands fa-facebook"></i> Facebook
+              </a>
+              <a
+                href="#"
+                id="profileShareInstagram"
+                class="share-option"
+                data-platform="instagram"
+              >
+                <i class="fa-brands fa-instagram"></i> Instagram (Open App)
+              </a>
+              <a
+                href="#"
+                id="profileShareTwitter"
+                class="share-option"
+                data-platform="twitter"
+              >
+                <i class="fa-brands fa-twitter"></i> Twitter/X
+              </a>
+            </div>
+
+            <p class="modal-label">Open with</p>
+            <div class="modal-ai-actions">
+              <button
+                type="button"
+                class="btn btn-ai chatgpt"
+                id="profileModalChatGPTBtn"
+              >
+                <i class="fa-solid fa-comment-dots"></i> ChatGPT
+              </button>
+              <button
+                type="button"
+                class="btn btn-ai gemini"
+                id="profileModalGeminiBtn"
+              >
+                <i class="fa-solid fa-star"></i> Gemini
+              </button>
+            </div>
+
+            <div class="modal-toast" id="profileModalToast">Copied to clipboard!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script type="module">
       import { logoutUser, resendVerificationEmail } from "./auth.js";
       import { getUserBookmarks, getBookmarkCount } from "./user-service.js";
       import { auth } from "./firebase-config.js";
       import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+      // Global current user variable
+      let currentUser = null;
+
+      // Function to initialize all event listeners (called after auth)
+      function initializeEventListeners() {
+        console.log("Initializing event listeners...");
+        
+        // Settings button - open settings panel
+        document.getElementById("settingsBtn")?.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log("Settings button clicked, currentUser:", currentUser);
+          
+          if (!currentUser) {
+            console.error("User not authenticated");
+            alert("Please log in first");
+            return;
+          }
+          
+          const overlay = document.getElementById("settingsModalOverlay");
+          if (overlay) {
+            overlay.style.display = "flex";
+            overlay.style.zIndex = "1100";
+            overlay.classList.add("open");
+            document.body.style.overflow = "hidden";
+            await loadSettingsData();
+          }
+        });
+
+        // Settings panel close
+        document.getElementById("settingsPanelClose")?.addEventListener("click", closeSettingsPanel);
+        document.getElementById("settingsModalOverlay")?.addEventListener("click", (e) => {
+          if (e.target.id === "settingsModalOverlay") closeSettingsPanel();
+        });
+
+        // Go to Settings button (from completion banner)
+        document.getElementById("goToSettings")?.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log("Go to Settings clicked");
+          const settingsBtn = document.getElementById("settingsBtn");
+          if (settingsBtn) {
+            settingsBtn.click();
+          }
+        });
+
+        // Edit username button
+        document.getElementById("editUsernameBtn")?.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log("Edit username button clicked");
+          
+          const overlay = document.getElementById("editUsernameModalOverlay");
+          const input = document.getElementById("newUsernameInput");
+          if (overlay && input) {
+            input.value = document.getElementById("profileName").textContent;
+            input.focus();
+            document.getElementById("usernameCharCount").textContent = input.value.length;
+            overlay.style.display = "flex";
+            overlay.classList.add("open");
+            document.body.style.overflow = "hidden";
+          } else {
+            console.error("Modal or input not found");
+          }
+        });
+
+        // Close username modal
+        document.getElementById("editUsernameModalClose")?.addEventListener("click", closeUsernameModal);
+        document.getElementById("editUsernameCancel")?.addEventListener("click", closeUsernameModal);
+        
+        // Close on overlay click
+        document.getElementById("editUsernameModalOverlay")?.addEventListener("click", (e) => {
+          if (e.target.id === "editUsernameModalOverlay") {
+            closeUsernameModal();
+          }
+        });
+
+        // Close on Escape
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            const usernameOverlay = document.getElementById("editUsernameModalOverlay");
+            const settingsOverlay = document.getElementById("settingsModalOverlay");
+            if (usernameOverlay?.classList.contains("open")) closeUsernameModal();
+            if (settingsOverlay?.classList.contains("open")) closeSettingsPanel();
+          }
+        });
+
+        // Character counter
+        document.getElementById("newUsernameInput")?.addEventListener("input", (e) => {
+          document.getElementById("usernameCharCount").textContent = e.target.value.length;
+        });
+
+        // Username form submission
+        document.getElementById("editUsernameForm")?.addEventListener("submit", handleUsernameSubmit);
+
+        // Profile inline editing
+        document.getElementById("profileEditBtn")?.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          await toggleProfileEditMode();
+        });
+        document.getElementById("profileEditCancelBtn")?.addEventListener("click", (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          cancelProfileEdit();
+        });
+        document.getElementById("profileInlineEditForm")?.addEventListener("submit", handleProfileInfoSubmit);
+        document.getElementById("profileEditBio")?.addEventListener("input", (e) => {
+          document.getElementById("profileBioCharCount").textContent = e.target.value.length;
+        });
+
+        // Complete Now button - opens settings
+        document.getElementById("completeNowBtn")?.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const settingsBtn = document.getElementById("settingsBtn");
+          if (settingsBtn) {
+            settingsBtn.click();
+          }
+        });
+        
+        console.log("Event listeners initialized successfully");
+      }
+
+      // Helper function: Show styled notification
+      function showStyledNotification(message) {
+        const notification = document.getElementById("successNotification");
+        const messageEl = document.getElementById("successMessage");
+        if (notification && messageEl) {
+          messageEl.textContent = message;
+          notification.style.display = "flex";
+          notification.style.animation = "slideInRight 0.4s ease";
+          
+          // Auto hide after 3 seconds
+          setTimeout(() => {
+            notification.style.animation = "slideOutRight 0.4s ease";
+            setTimeout(() => {
+              notification.style.display = "none";
+            }, 400);
+          }, 3000);
+        }
+      }
+
+      // Helper function: Show styled alert
+      function showStyledAlert(message) {
+        const modal = document.getElementById("styledAlertModal");
+        const msgEl = document.getElementById("alertMessage");
+        if (modal && msgEl) {
+          msgEl.textContent = message;
+          modal.style.display = "flex";
+        }
+      }
+
+      // Helper function: Close styled alert
+      function closeStyledAlert() {
+        const modal = document.getElementById("styledAlertModal");
+        if (modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      // Click outside alert modal to close
+      document.addEventListener("click", (e) => {
+        const modal = document.getElementById("styledAlertModal");
+        if (modal && e.target === modal) {
+          closeStyledAlert();
+        }
+      });
+
+      // Helper function: Close username modal
+      function closeUsernameModal() {
+        const overlay = document.getElementById("editUsernameModalOverlay");
+        if (overlay) {
+          overlay.style.display = "none";
+          overlay.classList.remove("open");
+          document.body.style.overflow = "";
+        }
+      }
+
+      // Helper function: Close settings panel
+      function closeSettingsPanel() {
+        const overlay = document.getElementById("settingsModalOverlay");
+        const deleteOverlay = document.getElementById("deleteConfirmOverlay");
+        if (overlay) {
+          overlay.style.display = "none";
+          overlay.classList.remove("open");
+        }
+        if (deleteOverlay) deleteOverlay.style.display = "none";
+        document.body.style.overflow = "";
+      }
+
+      // Helper function: Handle username form submission
+      async function handleUsernameSubmit(e) {
+        e.preventDefault();
+        
+        const newUsername = document.getElementById("newUsernameInput").value.trim();
+        const errorDiv = document.getElementById("usernameEditError");
+        const submitBtn = e.target.querySelector("button[type='submit']");
+        
+        // Validation
+        if (!newUsername) {
+          errorDiv.textContent = "Username cannot be empty";
+          errorDiv.style.display = "block";
+          return;
+        }
+        
+        if (newUsername.length < 2) {
+          errorDiv.textContent = "Username must be at least 2 characters";
+          errorDiv.style.display = "block";
+          return;
+        }
+        
+        try {
+          const { updateProfile } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js");
+          
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+          errorDiv.style.display = "none";
+          
+          await updateProfile(currentUser, { displayName: newUsername });
+          
+          // Update profile display
+          document.getElementById("profileName").textContent = newUsername;
+          
+          // Close modal
+          closeUsernameModal();
+          
+          // Reload settings data if visible
+          const settingsOverlay = document.getElementById("settingsModalOverlay");
+          if (settingsOverlay && settingsOverlay.style.display !== "none") {
+            const usernameDisplay = document.getElementById("settingsUsername");
+            if (usernameDisplay) usernameDisplay.textContent = newUsername;
+          }
+          
+          // Reset button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update Username';
+          
+          // Show styled notification
+          showStyledNotification("✅ Username updated successfully!");
+        } catch (error) {
+          console.error("Error updating username:", error);
+          errorDiv.textContent = error.message || "Error updating username";
+          errorDiv.style.display = "block";
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update Username';
+        }
+      }
+
+      // Helper function: Toggle profile edit mode
+      async function toggleProfileEditMode() {
+        const section = document.getElementById("profileInfoSection");
+        const viewMode = document.getElementById("profileViewMode");
+        const editMode = document.getElementById("profileInlineEditForm");
+        const btn = document.getElementById("profileEditBtn");
+        
+        if (!section || !viewMode || !editMode) return;
+        const isEditing = editMode.style.display !== "none";
+
+        if (isEditing) {
+          cancelProfileEdit();
+          return;
+        }
+
+        if (section) {
+          section.style.display = "block";
+        }
+
+        // Load current values
+        const { db } = await import("./firebase-config.js");
+        const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+        
+        try {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          const userData = userDoc.data() || {};
+          
+          document.getElementById("profileEditDOB").value = userData.dateOfBirth || "";
+          document.getElementById("profileEditGender").value = userData.gender || "";
+          document.getElementById("profileEditBio").value = userData.bio || "";
+          document.getElementById("profileBioCharCount").textContent = (userData.bio || "").length;
+        } catch (error) {
+          console.error("Error loading profile data for edit:", error);
+        }
+        
+        viewMode.style.display = "none";
+        editMode.style.display = "block";
+        if (btn) {
+          btn.innerHTML = '<i class="fa-solid fa-times"></i>';
+          btn.title = "Cancel edit";
+        }
+      }
+
+      // Helper function: Cancel profile edit
+      function cancelProfileEdit() {
+        const viewMode = document.getElementById("profileViewMode");
+        const editMode = document.getElementById("profileInlineEditForm");
+        const btn = document.getElementById("profileEditBtn");
+        const section = document.getElementById("profileInfoSection");
+
+        if (viewMode) viewMode.style.display = "block";
+        if (editMode) editMode.style.display = "none";
+        if (btn) {
+          btn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+          btn.title = "Edit profile details";
+        }
+
+        if (section) {
+          // Keep the section visible when profile is incomplete,
+          // otherwise hide it if the banner already shows complete details.
+          const isComplete =
+            document.getElementById("bannerBio")?.textContent !== "—" &&
+            document.getElementById("bannerDOB")?.textContent !== "—" &&
+            document.getElementById("bannerGender")?.textContent !== "—";
+          section.style.display = isComplete ? "none" : "block";
+        }
+      }
+
+      // Helper function: Handle profile info form submission
+      async function handleProfileInfoSubmit(e) {
+        e.preventDefault();
+        
+        const dob = document.getElementById("profileEditDOB").value;
+        const gender = document.getElementById("profileEditGender").value;
+        const bio = document.getElementById("profileEditBio").value;
+        const errorDiv = document.getElementById("profileEditError");
+        const submitBtn = e.target.querySelector("button[type='submit']");
+        
+        if (!dob || !gender) {
+          errorDiv.textContent = "Please fill in all required fields";
+          errorDiv.style.display = "block";
+          return;
+        }
+        
+        try {
+          const { db } = await import("./firebase-config.js");
+          const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+          
+          if (!currentUser) return;
+          
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+          errorDiv.style.display = "none";
+          
+          const userDocRef = doc(db, "users", currentUser.uid);
+          await setDoc(userDocRef, {
+            dateOfBirth: dob,
+            gender: gender,
+            bio: bio,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+          
+          console.log("Profile updated successfully");
+          
+          // Update display
+          document.getElementById("profileDOB").textContent = formatDateDisplay(dob);
+          document.getElementById("profileGender").textContent = gender.charAt(0).toUpperCase() + gender.slice(1);
+          document.getElementById("profileBio").textContent = bio || "—";
+          
+          // Update banner display
+          document.getElementById("bannerDOB").textContent = formatDateDisplay(dob);
+          document.getElementById("bannerGender").textContent = gender.charAt(0).toUpperCase() + gender.slice(1);
+          document.getElementById("bannerBio").textContent = bio || "—";
+          document.getElementById("bannerProfileDetails").style.display = "block";
+          
+          // Close edit mode
+          cancelProfileEdit();
+          
+          // Hide completion banner and show success
+          const banner = document.getElementById("profileCompletionBanner");
+          if (banner && dob && gender) {
+            banner.style.animation = "slideOutDown 0.4s ease forwards";
+            setTimeout(() => {
+              banner.style.display = "none";
+              showStyledNotification("🎉 Profile completed successfully!");
+            }, 400);
+          } else {
+            showStyledNotification("✅ Profile updated successfully!");
+          }
+          
+          // Hide About You section once complete
+          const section = document.getElementById("profileInfoSection");
+          if (section && dob && gender && bio) {
+            section.style.display = "none";
+          }
+          
+          // Also update settings if it's open
+          const settingsOverlay = document.getElementById("settingsModalOverlay");
+          if (settingsOverlay && settingsOverlay.style.display !== "none") {
+            await loadSettingsData();
+          }
+          
+          // Reset button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
+        } catch (error) {
+          console.error("Error saving profile:", error);
+          errorDiv.textContent = error.message || "Error saving profile";
+          errorDiv.style.display = "block";
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
+        }
+      }
 
       // Auth check and load
       onAuthStateChanged(auth, async (user) => {
@@ -610,6 +2101,10 @@
           window.location.href = "auth.html?next=profile.html";
           return;
         }
+
+        // Set global currentUser for use in other functions
+        currentUser = user;
+        console.log("User authenticated:", user.email);
 
         // Update profile info with Firebase user data
         const displayName =
@@ -645,6 +2140,9 @@
         // Show verification status
         showVerificationStatus(user);
 
+        // Load profile info (DOB, Gender, Bio)
+        await loadProfileInfo();
+
         // Load bookmarks from Firebase
         try {
           const userBookmarks = await getUserBookmarks();
@@ -664,6 +2162,9 @@
           console.error("Error loading bookmarks:", error);
           document.getElementById("emptyBookmarks").hidden = false;
         }
+
+        // Initialize event listeners now that user is authenticated
+        setTimeout(() => initializeEventListeners(), 100);
       });
 
       // Display user's bookmarks in the grid
@@ -674,6 +2175,7 @@
         bookmarks.forEach((bookmark) => {
           const card = document.createElement("div");
           card.className = "bookmark-card";
+          card.style.cursor = "pointer";
           card.innerHTML = `
             <div class="bookmark-image">
               <img src="${bookmark.image || "https://via.placeholder.com/200x160"}" alt="${bookmark.title || "Prompt"}" />
@@ -683,11 +2185,222 @@
               <div class="bookmark-category">${bookmark.category || "General"}</div>
             </div>
           `;
+          
+          // Make card clickable to open modal in profile
+          card.addEventListener("click", () => {
+            openProfileModal(bookmark);
+          });
+          
           container.appendChild(card);
         });
 
         container.hidden = false;
       }
+      
+      // Open modal for bookmark in profile.html
+      function openProfileModal(bookmark) {
+        const modalOverlay = document.getElementById("profileModalOverlay");
+        const modal = document.getElementById("profilePromptModal");
+        
+        // Populate modal with bookmark data
+        document.getElementById("profileModalImage").src = bookmark.image || "https://via.placeholder.com/200x160";
+        document.getElementById("profileModalImage").alt = bookmark.title || "Prompt";
+        document.getElementById("profileModalCategoryChip").textContent = bookmark.category || "General";
+        document.getElementById("profileModalTitle").textContent = bookmark.title || "Untitled Prompt";
+        document.getElementById("profileModalPromptText").textContent = bookmark.prompt || "No prompt text available";
+        document.getElementById("profileModalDate").textContent = formatDate(bookmark.date) || "Unknown";
+        
+        // Store current bookmark for actions
+        modal.dataset.currentBookmark = JSON.stringify(bookmark);
+        
+        // Fetch metrics from Firestore
+        (async () => {
+          try {
+            const { getPromptMetrics } = await import("./firestore-service.js");
+            const metrics = await getPromptMetrics(bookmark.promptId);
+            
+            // Update metrics display
+            document.getElementById("profileModalBookmarkCount").textContent = metrics.bookmarks || "0";
+            document.getElementById("profileModalViews").textContent = metrics.views || "0";
+            document.getElementById("profileModalLikes").textContent = metrics.likes || "0";
+          } catch (error) {
+            console.error("Error fetching metrics:", error);
+            // Set default values if error
+            document.getElementById("profileModalBookmarkCount").textContent = "0";
+            document.getElementById("profileModalViews").textContent = "0";
+            document.getElementById("profileModalLikes").textContent = "0";
+          }
+        })();
+        
+        // Show modal
+        modalOverlay.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+      
+      // Close profile modal
+      function closeProfileModal() {
+        const modalOverlay = document.getElementById("profileModalOverlay");
+        const shareMenu = document.getElementById("profileShareMenu");
+        modalOverlay.classList.remove("open");
+        shareMenu?.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+      
+      // Format date function
+      function formatDate(dateStr) {
+        if (!dateStr) return "Unknown";
+        try {
+          const date = new Date(dateStr);
+          return date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+          });
+        } catch {
+          return "Unknown";
+        }
+      }
+      
+      // Modal close button
+      document.getElementById("profileModalClose")?.addEventListener("click", closeProfileModal);
+      
+      // Close modal on overlay click
+      document.getElementById("profileModalOverlay")?.addEventListener("click", (e) => {
+        if (e.target.id === "profileModalOverlay") closeProfileModal();
+      });
+      
+      // Close modal on Escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const modalOverlay = document.getElementById("profileModalOverlay");
+          if (modalOverlay?.classList.contains("open")) closeProfileModal();
+        }
+      });
+      
+      // Copy prompt button
+      document.getElementById("profileModalCopyBtn")?.addEventListener("click", () => {
+        const promptText = document.getElementById("profileModalPromptText").textContent;
+        navigator.clipboard.writeText(promptText).then(() => {
+          const toast = document.getElementById("profileModalToast");
+          toast.classList.add("show");
+          setTimeout(() => toast.classList.remove("show"), 2200);
+        });
+      });
+      
+      // Remove bookmark button
+      document.getElementById("profileModalBookmarkBtn")?.addEventListener("click", async () => {
+        const modal = document.getElementById("profilePromptModal");
+        const bookmarkData = JSON.parse(modal.dataset.currentBookmark || "{}");
+        const btn = document.getElementById("profileModalBookmarkBtn");
+        
+        // Use promptId from bookmark
+        const promptId = bookmarkData.promptId || bookmarkData.id;
+        
+        if (promptId) {
+          try {
+            btn.disabled = true;
+            btn.textContent = "Removing...";
+            
+            const { removeBookmark } = await import("./user-service.js");
+            await removeBookmark(promptId);
+            
+            // Close modal
+            closeProfileModal();
+            
+            // Reload bookmarks display
+            const { getUserBookmarks } = await import("./user-service.js");
+            const userBookmarks = await getUserBookmarks();
+            
+            // Update count
+            document.getElementById("totalBookmarks").textContent = userBookmarks.length;
+            
+            // Redisplay bookmarks
+            displayUserBookmarks(userBookmarks);
+            
+            // Show success message
+            btn.textContent = "Removed!";
+            setTimeout(() => {
+              btn.disabled = false;
+              btn.textContent = '<i class="fa-solid fa-bookmark"></i> Remove';
+              btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Remove';
+            }, 1500);
+          } catch (error) {
+            console.error("Error removing bookmark:", error);
+            btn.disabled = false;
+            btn.textContent = '<i class="fa-solid fa-bookmark"></i> Remove';
+            btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Remove';
+            alert("Error removing bookmark: " + error.message);
+          }
+        }
+      });
+      
+      // Share button
+      document.getElementById("profileModalShareBtn")?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const shareMenu = document.getElementById("profileShareMenu");
+        shareMenu.classList.toggle("show");
+      });
+      
+      // Close share menu when clicking outside
+      document.addEventListener("click", (e) => {
+        const shareMenu = document.getElementById("profileShareMenu");
+        const shareBtn = document.getElementById("profileModalShareBtn");
+        if (!shareMenu?.contains(e.target) && e.target !== shareBtn) {
+          shareMenu?.classList.remove("show");
+        }
+      });
+      
+      // ChatGPT button
+      document.getElementById("profileModalChatGPTBtn")?.addEventListener("click", () => {
+        window.open("https://chat.openai.com", "_blank", "noopener,noreferrer");
+      });
+      
+      // Gemini button
+      document.getElementById("profileModalGeminiBtn")?.addEventListener("click", () => {
+        window.open("https://gemini.google.com/app", "_blank", "noopener,noreferrer");
+      });
+      
+      // Share option handlers
+      document.querySelectorAll("#profileShareMenu .share-option").forEach((option) => {
+        option.addEventListener("click", (e) => {
+          e.preventDefault();
+          const platform = option.dataset.platform;
+          const promptTitle = document.getElementById("profileModalTitle").textContent;
+          const promptText = document.getElementById("profileModalPromptText").textContent;
+          const shareText = `Check out this AI prompt: "${promptTitle}"\n\n${promptText}`;
+          const encodedText = encodeURIComponent(shareText);
+          
+          let shareUrl = "";
+          
+          switch (platform) {
+            case "whatsapp":
+              shareUrl = `https://wa.me/?text=${encodedText}`;
+              break;
+            case "telegram":
+              shareUrl = `https://t.me/share/url?url=promptverse.com&text=${encodedText}`;
+              break;
+            case "facebook":
+              shareUrl = `https://www.facebook.com/sharer/sharer.php?quote=${encodedText}`;
+              break;
+            case "instagram":
+              // Instagram doesn't have a direct share URL, open app
+              window.open("instagram://", "_blank");
+              return;
+            case "twitter":
+              shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
+              break;
+          }
+          
+          if (shareUrl) {
+            window.open(shareUrl, "_blank", "width=600,height=400");
+          }
+          
+          // Close share menu
+          const shareMenu = document.getElementById("profileShareMenu");
+          shareMenu.classList.remove("show");
+        });
+      });
 
       // Email verification status
       function showVerificationStatus(user) {
@@ -805,10 +2518,409 @@
         .getElementById("logoutBtnAction")
         ?.addEventListener("click", handleLogout);
 
-      // Settings button (placeholder)
-      document.getElementById("settingsBtn")?.addEventListener("click", () => {
-        alert("Settings coming soon!");
+      // Settings panel handlers
+      async function loadSettingsData() {
+        try {
+          console.log("Loading settings data...");
+          if (!currentUser) {
+            console.warn("No current user");
+            return;
+          }
+          
+          const { db } = await import("./firebase-config.js");
+          const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+          
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          const userData = userDoc.data() || {};
+          
+          console.log("Settings user data:", userData);
+          
+          // Populate read-only display
+          const dobDisplay = document.getElementById("settingsDOB");
+          const genderDisplay = document.getElementById("settingsGender");
+          const bioDisplay = document.getElementById("settingsBio");
+          const usernameDisplay = document.getElementById("settingsUsername");
+          
+          if (usernameDisplay) usernameDisplay.textContent = currentUser.displayName || "—";
+          if (dobDisplay) dobDisplay.textContent = userData.dateOfBirth ? formatDateDisplay(userData.dateOfBirth) : "—";
+          if (genderDisplay) genderDisplay.textContent = userData.gender ? (userData.gender.charAt(0).toUpperCase() + userData.gender.slice(1)) : "—";
+          if (bioDisplay) bioDisplay.textContent = userData.bio || "—";
+          
+          // Populate edit form
+          const dobInput = document.getElementById("editDOB");
+          const genderInput = document.getElementById("editGender");
+          const bioInput = document.getElementById("editBio");
+          
+          if (dobInput) dobInput.value = userData.dateOfBirth || "";
+          if (genderInput) genderInput.value = userData.gender || "";
+          if (bioInput) bioInput.value = userData.bio || "";
+          
+          // Update bio character count
+          const bioCharCount = document.getElementById("bioCharCount");
+          if (bioCharCount) bioCharCount.textContent = (userData.bio || "").length;
+          
+          // Check if user has password auth (not Google-only)
+          const providers = currentUser.providerData.map((p) => p.providerId);
+          const hasPassword = providers.includes("password");
+          
+          const googleMsg = document.getElementById("googleOnlyMessage");
+          const currentPasswordField = document.getElementById("currentPasswordField");
+          
+          if (hasPassword) {
+            if (googleMsg) googleMsg.style.display = "none";
+            if (currentPasswordField) currentPasswordField.style.display = "block";
+          } else {
+            if (googleMsg) googleMsg.style.display = "block";
+            if (currentPasswordField) currentPasswordField.style.display = "none";
+          }
+          
+          // Update theme toggle UI
+          updateThemeToggleUI();
+          
+          console.log("Settings data loaded successfully");
+        } catch (error) {
+          console.error("Error loading settings data:", error);
+        }
+      }
+
+      // Edit account info toggle
+      document.getElementById("editAccountInfoBtn")?.addEventListener("click", () => {
+        const readOnly = document.getElementById("accountInfoReadOnly");
+        const editForm = document.getElementById("accountInfoEditForm");
+        
+        if (readOnly && editForm) {
+          if (readOnly.style.display !== "none") {
+            readOnly.style.display = "none";
+            editForm.style.display = "block";
+          } else {
+            readOnly.style.display = "block";
+            editForm.style.display = "none";
+          }
+        }
       });
+      
+      // Cancel edit
+      document.getElementById("cancelEditBtn")?.addEventListener("click", () => {
+        const readOnly = document.getElementById("accountInfoReadOnly");
+        const editForm = document.getElementById("accountInfoEditForm");
+        readOnly.style.display = "block";
+        editForm.style.display = "none";
+      });
+
+      // Bio character counter
+      document.getElementById("editBio")?.addEventListener("input", (e) => {
+        document.getElementById("bioCharCount").textContent = e.target.value.length;
+      });
+
+      // Save account info
+      document.getElementById("accountInfoEditForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        try {
+          const { db } = await import("./firebase-config.js");
+          const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+          
+          if (!currentUser) return;
+          
+          const dob = document.getElementById("editDOB").value;
+          const gender = document.getElementById("editGender").value;
+          const bio = document.getElementById("editBio").value;
+          
+          if (!dob || !gender) {
+            alert("Date of Birth and Gender are required");
+            return;
+          }
+          
+          const btn = e.target.querySelector("button[type='submit']");
+          btn.disabled = true;
+          btn.textContent = "Saving...";
+          
+          const userDocRef = doc(db, "users", currentUser.uid);
+          await setDoc(userDocRef, {
+            dateOfBirth: dob,
+            gender: gender,
+            bio: bio || "",
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+          
+          console.log("Profile updated successfully");
+          
+          // Update profile display
+          await loadProfileInfo();
+          
+          // Close edit form
+          const readOnly = document.getElementById("accountInfoReadOnly");
+          const editForm = document.getElementById("accountInfoEditForm");
+          if (readOnly) readOnly.style.display = "block";
+          if (editForm) editForm.style.display = "none";
+          
+          btn.disabled = false;
+          btn.textContent = "Save Changes";
+          
+          alert("Profile updated successfully!");
+          loadSettingsData();
+        } catch (error) {
+          console.error("Error saving profile:", error);
+          const btn = e.target.querySelector("button[type='submit']");
+          btn.disabled = false;
+          btn.textContent = "Save Changes";
+          alert("Error saving profile: " + error.message);
+        }
+      });
+
+      // Change password
+      document.getElementById("changePasswordForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        try {
+          const currentPasswordField = document.getElementById("currentPassword");
+          const currentPassword = currentPasswordField?.value;
+          const newPassword = document.getElementById("newPassword").value;
+          const confirmPassword = document.getElementById("confirmPassword").value;
+          const errorDiv = document.getElementById("passwordError");
+          
+          // Validation
+          if (newPassword !== confirmPassword) {
+            errorDiv.textContent = "Passwords do not match";
+            errorDiv.style.display = "block";
+            return;
+          }
+          
+          if (newPassword.length < 6) {
+            errorDiv.textContent = "Password must be at least 6 characters";
+            errorDiv.style.display = "block";
+            return;
+          }
+          
+          const btn = e.target.querySelector("button[type='submit']");
+          btn.disabled = true;
+          btn.textContent = "Updating...";
+          errorDiv.style.display = "none";
+          
+          const { updatePassword, reauthenticateWithCredential, EmailAuthProvider } = await import(
+            "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"
+          );
+          
+          // If user has password auth, re-authenticate first
+          if (currentPasswordField && currentPassword) {
+            try {
+              const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+              await reauthenticateWithCredential(currentUser, credential);
+            } catch (error) {
+              if (error.code === "auth/wrong-password") {
+                throw new Error("Current password is incorrect");
+              }
+              throw error;
+            }
+          }
+          
+          // Update password
+          await updatePassword(currentUser, newPassword);
+          
+          // Clear form
+          if (currentPasswordField) currentPasswordField.value = "";
+          document.getElementById("newPassword").value = "";
+          document.getElementById("confirmPassword").value = "";
+          
+          btn.disabled = false;
+          btn.textContent = "Update Password";
+          alert("Password updated successfully!");
+        } catch (error) {
+          console.error("Error changing password:", error);
+          const errorDiv = document.getElementById("passwordError");
+          errorDiv.textContent = error.message || "Error updating password";
+          errorDiv.style.display = "block";
+          const btn = e.target.querySelector("button[type='submit']");
+          btn.disabled = false;
+          btn.textContent = "Update Password";
+        }
+      });
+
+      // Delete account flow
+      document.getElementById("deleteAccountBtn")?.addEventListener("click", () => {
+        document.getElementById("settingsModalOverlay").style.display = "none";
+        document.getElementById("deleteConfirmOverlay").style.display = "flex";
+      });
+
+      document.getElementById("deleteConfirmCancel")?.addEventListener("click", () => {
+        document.getElementById("deleteConfirmOverlay").style.display = "none";
+        document.getElementById("settingsModalOverlay").style.display = "flex";
+      });
+
+      document.getElementById("deleteConfirmForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        try {
+          const confirmedEmail = document.getElementById("deleteConfirmEmail").value;
+          const errorDiv = document.getElementById("deleteConfirmError");
+          
+          if (confirmedEmail !== currentUser.email) {
+            errorDiv.textContent = "Email does not match. Please try again.";
+            errorDiv.style.display = "block";
+            return;
+          }
+          
+          const btn = e.target.querySelector("button[type='submit']");
+          btn.disabled = true;
+          btn.textContent = "Deleting...";
+          errorDiv.style.display = "none";
+          
+          // Import required Firebase functions
+          const { db } = await import("./firebase-config.js");
+          const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+          const { deleteUser } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js");
+          
+          // Delete user profile document (preserves prompt statistics)
+          const userDocRef = doc(db, "users", currentUser.uid);
+          try {
+            await deleteDoc(userDocRef);
+          } catch (error) {
+            // Document may not exist, that's okay
+            if (error.code !== "not-found") throw error;
+          }
+          
+          // Delete Firebase Authentication account
+          try {
+            await deleteUser(currentUser);
+          } catch (error) {
+            if (error.code === "auth/requires-recent-login") {
+              errorDiv.textContent = "Please log in again to confirm deletion. This is a security measure.";
+              errorDiv.style.display = "block";
+              btn.disabled = false;
+              btn.textContent = "Delete Permanently";
+              return;
+            }
+            throw error;
+          }
+          
+          // Logout and redirect
+          await logoutUser();
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("Error deleting account:", error);
+          const errorDiv = document.getElementById("deleteConfirmError");
+          errorDiv.textContent = error.message || "Error deleting account";
+          errorDiv.style.display = "block";
+          const btn = e.target.querySelector("button[type='submit']");
+          btn.disabled = false;
+          btn.textContent = "Delete Permanently";
+        }
+      });
+
+      // Theme toggle in settings
+      document.getElementById("settingsThemeToggle")?.addEventListener("click", () => {
+        applyDarkMode(!document.body.classList.contains("dark"));
+        updateThemeToggleUI();
+      });
+
+      function updateThemeToggleUI() {
+        const isDark = document.body.classList.contains("dark");
+        const toggle = document.getElementById("settingsThemeToggle");
+        const icon = document.getElementById("settingsThemeIcon");
+        
+        if (isDark) {
+          toggle.style.background = "var(--purple)";
+          icon.className = "fa-solid fa-sun";
+          icon.style.left = "calc(100% - 22px)";
+        } else {
+          toggle.style.background = "var(--border-color)";
+          icon.className = "fa-solid fa-moon";
+          icon.style.left = "6px";
+        }
+      }
+
+      // Go to settings from banner
+      document.getElementById("goToSettings")?.addEventListener("click", () => {
+        document.getElementById("settingsBtn").click();
+      });
+
+      // Load and display profile info
+      async function loadProfileInfo() {
+        try {
+          const { db } = await import("./firebase-config.js");
+          const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+          
+          if (!currentUser) {
+            console.warn("No current user in loadProfileInfo");
+            return;
+          }
+          
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          const userData = userDoc.data() || {};
+          
+          console.log("Profile data loaded:", userData);
+          
+          // Update profile display in "About You" section
+          const bioEl = document.getElementById("profileBio");
+          const dobEl = document.getElementById("profileDOB");
+          const genderEl = document.getElementById("profileGender");
+          const section = document.getElementById("profileInfoSection");
+          const banner = document.getElementById("profileCompletionBanner");
+          const bannerDetails = document.getElementById("bannerProfileDetails");
+          
+          if (bioEl) bioEl.textContent = userData.bio || "—";
+          if (dobEl) dobEl.textContent = userData.dateOfBirth ? formatDateDisplay(userData.dateOfBirth) : "—";
+          if (genderEl) genderEl.textContent = userData.gender ? (userData.gender.charAt(0).toUpperCase() + userData.gender.slice(1)) : "—";
+          
+          // Update banner display
+          const bannerBio = document.getElementById("bannerBio");
+          const bannerDob = document.getElementById("bannerDOB");
+          const bannerGender = document.getElementById("bannerGender");
+          const bannerEmail = document.getElementById("bannerEmail");
+          
+          if (bannerBio) bannerBio.textContent = userData.bio || "—";
+          if (bannerDob) bannerDob.textContent = userData.dateOfBirth ? formatDateDisplay(userData.dateOfBirth) : "—";
+          if (bannerGender) bannerGender.textContent = userData.gender ? (userData.gender.charAt(0).toUpperCase() + userData.gender.slice(1)) : "—";
+          if (bannerEmail) bannerEmail.textContent = userData.email || currentUser.email || "—";
+          
+          // Show banner details if any data exists
+          if ((userData.dateOfBirth || userData.gender || userData.bio || userData.email) && bannerDetails) {
+            bannerDetails.style.display = "block";
+          }
+          
+          // Show/hide completion banner - check if BOTH DOB and Gender are filled
+          if (banner) {
+            const hasRequiredFields = userData.dateOfBirth && userData.gender;
+            if (hasRequiredFields) {
+              banner.style.display = "none";
+            } else {
+              banner.style.display = "block";
+            }
+          }
+          
+          // Hide About You section once profile is complete
+          const hasCompleteBannerData = userData.dateOfBirth && userData.gender && userData.bio;
+          if (section) {
+            section.style.display = hasCompleteBannerData ? "none" : "block";
+          }
+        } catch (error) {
+          console.error("Error loading profile info:", error);
+        }
+      }
+      
+      function updateProfileSectionVisibility() {
+        const section = document.getElementById("profileInfoSection");
+        const bannerBio = document.getElementById("bannerBio")?.textContent || "";
+        const bannerDob = document.getElementById("bannerDOB")?.textContent || "";
+        const bannerGender = document.getElementById("bannerGender")?.textContent || "";
+        const isComplete = bannerBio !== "—" && bannerDob !== "—" && bannerGender !== "—";
+        if (section) {
+          section.style.display = isComplete ? "none" : "block";
+        }
+      }
+      
+      // Format date for display
+      function formatDateDisplay(dateStr) {
+        if (!dateStr) return "—";
+        try {
+          const date = new Date(dateStr);
+          return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        } catch {
+          return dateStr;
+        }
+      }
 
       // Navbar scroll shadow
       const navbar = document.getElementById("navbar");

@@ -54,16 +54,17 @@
           >
             <i class="fa-solid fa-moon"></i>
           </button>
-          <button
+          <a
+            href="profile.html#bookmarks"
             class="icon-btn nav-bookmark-btn"
             id="navBookmarkBtn"
             aria-label="View bookmarks"
             title="Bookmarks"
-            style="display: none"
+            style="display: none; text-decoration: none; color: inherit;"
           >
             <i class="fa-solid fa-bookmark"></i>
             <span class="badge" id="bookmarkCount">0</span>
-          </button>
+          </a>
           <div
             class="profile-menu-wrapper"
             id="profileMenuWrapper"
@@ -129,7 +130,7 @@
         display: none;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 16px 24px;
+        padding: 12px 16px;
         text-align: center;
         gap: 16px;
         align-items: center;
@@ -404,6 +405,9 @@
               <button class="btn btn-primary" id="modalCopyBtn">
                 <i class="fa-solid fa-copy"></i> Copy prompt
               </button>
+              <button class="btn btn-outline" id="modalShareBtn">
+                <i class="fa-solid fa-share-nodes"></i> Share
+              </button>
               <button class="btn btn-outline" id="modalBookmarkBtn">
                 <i class="fa-regular fa-bookmark"></i> Save
               </button>
@@ -412,26 +416,66 @@
               </button>
             </div>
 
-            <p class="modal-label">Open with</p>
-            <div class="modal-ai-actions">
+            <!-- Share menu dropdown -->
+            <div class="share-menu" id="shareMenu" style="display: none">
               <a
                 href="#"
-                target="_blank"
-                rel="noopener"
+                id="shareWhatsApp"
+                class="share-option"
+                data-platform="whatsapp"
+              >
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              </a>
+              <a
+                href="#"
+                id="shareTelegram"
+                class="share-option"
+                data-platform="telegram"
+              >
+                <i class="fa-brands fa-telegram"></i> Telegram
+              </a>
+              <a
+                href="#"
+                id="shareFacebook"
+                class="share-option"
+                data-platform="facebook"
+              >
+                <i class="fa-brands fa-facebook"></i> Facebook
+              </a>
+              <a
+                href="#"
+                id="shareInstagram"
+                class="share-option"
+                data-platform="instagram"
+              >
+                <i class="fa-brands fa-instagram"></i> Instagram (Open App)
+              </a>
+              <a
+                href="#"
+                id="shareTwitter"
+                class="share-option"
+                data-platform="twitter"
+              >
+                <i class="fa-brands fa-twitter"></i> Twitter/X
+              </a>
+            </div>
+
+            <p class="modal-label">Open with</p>
+            <div class="modal-ai-actions">
+              <button
+                type="button"
                 class="btn btn-ai chatgpt"
                 id="modalChatGPTBtn"
               >
                 <i class="fa-solid fa-comment-dots"></i> ChatGPT
-              </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
+              </button>
+              <button
+                type="button"
                 class="btn btn-ai gemini"
                 id="modalGeminiBtn"
               >
                 <i class="fa-solid fa-star"></i> Gemini
-              </a>
+              </button>
             </div>
 
             <div class="modal-toast" id="modalToast">Copied to clipboard!</div>

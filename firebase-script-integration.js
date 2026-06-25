@@ -201,23 +201,10 @@ async function openModal(id) {
   $('#modalDate').textContent = formatDate(p.date);
   $('#modalPromptText').textContent = p.prompt;
 
-  const encoded = encodeURIComponent(p.prompt);
-  $('#modalChatGPTBtn').href = `https://chat.openai.com/?q=${encoded}`;
-  $('#modalGeminiBtn').href = `https://gemini.google.com/app?q=${encoded}`;
+  // Removed: Direct href assignment. ChatGPT/Gemini buttons now use event listeners
+  // for proper app-first strategy with fallback to web. See script.js for implementation.
 
-  // Update like button
-  await updateModalLikeButton(id);
 
-  // Set up real-time listener for modal metrics
-  if (firestoreListeners[`modal_${id}`]) {
-    firestoreListeners[`modal_${id}`]();
-  }
-  firestoreListeners[`modal_${id}`] = listenToPromptMetrics(id, (metrics) => {
-    updateModalMetrics(metrics);
-  });
-
-  modalOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
 }
 
 // ========== UPDATE closeModal FUNCTION ==========
