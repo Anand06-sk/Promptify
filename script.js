@@ -378,8 +378,25 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
         e.target.closest(".card-action-center")
       )
         return;
+      const imageRect = card.querySelector(".card-img-wrap")?.getBoundingClientRect();
+      if (!requireLoginForPrompt(p.id, imageRect)) return;
       openModal(p.id);
     });
+
+    const imageWrap = card.querySelector(".card-img-wrap");
+    if (imageWrap) {
+      imageWrap.addEventListener("click", (e) => {
+        if (
+          e.target.closest(".card-action-btn") ||
+          e.target.closest(".card-action-center")
+        ) {
+          return;
+        }
+        const imageRect = imageWrap.getBoundingClientRect();
+        if (!requireLoginForPrompt(p.id, imageRect)) return;
+        openModal(p.id);
+      });
+    }
 
     // Save button
     const saveBtn = card.querySelector(".card-save-btn");
@@ -415,6 +432,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     const viewBtn = card.querySelector(".card-view-btn");
     viewBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
+      if (!requireLoginForPrompt(p.id)) return;
       await recordPromptView(p.id);
       openModal(p.id);
     });
@@ -444,6 +462,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     const actionCenter = card.querySelector(".card-action-center");
     actionCenter.addEventListener("click", (e) => {
       e.stopPropagation();
+      if (!requireLoginForPrompt(p.id)) return;
       openModal(p.id);
     });
 
@@ -1026,6 +1045,65 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     toast.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+
+  const authPopup = $("#authPopup");
+  const authPopupAction = $("#authPopupAction");
+  const authPopupClose = $("#authPopupClose");
+
+  let authPopupHideTimer = null;
+
+  function hideAuthPopup() {
+    if (!authPopup || !authPopup.classList.contains("visible")) return;
+    authPopup.classList.remove("visible");
+    authPopup.style.pointerEvents = "none";
+    clearTimeout(authPopupHideTimer);
+    authPopupHideTimer = setTimeout(() => {
+      authPopup.hidden = true;
+      authPopup.style.display = "none";
+      authPopupHideTimer = null;
+    }, 180);
+  }
+
+  if (authPopupClose) {
+    authPopupClose.addEventListener("click", hideAuthPopup);
+  }
+
+  if (authPopupAction) {
+    authPopupAction.addEventListener("click", () => {
+      hideAuthPopup();
+      redirectToAuth(window.location.pathname + window.location.search + window.location.hash);
+    });
+  }
+
+  function showAuthPopup(message = "Please log in to continue.", buttonText = "Log in / Sign up") {
+    if (!authPopup || !authPopupAction) return;
+
+    clearTimeout(authPopupHideTimer);
+    authPopup.hidden = false;
+    authPopup.style.display = "flex";
+    authPopup.style.pointerEvents = "auto";
+    void authPopup.offsetHeight;
+    authPopup.classList.add("visible");
+
+    authPopup.querySelector(".auth-popup-title").textContent = "Please log in or sign up";
+    const textElement = authPopup.querySelector(".auth-popup-text");
+    if (textElement) textElement.textContent = message;
+    authPopupAction.textContent = buttonText;
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideAuthPopup, 4200);
+  }
+
+  function requireLoginForPrompt(id) {
+    if (!isLoggedIn()) {
+      showAuthPopup(
+        "Create an account or log in to view the full prompt image and save favorites.",
+        "Log in / Sign up",
+      );
+      return false;
+    }
+    return true;
   }
 
   /* ---------------------------------------------------------

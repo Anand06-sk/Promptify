@@ -420,7 +420,7 @@
 
             <div class="modal-actions">
               <button class="btn btn-primary" id="modalCopyBtn">
-                <i class="fa-solid fa-copy"></i> Copy prompt
+                <i class="fa-solid fa-copy"></i> Copy
               </button>
               <button class="btn btn-outline" id="modalShareBtn">
                 <i class="fa-solid fa-share-nodes"></i> Share
@@ -503,6 +503,27 @@
 
     <!-- toast for general notifications -->
     <div class="global-toast" id="globalToast"></div>
+
+    <!-- auth reminder popup -->
+    <div class="auth-popup" id="authPopup" aria-live="polite" hidden>
+      <div class="auth-popup-card">
+        <button class="auth-popup-close" id="authPopupClose" type="button" aria-label="Close reminder">×</button>
+        <div class="auth-popup-head">
+          <div class="auth-popup-icon">
+            <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
+          </div>
+          <div>
+            <p class="auth-popup-title">Access premium prompt details</p>
+            <p class="auth-popup-subtitle">Log in or sign up to unlock images, bookmark ideas, and personalize your feed.</p>
+            <p class="auth-popup-text">You need to be signed in before viewing restricted images and saving favorites.</p>
+          </div>
+        </div>
+        <p class="auth-popup-description">Your account gives you instant access to saved favorites, prompt history, and a better browsing experience. Please sign in to continue exploring.</p>
+        <div class="auth-popup-actions">
+          <button class="auth-popup-button" id="authPopupAction" type="button">Log in / Sign up</button>
+        </div>
+      </div>
+    </div>
 
     <script type="module">
       import { logoutUser } from "./auth.js";
