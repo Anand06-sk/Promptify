@@ -597,7 +597,7 @@
         max-width: 900px;
         width: 100%;
         max-height: 90vh;
-        overflow-y: auto;
+        overflow: hidden;
         position: relative;
       }
 
@@ -628,12 +628,16 @@
       .modal-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        max-height: 90vh;
+        min-height: 0;
       }
 
       .modal-image-wrap {
         position: relative;
         min-height: 340px;
+        max-height: 90vh;
         background: var(--surface-alt);
+        overflow: hidden;
       }
 
       .modal-image-wrap img {
@@ -662,7 +666,8 @@
         flex-direction: column;
         gap: 20px;
         overflow-y: auto;
-        max-height: 88vh;
+        min-height: 0;
+        max-height: 90vh;
         position: relative;
       }
 
@@ -716,19 +721,25 @@
       }
 
       .modal-actions {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 10px;
         margin-bottom: 26px;
       }
 
       .modal-actions .btn {
-        flex: 1;
+        width: 100%;
       }
 
       .modal-ai-actions {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
         margin-bottom: 8px;
+      }
+
+      .modal-ai-actions .btn {
+        width: 100%;
       }
 
       .btn {
@@ -897,11 +908,11 @@
         }
 
         .modal-actions {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
         .modal-ai-actions {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -1607,7 +1618,7 @@
 
             <div class="modal-actions">
               <button class="btn btn-primary" id="profileModalCopyBtn">
-                <i class="fa-solid fa-copy"></i> Copy prompt
+                <i class="fa-solid fa-copy"></i> Copy
               </button>
               <button class="btn btn-outline" id="profileModalShareBtn">
                 <i class="fa-solid fa-share-nodes"></i> Share
