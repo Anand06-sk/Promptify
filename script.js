@@ -247,6 +247,12 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   const bookmarkedRow = $("#bookmarkedRow");
   const latestRow = $("#latestRow");
   const categoriesGrid = $("#categoriesGrid");
+  const categoriesLikedGrid = $("#categoriesLikedGrid");
+  const categoriesViewedGrid = $("#categoriesViewedGrid");
+  const categoriesBookmarkedGrid = $("#categoriesBookmarkedGrid");
+  const clearLikedCategoriesBtn = $("#clearLikedCategoriesBtn");
+  const clearViewedCategoriesBtn = $("#clearViewedCategoriesBtn");
+  const clearBookmarkedCategoriesBtn = $("#clearBookmarkedCategoriesBtn");
   const navCatDropdown = $("#navCatDropdown");
   const mobileCatList = $("#mobileCatList");
   const emptyState = $("#emptyState");
@@ -655,17 +661,25 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   }
 
   function renderCategories() {
-    // Category chip filter bar
-    categoriesGrid.innerHTML = "";
-    CATEGORIES.forEach((cat) => {
-      const btn = document.createElement("button");
-      btn.className =
-        "category-chip" + (state.activeCategory === cat.id ? " active" : "");
-      btn.dataset.id = cat.id;
-      btn.textContent = cat.name;
-      btn.addEventListener("click", () => setCategory(cat.id));
-      categoriesGrid.appendChild(btn);
-    });
+    // Category chip filter bars (main + per-row copies)
+    function populateContainer(container) {
+      if (!container) return;
+      container.innerHTML = "";
+      CATEGORIES.forEach((cat) => {
+        const btn = document.createElement("button");
+        btn.className =
+          "category-chip" + (state.activeCategory === cat.id ? " active" : "");
+        btn.dataset.id = cat.id;
+        btn.textContent = cat.name;
+        btn.addEventListener("click", () => setCategory(cat.id));
+        container.appendChild(btn);
+      });
+    }
+
+    populateContainer(categoriesGrid);
+    populateContainer(categoriesLikedGrid);
+    populateContainer(categoriesViewedGrid);
+    populateContainer(categoriesBookmarkedGrid);
 
     // Nav dropdown
     navCatDropdown.innerHTML = "";
@@ -700,6 +714,13 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     document
       .getElementById("trending")
       .scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function clearCategoryFilter() {
+    if (!state.activeCategory) return;
+    state.activeCategory = null;
+    renderCategories();
+    renderAllCardSections();
   }
 
   function updateBookmarkCount() {
@@ -1140,6 +1161,10 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
     renderCategories();
     renderAllCardSections();
   });
+
+  clearLikedCategoriesBtn?.addEventListener("click", clearCategoryFilter);
+  clearViewedCategoriesBtn?.addEventListener("click", clearCategoryFilter);
+  clearBookmarkedCategoriesBtn?.addEventListener("click", clearCategoryFilter);
 
   /* ---------------------------------------------------------
      9. NAV CATEGORY DROPDOWN

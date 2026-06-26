@@ -266,12 +266,16 @@
       </section>
 
       <!-- ===== MOST LIKED ===== -->
-      <section class="prompts-section alt-bg" id="mostLiked">
+      <section class="prompts-section" id="mostLiked">
         <div class="section-head">
           <div>
             <h2>Most liked</h2>
             <p>Fan favorites across the community.</p>
           </div>
+          <button class="btn btn-outline section-clear-btn" id="clearLikedCategoriesBtn" type="button">Clear</button>
+        </div>
+        <div class="category-filter-bar">
+          <div class="categories-scroll" id="categoriesLikedGrid" role="tablist" aria-label="Filter most liked prompts by category"></div>
         </div>
         <div class="row-scroll" id="likedRow"></div>
       </section>
@@ -283,17 +287,25 @@
             <h2>Most viewed</h2>
             <p>The prompts everyone's checking out.</p>
           </div>
+          <button class="btn btn-outline section-clear-btn" id="clearViewedCategoriesBtn" type="button">Clear</button>
+        </div>
+        <div class="category-filter-bar">
+          <div class="categories-scroll" id="categoriesViewedGrid" role="tablist" aria-label="Filter most viewed prompts by category"></div>
         </div>
         <div class="row-scroll" id="viewedRow"></div>
       </section>
 
       <!-- ===== MOST BOOKMARKED ===== -->
-      <section class="prompts-section alt-bg" id="mostBookmarked">
+      <section class="prompts-section" id="mostBookmarked">
         <div class="section-head">
           <div>
             <h2>Most bookmarked</h2>
             <p>Loved and saved by the community.</p>
           </div>
+          <button class="btn btn-outline section-clear-btn" id="clearBookmarkedCategoriesBtn" type="button">Clear</button>
+        </div>
+        <div class="category-filter-bar">
+          <div class="categories-scroll" id="categoriesBookmarkedGrid" role="tablist" aria-label="Filter most bookmarked prompts by category"></div>
         </div>
         <div class="row-scroll" id="bookmarkedRow"></div>
       </section>
@@ -704,19 +716,19 @@
     <div class="home-tabs" id="homeTabs" aria-label="Home tabs">
       <div class="home-tabs-inner">
         <button class="tab-btn active" data-target="trending" type="button" aria-pressed="true">
-          <img src="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f4c8/72.png" alt="trending"/>
+          <i class="fa-solid fa-fire"></i>
           <span>Trending Prompts</span>
         </button>
         <button class="tab-btn" data-target="mostLiked" type="button" aria-pressed="false">
-          <img src="https://fonts.gstatic.com/s/e/notoemoji/17.0/2764_fe0f/72.png" alt="liked"/>
+          <i class="fa-solid fa-heart"></i>
           <span>Most Liked</span>
         </button>
         <button class="tab-btn" data-target="mostViewed" type="button" aria-pressed="false">
-          <img src="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f441_fe0f/72.png" alt="viewed"/>
+          <i class="fa-solid fa-eye"></i>
           <span>Most Viewed</span>
         </button>
         <button class="tab-btn" data-target="mostBookmarked" type="button" aria-pressed="false">
-          <img src="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f516/72.png" alt="bookmarked"/>
+          <i class="fa-solid fa-bookmark"></i>
           <span>Most Bookmarked</span>
         </button>
       </div>
