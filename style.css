@@ -75,6 +75,7 @@ body.dark {
 }
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
 body {
   font-family: var(--font-body);
@@ -1056,6 +1057,7 @@ body.dark .category-chip.active {
    ========================================================= */
 .prompts-section {
   padding: 40px 0 60px;
+  scroll-margin-top: 96px;
 }
 .prompts-section.alt-bg {
   background: var(--surface-alt);
@@ -1411,6 +1413,57 @@ body.dark .card-title {
   text-align: center;
   color: var(--text-soft);
   font-size: 0.82rem;
+}
+
+/* =========================================================
+   FOOTER EXTRA LINKS / BACK TO TOP
+   ========================================================= */
+.footer-col .footer-link-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  margin-bottom: 12px;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  transition: color var(--transition);
+  background: transparent;
+  border: none;
+}
+.footer-col .footer-link-btn:hover {
+  color: var(--purple-deep);
+}
+.scroll-to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 92px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--grad-brand);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(139, 92, 246, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition:
+    opacity var(--transition),
+    visibility var(--transition),
+    transform var(--transition);
+}
+.scroll-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.scroll-to-top:hover {
+  transform: translateY(-2px);
 }
 
 /* =========================================================

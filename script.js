@@ -1206,6 +1206,35 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
 
   $("#darkModeToggle").addEventListener("click", toggleDarkMode);
   $("#mobileDarkToggle").addEventListener("click", toggleDarkMode);
+  $$("[data-action='toggle-dark']").forEach((btn) => {
+    btn.addEventListener("click", toggleDarkMode);
+  });
+
+  const footerTrendingLink = document.querySelector('.footer-col a[href="#trending"]');
+  if (footerTrendingLink) {
+    footerTrendingLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      const target = document.getElementById("trending");
+      if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top, behavior: "smooth" });
+        history.replaceState(null, "", "#trending");
+      }
+    });
+  }
+
+  const scrollToTopBtn = $("#scrollToTopBtn");
+  if (scrollToTopBtn) {
+    const toggleScrollToTopButton = () => {
+      scrollToTopBtn.classList.toggle("show", window.scrollY > 260);
+    };
+
+    toggleScrollToTopButton();
+    window.addEventListener("scroll", toggleScrollToTopButton, { passive: true });
+    scrollToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
   /* ---------------------------------------------------------
      12. AUTH UI: Navbar visibility based on login state
