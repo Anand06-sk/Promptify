@@ -389,21 +389,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
       openModal(p.id);
     });
 
-    const imageWrap = card.querySelector(".card-img-wrap");
-    if (imageWrap) {
-      imageWrap.addEventListener("click", (e) => {
-        if (
-          e.target.closest(".card-action-btn") ||
-          e.target.closest(".card-action-center")
-        ) {
-          return;
-        }
-        const imageRect = imageWrap.getBoundingClientRect();
-        if (!requireLoginForPrompt(p.id, imageRect)) return;
-        openModal(p.id);
-      });
-    }
-
     // Save button
     const saveBtn = card.querySelector(".card-save-btn");
     saveBtn.addEventListener("click", async (e) => {
@@ -434,12 +419,11 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
       saveBtn.classList.toggle("saved", state.bookmarks.has(p.id));
     });
 
-    // View button - record view and open modal
+    // View button - open modal via central handler
     const viewBtn = card.querySelector(".card-view-btn");
     viewBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
       if (!requireLoginForPrompt(p.id)) return;
-      await recordPromptView(p.id);
       openModal(p.id);
     });
 
@@ -1201,6 +1185,9 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/fi
   $("#mobileMenuToggle").addEventListener("click", openMobileDrawer);
   $("#closeMobileDrawer").addEventListener("click", closeMobileDrawer);
   drawerOverlay.addEventListener("click", closeMobileDrawer);
+  $$(".mobile-drawer-nav a").forEach((drawerLink) => {
+    drawerLink.addEventListener("click", closeMobileDrawer);
+  });
 
   /* ---------------------------------------------------------
      11. DARK MODE

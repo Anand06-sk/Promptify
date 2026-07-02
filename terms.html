@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms of Use | Prompixs</title>
+    <meta
+      name="description"
+      content="Terms of Use for Prompixs, the AI prompt discovery platform for exploring prompts, bookmarking favorites, and creating AI-generated images."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --white: #ffffff;
+        --purple: #a78bfa;
+        --purple-deep: #8b5cf6;
+        --pink: #f9a8d4;
+        --pink-deep: #ec4899;
+        --ink: #1e1b2e;
+        --ink-soft: #574f6d;
+        --mist: #f6f4fc;
+        --line: rgba(30, 27, 46, 0.08);
+        --bg: var(--white);
+        --surface: rgba(255, 255, 255, 0.8);
+        --surface-strong: rgba(255, 255, 255, 0.95);
+        --text: var(--ink);
+        --muted: var(--ink-soft);
+        --primary: var(--purple-deep);
+        --accent: var(--pink-deep);
+        --border: var(--line);
+        --shadow: 0 18px 50px rgba(139, 92, 246, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(167, 139, 250, 0.18), transparent 28%),
+          linear-gradient(135deg, #fdfcff 0%, #f7f2ff 46%, #fef7fb 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page-shell {
+        min-height: 100vh;
+        padding: 24px 20px 60px;
+      }
+
+      .topbar {
+        max-width: 1180px;
+        width: 100%;
+        margin: 0 auto 28px;
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-right: auto;
+        flex-shrink: 0;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        display: grid;
+        place-items: center;
+        color: white;
+      }
+
+      .brand em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .topbar-nav {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-left: auto;
+      }
+
+      .topbar-nav a:hover,
+      .topbar-nav a.active {
+        color: var(--ink);
+      }
+
+      .topbar-nav a.active {
+        font-weight: 700;
+      }
+
+      .mobile-menu-toggle {
+        display: none;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        color: var(--ink);
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: transform 0.25s ease, background 0.25s ease;
+      }
+
+      .mobile-menu-toggle:hover {
+        transform: translateY(-1px);
+      }
+
+      .mobile-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(340px, 90vw);
+        height: 100vh;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(18px);
+        box-shadow: -12px 0 32px rgba(30, 27, 46, 0.12);
+        transform: translateX(110%);
+        transition: transform 0.28s ease;
+        z-index: 250;
+        pointer-events: none;
+      }
+
+      .mobile-drawer.open {
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(30, 27, 46, 0.42);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        z-index: 240;
+        pointer-events: none;
+      }
+
+      .drawer-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mobile-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .mobile-drawer-nav {
+        display: grid;
+        gap: 12px;
+      }
+
+      .mobile-drawer a {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(249, 168, 212, 0.16);
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .mobile-drawer a.active {
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.18), rgba(249, 168, 212, 0.18));
+      }
+
+      .hero {
+        max-width: 1180px;
+        margin: 0 auto 28px;
+        padding: 56px 28px;
+        border-radius: 32px;
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.16), rgba(249, 168, 212, 0.14));
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--purple-deep);
+        font-size: 0.86rem;
+        margin-bottom: 16px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Fraunces", serif;
+        line-height: 1.1;
+        margin: 0;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.2rem, 4vw, 3.2rem);
+        margin-bottom: 14px;
+      }
+
+      .hero p {
+        font-size: 1.04rem;
+        color: var(--muted);
+        line-height: 1.75;
+        max-width: 760px;
+      }
+
+      .section {
+        max-width: 1180px;
+        margin: 0 auto 24px;
+        padding: 28px;
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .section h2 {
+        font-size: 1.55rem;
+        margin-bottom: 12px;
+      }
+
+      .section p,
+      .section li {
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .section ul {
+        padding-left: 18px;
+      }
+
+      .highlight {
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-top: 12px;
+      }
+
+      footer {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 8px 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 860px) {
+        .topbar {
+          border-radius: 24px;
+          padding: 14px 16px;
+          flex-direction: row;
+          gap: 12px;
+        }
+
+        .hero,
+        .section {
+          padding: 24px 18px;
+        }
+
+        .topbar-nav {
+          display: none;
+        }
+
+        .mobile-menu-toggle {
+          display: inline-flex;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a href="index.html" class="brand" aria-label="Go to home page">
+          <span class="brand-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          <span>Prom<em>pixs</em></span>
+        </a>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open navigation menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <nav class="topbar-nav" aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html" class="active" aria-current="page">Terms of Use</a>
+          <a href="contact.html">Contact Us</a>
+        </nav>
+      </header>
+
+      <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+        <div class="mobile-drawer-header">
+          <span>Menu</span>
+          <button class="mobile-menu-toggle" id="closeMobileDrawer" aria-label="Close navigation menu">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <nav class="mobile-drawer-nav" aria-label="Mobile primary navigation">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html" class="active" aria-current="page">Terms of Use</a>
+          <a href="contact.html">Contact Us</a>
+        </nav>
+      </div>
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+
+      <main>
+        <section class="hero">
+          <div class="eyebrow"><i class="fa-solid fa-file-contract"></i> Terms of Use</div>
+          <h1>These terms guide how you use Prompixs.</h1>
+          <p>
+            By using Prompixs, you agree to follow these Terms of Use. They explain how the platform is meant to be used,
+            what is expected from users, and how Prompixs operates as a creative and community-focused service.
+          </p>
+          <div class="highlight">
+            <strong>Effective Date:</strong> To be updated upon official launch<br />
+            <strong>Last Updated:</strong> To be updated upon official launch
+          </div>
+        </section>
+
+        <section class="section" id="acceptance-of-terms">
+          <h2>Acceptance of Terms</h2>
+          <p>
+            By visiting, browsing, or using Prompixs, you agree to be bound by these Terms of Use.
+            If you do not agree with these terms, please do not use the platform.
+          </p>
+        </section>
+
+        <section class="section" id="eligibility-and-account-access">
+          <h2>Eligibility and Account Access</h2>
+          <p>
+            Prompixs allows users to create accounts using email and password or Google Sign-In.
+            You are responsible for keeping your account details secure and for all activity that happens through your account.
+          </p>
+        </section>
+
+        <section class="section" id="acceptable-use">
+          <h2>Acceptable Use</h2>
+          <p>
+            Prompixs is intended to be used for creative exploration, inspiration, and responsible discovery of AI prompts.
+            You agree to use the platform in a lawful and respectful manner and not interfere with its normal operation.
+          </p>
+        </section>
+
+        <section class="section" id="prohibited-activities">
+          <h2>Prohibited Activities</h2>
+          <p>
+            You may not use Prompixs to break any applicable law, attempt unauthorized access, reverse engineer the platform,
+            spread harmful software, impersonate another person, bypass security measures, or carry out fraud or other abusive activity.
+            You also may not use the service in a way that disrupts the experience of other users.
+          </p>
+        </section>
+
+        <section class="section" id="intellectual-property">
+          <h2>Intellectual Property</h2>
+          <p>
+            All original website content, including prompts, preview images, logos, branding, website design, text, graphics,
+            categories, and collections, is owned by Prompixs or used with appropriate permission.
+            You may browse, bookmark, and use prompts for personal purposes, but you may not copy, republish, redistribute,
+            sell, scrape, or claim Prompixs content as your own without prior written permission.
+          </p>
+        </section>
+
+        <section class="section" id="user-accounts">
+          <h2>User Accounts</h2>
+          <p>
+            Users may create accounts to personalize their experience, save bookmarks, and access platform features.
+            You are responsible for the information you provide and for keeping your account details accurate and secure.
+          </p>
+        </section>
+
+        <section class="section" id="multiple-account-policy">
+          <h2>Multiple Account Policy</h2>
+          <p>
+            You may create more than one account if needed, but multiple accounts must not be used to manipulate likes, views,
+            bookmarks, or other platform activity, or to gain unfair advantages. Prompixs reserves the right to suspend or permanently terminate accounts involved in such misuse.
+          </p>
+        </section>
+
+        <section class="section" id="scraping-and-automated-access">
+          <h2>Scraping and Automated Access</h2>
+          <p>
+            You may not use bots, crawlers, scripts, scrapers, or other automated tools to collect or download large amounts of Prompixs content without prior written permission.
+            Normal personal browsing through the website is permitted.
+          </p>
+        </section>
+
+        <section class="section" id="third-party-services">
+          <h2>Third-Party Services</h2>
+          <p>
+            Prompixs may integrate with or link to third-party services such as ChatGPT, Google Gemini, Firebase, and Cloudinary.
+            These services operate under their own terms and privacy practices. Prompixs is not responsible for the actions or policies of these third-party providers once you leave Prompixs.
+          </p>
+        </section>
+
+        <section class="section" id="disclaimer-of-warranties">
+          <h2>Disclaimer of Warranties</h2>
+          <p>
+            Prompixs provides prompts and related content for creative and informational purposes.
+            AI-generated results may vary depending on the AI platform, model, prompt usage, user inputs, and future updates.
+            Prompixs does not guarantee that every prompt will always produce the same results or the exact outcome you expect.
+            You remain responsible for how you use prompts and any AI-generated outputs.
+          </p>
+          <p>
+            AI-generated results may vary based on the AI model, prompt usage, user input, and future model updates.
+            Users are responsible for reviewing and evaluating AI-generated content before relying on it, sharing it, or presenting it as factual or definitive.
+          </p>
+        </section>
+
+        <section class="section" id="limitation-of-liability">
+          <h2>Limitation of Liability</h2>
+          <p>
+            Prompixs is not liable for temporary downtime, loss of data caused by third-party services, AI-generated outputs,
+            user decisions based on prompts, or indirect or consequential damages arising from use of the platform.
+            Our responsibility is limited to what is reasonably necessary under the circumstances.
+          </p>
+        </section>
+
+        <section class="section" id="service-availability">
+          <h2>Service Availability</h2>
+          <p>
+            Prompixs strives to provide a reliable service, but we do not guarantee uninterrupted or error-free availability.
+            The platform may occasionally be unavailable due to maintenance, updates, security improvements, technical issues, or other circumstances beyond our control.
+          </p>
+        </section>
+
+        <section class="section" id="feature-changes">
+          <h2>Feature Changes</h2>
+          <p>
+            Prompixs may add, remove, improve, modify, suspend, or discontinue features or services at any time, with or without prior notice.
+          </p>
+        </section>
+
+        <section class="section" id="account-suspension-and-termination">
+          <h2>Account Suspension and Termination</h2>
+          <p>
+            Prompixs reserves the right to suspend or permanently terminate any account that violates these Terms.
+            This may include misuse, fraud, illegal activity, unauthorized access, security threats, content theft, or repeated violations.
+          </p>
+        </section>
+
+        <section class="section" id="changes-to-these-terms">
+          <h2>Changes to These Terms</h2>
+          <p>
+            Prompixs may revise these Terms of Use from time to time as the platform evolves.
+            When significant changes are made, users may be notified through the website.
+          </p>
+          <div class="highlight">
+            <strong>Effective Date:</strong> To be updated upon official launch<br />
+            <strong>Last Updated:</strong> To be updated upon official launch
+          </div>
+        </section>
+
+        <section class="section" id="governing-law">
+          <h2>Governing Law</h2>
+          <p>
+            These Terms of Use shall be governed by and interpreted in accordance with the laws of India.
+            Any dispute arising out of or related to these Terms of Use shall be subject to the applicable courts in India.
+          </p>
+        </section>
+
+        <section class="section" id="entire-agreement">
+          <h2>Entire Agreement</h2>
+          <p>
+            These Terms of Use, together with the Privacy Policy, constitute the complete and exclusive agreement between you and Prompixs regarding your use of the platform.
+            They supersede any prior understandings, discussions, or representations relating to the same subject matter.
+          </p>
+        </section>
+
+        <section class="section" id="severability">
+          <h2>Severability</h2>
+          <p>
+            If any provision of these Terms of Use is found to be invalid, unenforceable, or unlawful, the remaining provisions shall continue in full force and effect.
+            The invalid provision shall be interpreted to the extent necessary to make it enforceable without affecting the overall intent of these Terms.
+          </p>
+        </section>
+
+        <section class="section" id="contact-information">
+          <h2>Contact Information</h2>
+          <p>
+            If you have any questions about these Terms of Use, please contact us at
+            <a href="mailto:prompix@gmail.com" style="color: var(--purple-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px;">prompix@gmail.com</a>.
+          </p>
+        </section>
+      </main>
+
+      <footer>
+        <p>© 2026 Prompixs. All rights reserved.</p>
+      </footer>
+    </div>
+    <script>
+      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+      const closeMobileDrawer = document.getElementById("closeMobileDrawer");
+      const mobileDrawer = document.getElementById("mobileDrawer");
+      const drawerOverlay = document.getElementById("drawerOverlay");
+
+      function openDrawer() {
+        mobileDrawer.classList.add("open");
+        drawerOverlay.classList.add("open");
+        mobileDrawer.setAttribute("aria-hidden", "false");
+      }
+
+      function closeDrawer() {
+        mobileDrawer.classList.remove("open");
+        drawerOverlay.classList.remove("open");
+        mobileDrawer.setAttribute("aria-hidden", "true");
+      }
+
+      mobileMenuToggle.addEventListener("click", openDrawer);
+      closeMobileDrawer.addEventListener("click", closeDrawer);
+      drawerOverlay.addEventListener("click", closeDrawer);
+    </script>
+  </body>
+</html>

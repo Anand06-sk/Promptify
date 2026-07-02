@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us | Prompixs</title>
+    <meta
+      name="description"
+      content="Contact Prompixs for questions, feedback, feature suggestions, bug reports, and account support on the AI prompt discovery platform."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --white: #ffffff;
+        --purple: #a78bfa;
+        --purple-deep: #8b5cf6;
+        --pink: #f9a8d4;
+        --pink-deep: #ec4899;
+        --ink: #1e1b2e;
+        --ink-soft: #574f6d;
+        --mist: #f6f4fc;
+        --line: rgba(30, 27, 46, 0.08);
+        --bg: var(--white);
+        --surface: rgba(255, 255, 255, 0.8);
+        --surface-strong: rgba(255, 255, 255, 0.95);
+        --text: var(--ink);
+        --muted: var(--ink-soft);
+        --primary: var(--purple-deep);
+        --accent: var(--pink-deep);
+        --border: var(--line);
+        --shadow: 0 18px 50px rgba(139, 92, 246, 0.12);
+        --radius: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(167, 139, 250, 0.18), transparent 28%),
+          linear-gradient(135deg, #fdfcff 0%, #f7f2ff 46%, #fef7fb 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font-family: inherit;
+      }
+
+      .page-shell {
+        min-height: 100vh;
+        padding: 24px 20px 60px;
+      }
+
+      .topbar {
+        max-width: 1180px;
+        width: 100%;
+        margin: 0 auto 28px;
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-right: auto;
+        flex-shrink: 0;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        display: grid;
+        place-items: center;
+        color: white;
+      }
+
+      .brand em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .topbar-nav {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-left: auto;
+      }
+
+      .topbar-nav a:hover,
+      .topbar-nav a.active {
+        color: var(--ink);
+      }
+
+      .mobile-menu-toggle {
+        display: none;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        color: var(--ink);
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: transform 0.25s ease, background 0.25s ease;
+      }
+
+      .mobile-menu-toggle:hover {
+        transform: translateY(-1px);
+      }
+
+      .mobile-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(340px, 90vw);
+        height: 100vh;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(18px);
+        box-shadow: -12px 0 32px rgba(30, 27, 46, 0.12);
+        transform: translateX(110%);
+        transition: transform 0.28s ease;
+        z-index: 250;
+        pointer-events: none;
+      }
+
+      .mobile-drawer.open {
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(30, 27, 46, 0.42);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        z-index: 240;
+        pointer-events: none;
+      }
+
+      .drawer-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mobile-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .mobile-drawer-nav {
+        display: grid;
+        gap: 12px;
+      }
+
+      .mobile-drawer a {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(249, 168, 212, 0.16);
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .mobile-drawer a.active {
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.18), rgba(249, 168, 212, 0.18));
+      }
+
+      .topbar-nav a.active {
+        font-weight: 700;
+      }
+
+      .hero {
+        max-width: 1180px;
+        margin: 0 auto 28px;
+        padding: 56px 28px;
+        border-radius: 32px;
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.16), rgba(249, 168, 212, 0.14));
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        animation: fade-up 0.8s ease-out both;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--purple-deep);
+        font-size: 0.86rem;
+        margin-bottom: 16px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Fraunces", serif;
+        line-height: 1.1;
+        margin: 0;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.2rem, 4vw, 3.2rem);
+        margin-bottom: 18px;
+      }
+
+      .hero p {
+        font-size: 1.04rem;
+        color: var(--muted);
+        line-height: 1.75;
+        max-width: 760px;
+      }
+
+      .section {
+        max-width: 1180px;
+        margin: 0 auto 24px;
+        padding: 28px;
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .section h2 {
+        font-size: 1.55rem;
+        margin-bottom: 12px;
+      }
+
+      .section p,
+      .section li {
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .section ul {
+        padding-left: 18px;
+      }
+
+      .highlight {
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-top: 12px;
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(340px, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .contact-card,
+      .contact-form-card,
+      .faq-card {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+        padding: 32px;
+      }
+
+      .contact-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 22px;
+      }
+
+      .contact-card h3,
+      .contact-form-card h3,
+      .faq-card h3 {
+        font-size: 1.35rem;
+        margin-bottom: 10px;
+      }
+
+      .contact-card p {
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .contact-info {
+        display: grid;
+        gap: 16px;
+      }
+
+      .contact-meta {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .contact-meta-icon {
+        min-width: 44px;
+        min-height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(249, 168, 212, 0.18));
+        color: var(--purple-deep);
+        font-size: 1.15rem;
+      }
+
+      .contact-meta-body {
+        display: grid;
+        gap: 6px;
+      }
+
+      .contact-meta-body strong {
+        display: block;
+        color: var(--ink);
+      }
+
+      .contact-form {
+        display: grid;
+        gap: 18px;
+      }
+
+      .form-row {
+        display: grid;
+        gap: 18px;
+      }
+
+      .form-group {
+        display: grid;
+        gap: 8px;
+      }
+
+      label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        color: var(--ink);
+        font-size: 1rem;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      textarea {
+        min-height: 170px;
+        resize: vertical;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: rgba(139, 92, 246, 0.35);
+        box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.12);
+      }
+
+      .error input,
+      .error textarea {
+        border-color: #f87171;
+        box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.14);
+      }
+
+      .helper-text {
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .error-message {
+        color: #dc2626;
+        font-size: 0.9rem;
+      }
+
+      .form-status {
+        border-radius: 18px;
+        padding: 16px 18px;
+        font-size: 0.98rem;
+        line-height: 1.6;
+      }
+
+      .status-success {
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        color: #0f766e;
+      }
+
+      .status-error {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #991b1b;
+      }
+
+      .submit-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .submit-row button {
+        padding: 14px 24px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--purple-deep), var(--accent));
+        color: white;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 16px 32px rgba(139, 92, 246, 0.18);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .submit-row button:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .submit-row button:disabled {
+        opacity: 0.72;
+        cursor: wait;
+      }
+
+      .button-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.65);
+        border-top-color: rgba(255, 255, 255, 1);
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .faq-card p {
+        margin-top: 10px;
+      }
+
+      .faq-card:nth-child(odd) {
+        background: rgba(249, 168, 212, 0.12);
+      }
+
+      .footer-note {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 8px 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 860px) {
+        .topbar {
+          border-radius: 24px;
+          padding: 14px 16px;
+          flex-direction: row;
+          gap: 12px;
+        }
+
+        .hero,
+        .section {
+          padding: 24px 18px;
+        }
+
+        .topbar-nav {
+          display: none;
+        }
+
+        .mobile-menu-toggle {
+          display: inline-flex;
+        }
+
+        .contact-grid,
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .contact-card,
+        .contact-form-card,
+        .faq-card {
+          padding: 28px;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .hero {
+          padding: 24px 18px;
+        }
+
+        .contact-card,
+        .contact-form-card,
+        .faq-card {
+          padding: 24px;
+        }
+
+        .topbar-nav {
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px;
+        }
+
+        .topbar-nav a {
+          font-size: 0.92rem;
+        }
+      }
+
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a href="index.html" class="brand" aria-label="Go to home page">
+          <span class="brand-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          <span>Prom<em>pixs</em></span>
+        </a>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open navigation menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <nav class="topbar-nav" aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="contact.html" class="active" aria-current="page">Contact Us</a>
+        </nav>
+      </header>
+
+      <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+        <div class="mobile-drawer-header">
+          <span class="brand">Menu</span>
+          <button class="mobile-menu-toggle" id="closeMobileDrawer" aria-label="Close navigation menu">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <nav class="mobile-drawer-nav" aria-label="Mobile primary navigation">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="contact.html" class="active" aria-current="page">Contact Us</a>
+        </nav>
+      </div>
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+
+      <main>
+        <section class="hero">
+          <div class="eyebrow"><i class="fa-solid fa-envelope"></i> Contact Us</div>
+          <h1>We're here to help.</h1>
+          <p>
+            Have a question, feedback, feature suggestion, bug report, privacy concern, or account request?
+            Prompixs is ready to listen and support you with fast, friendly help for our AI prompt discovery experience.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="contact-heading">
+          <div class="contact-grid">
+            <article class="contact-card" aria-labelledby="contact-details-heading">
+              <div>
+                <h3 id="contact-details-heading">Chat with the Prompixs team</h3>
+                <p>
+                  Send us a message when you need help, have ideas, or want to share feedback. We’re committed to responding quickly and keeping your Prompixs experience seamless.
+                </p>
+              </div>
+
+              <div class="contact-info">
+                <div class="contact-meta">
+                  <span class="contact-meta-icon" aria-hidden="true">
+                    <i class="fa-solid fa-paper-plane"></i>
+                  </span>
+                  <div class="contact-meta-body">
+                    <strong>Email</strong>
+                    <a href="mailto:prompix@gmail.com">prompix@gmail.com</a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <aside class="contact-form-card" aria-labelledby="contact-form-heading">
+              <div>
+                <h3 id="contact-form-heading">Send a message</h3>
+                <p class="helper-text">All fields are required. We will review your message and reply as soon as possible.</p>
+              </div>
+
+              <form id="contactForm" class="contact-form" novalidate>
+                <div class="form-row">
+                  <div class="form-group" id="group-name">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Your full name" required aria-required="true" />
+                    <p class="error-message" id="nameError" aria-live="polite"></p>
+                  </div>
+
+                  <div class="form-group" id="group-email">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required aria-required="true" />
+                    <p class="error-message" id="emailError" aria-live="polite"></p>
+                  </div>
+                </div>
+
+                <div class="form-group" id="group-subject">
+                  <label for="subject">Subject *</label>
+                  <input type="text" id="subject" name="subject" placeholder="What would you like to discuss?" required aria-required="true" />
+                  <p class="error-message" id="subjectError" aria-live="polite"></p>
+                </div>
+
+                <div class="form-group" id="group-message">
+                  <label for="message">Message *</label>
+                  <textarea id="message" name="message" placeholder="Share your question or feedback with as much detail as possible." required aria-required="true"></textarea>
+                  <p class="error-message" id="messageError" aria-live="polite"></p>
+                </div>
+
+                <div class="form-status" id="formStatus" hidden role="status" aria-live="polite"></div>
+
+                <div class="submit-row">
+                  <button type="submit" id="submitButton">
+                    <span id="submitText">Send message</span>
+                    <span class="button-spinner" id="submitSpinner" hidden aria-hidden="true"></span>
+                  </button>
+                </div>
+              </form>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="faq-heading">
+          <div>
+            <h2 id="faq-heading">Frequently asked questions</h2>
+            <p>Answers to common support questions for Prompixs users.</p>
+          </div>
+
+          <div class="faq-grid">
+            <article class="faq-card">
+              <h3>How long does it take to receive a reply?</h3>
+              <p>We aim to respond to all inquiries as soon as possible, typically within 1–3 business days.</p>
+            </article>
+            <article class="faq-card">
+              <h3>Can I report a bug?</h3>
+              <p>Yes. Please use the contact form and include as much detail as possible so we can investigate the issue.</p>
+            </article>
+            <article class="faq-card">
+              <h3>Can I suggest new features?</h3>
+              <p>Absolutely! We welcome ideas and feedback that can help improve Prompixs.</p>
+            </article>
+            <article class="faq-card">
+              <h3>How do I report copyright or content concerns?</h3>
+              <p>Please contact us using the form or email us directly at prompix@gmail.com with the relevant details.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer-note">
+        © 2026 Prompixs. All rights reserved.
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>
+      /* EmailJS configuration: replace placeholder values with your own service credentials */
+      const EMAILJS_SERVICE_ID = "service_eskvibe"; // e.g. "service_xxx"
+      const EMAILJS_TEMPLATE_ID = "template_9n06oke"; // e.g. "template_xxx"
+      const EMAILJS_PUBLIC_KEY = "mSiBBYxDsD8uO6BoU"; // e.g. "user_xxx"
+
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+
+      const contactForm = document.getElementById("contactForm");
+      const submitButton = document.getElementById("submitButton");
+      const submitText = document.getElementById("submitText");
+      const submitSpinner = document.getElementById("submitSpinner");
+      const formStatus = document.getElementById("formStatus");
+
+      const formFields = [
+        {
+          input: document.getElementById("name"),
+          group: document.getElementById("group-name"),
+          error: document.getElementById("nameError"),
+          validator: (value) => value.trim().length > 0,
+          message: "Please enter your name.",
+        },
+        {
+          input: document.getElementById("email"),
+          group: document.getElementById("group-email"),
+          error: document.getElementById("emailError"),
+          validator: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+          message: "Please enter a valid email address.",
+        },
+        {
+          input: document.getElementById("subject"),
+          group: document.getElementById("group-subject"),
+          error: document.getElementById("subjectError"),
+          validator: (value) => value.trim().length > 0,
+          message: "Please add a subject for your message.",
+        },
+        {
+          input: document.getElementById("message"),
+          group: document.getElementById("group-message"),
+          error: document.getElementById("messageError"),
+          validator: (value) => value.trim().length > 0,
+          message: "Please enter your message.",
+        },
+      ];
+
+      function clearValidation(field) {
+        field.group.classList.remove("error");
+        field.error.textContent = "";
+      }
+
+      function showValidationError(field) {
+        field.group.classList.add("error");
+        field.error.textContent = field.message;
+      }
+
+      function clearFormStatus() {
+        formStatus.hidden = true;
+        formStatus.textContent = "";
+        formStatus.className = "form-status";
+      }
+
+      function setLoading(isLoading) {
+        submitButton.disabled = isLoading;
+        submitSpinner.hidden = !isLoading;
+        submitText.textContent = isLoading ? "Sending..." : "Send message";
+      }
+
+      function validateForm() {
+        let valid = true;
+        formFields.forEach((field) => {
+          clearValidation(field);
+          if (!field.validator(field.input.value || "")) {
+            showValidationError(field);
+            valid = false;
+          }
+        });
+        return valid;
+      }
+
+      formFields.forEach((field) => {
+        field.input.addEventListener("input", () => {
+          clearValidation(field);
+          clearFormStatus();
+        });
+      });
+
+      contactForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        clearFormStatus();
+
+        if (!validateForm()) {
+          formStatus.hidden = false;
+          formStatus.textContent = "Please fix the highlighted fields and try again.";
+          formStatus.classList.add("status-error");
+          return;
+        }
+
+        setLoading(true);
+
+        const templateParams = {
+          from_name: document.getElementById("name").value.trim(),
+          from_email: document.getElementById("email").value.trim(),
+          subject: document.getElementById("subject").value.trim(),
+          message: document.getElementById("message").value.trim(),
+          reply_to: document.getElementById("email").value.trim(),
+          contact_email: "prompix@gmail.com",
+        };
+
+        emailjs
+          .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+          .then(() => {
+            setLoading(false);
+            contactForm.reset();
+            formStatus.hidden = false;
+            formStatus.classList.add("status-success");
+            formStatus.textContent =
+              "Thank you! Your message has been sent successfully. We'll get back to you as soon as possible.";
+          })
+          .catch(() => {
+            setLoading(false);
+            formStatus.hidden = false;
+            formStatus.classList.add("status-error");
+            formStatus.textContent =
+              "Sorry, we couldn't send your message right now. Please try again later or contact us directly at prompix@gmail.com.";
+          });
+      });
+
+      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+      const closeMobileDrawer = document.getElementById("closeMobileDrawer");
+      const mobileDrawer = document.getElementById("mobileDrawer");
+      const drawerOverlay = document.getElementById("drawerOverlay");
+
+      function openDrawer() {
+        mobileDrawer.classList.add("open");
+        drawerOverlay.classList.add("open");
+        mobileDrawer.setAttribute("aria-hidden", "false");
+      }
+
+      function closeDrawer() {
+        mobileDrawer.classList.remove("open");
+        drawerOverlay.classList.remove("open");
+        mobileDrawer.setAttribute("aria-hidden", "true");
+      }
+
+      mobileMenuToggle.addEventListener("click", openDrawer);
+      closeMobileDrawer.addEventListener("click", closeDrawer);
+      drawerOverlay.addEventListener("click", closeDrawer);
+    </script>
+  </body>
+</html>

@@ -38,6 +38,15 @@
           <span class="logo-text">Prompt<em>Verse</em></span>
         </a>
 
+        <nav class="topbar-nav" aria-label="Primary navigation">
+          <a href="#top" class="active" aria-current="page">Home</a>
+          <a href="#categoriesGrid">Categories</a>
+          <a href="about.html">About</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+
         <div class="nav-actions">
           <nav class="nav-categories" aria-label="Categories">
             <button class="nav-cat-btn" id="navCatToggle">
@@ -180,6 +189,14 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
+      <nav class="mobile-drawer-nav" aria-label="Mobile primary navigation">
+        <a href="#top" class="active" aria-current="page">Home</a>
+        <a href="#categoriesGrid">Categories</a>
+        <a href="about.html">About</a>
+        <a href="terms.html">Terms of Use</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="contact.html">Contact</a>
+      </nav>
       <div class="mobile-drawer-section">
         <p class="mobile-drawer-label">Categories</p>
         <div class="mobile-cat-list" id="mobileCatList"></div>
@@ -217,6 +234,11 @@
               Explore <i class="fa-solid fa-arrow-right"></i>
             </button>
           </form>
+
+          <button type="button" class="hero-quick-access" id="quickLatestBtn">
+            <i class="fa-solid fa-arrow-down"></i>
+            Quick access to latest prompts
+          </button>
 
           <div class="hero-tags">
             <span>Trending:</span>
@@ -368,15 +390,15 @@
         </div>
         <div class="footer-col">
           <h4>Company</h4>
-          <a href="#">About</a>
+          <a href="about.html">About</a>
           <a href="#">Careers</a>
           <a href="#">Blog</a>
-          <a href="#">Contact</a>
+          <a href="contact.html">Contact</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
-          <a href="#">Privacy policy</a>
-          <a href="#">Terms of use</a>
+          <a href="privacy.html">Privacy policy</a>
+          <a href="terms.html">Terms of use</a>
           <a href="#">Cookie policy</a>
         </div>
       </div>
@@ -603,6 +625,18 @@
       document.getElementById("loginBtn").addEventListener("click", () => {
         window.location.href = "auth.html?next=index.html";
       });
+
+      document
+        .getElementById("quickLatestBtn")
+        ?.addEventListener("click", () => {
+          const latestSection = document.getElementById("latest");
+          if (latestSection) {
+            latestSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
 
       document
         .getElementById("mobileLoginBtn")

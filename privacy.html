@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy | Prompixs</title>
+    <meta
+      name="description"
+      content="Privacy Policy for Prompixs, the AI prompt discovery platform for exploring prompts, bookmarking favorites, and creating AI images with personal photos."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --white: #ffffff;
+        --purple: #a78bfa;
+        --purple-deep: #8b5cf6;
+        --pink: #f9a8d4;
+        --pink-deep: #ec4899;
+        --ink: #1e1b2e;
+        --ink-soft: #574f6d;
+        --mist: #f6f4fc;
+        --line: rgba(30, 27, 46, 0.08);
+        --bg: var(--white);
+        --surface: rgba(255, 255, 255, 0.8);
+        --surface-strong: rgba(255, 255, 255, 0.95);
+        --text: var(--ink);
+        --muted: var(--ink-soft);
+        --primary: var(--purple-deep);
+        --accent: var(--pink-deep);
+        --border: var(--line);
+        --shadow: 0 18px 50px rgba(139, 92, 246, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(167, 139, 250, 0.18), transparent 28%),
+          linear-gradient(135deg, #fdfcff 0%, #f7f2ff 46%, #fef7fb 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page-shell {
+        min-height: 100vh;
+        padding: 24px 20px 60px;
+      }
+
+      .topbar {
+        max-width: 1180px;
+        width: 100%;
+        margin: 0 auto 28px;
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-right: auto;
+        flex-shrink: 0;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        display: grid;
+        place-items: center;
+        color: white;
+      }
+
+      .brand em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .topbar-nav {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-left: auto;
+      }
+
+      .topbar-nav a:hover,
+      .topbar-nav a.active {
+        color: var(--ink);
+      }
+
+      .topbar-nav a.active {
+        font-weight: 700;
+      }
+
+      .mobile-menu-toggle {
+        display: none;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        color: var(--ink);
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: transform 0.25s ease, background 0.25s ease;
+      }
+
+      .mobile-menu-toggle:hover {
+        transform: translateY(-1px);
+      }
+
+      .mobile-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(340px, 90vw);
+        height: 100vh;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(18px);
+        box-shadow: -12px 0 32px rgba(30, 27, 46, 0.12);
+        transform: translateX(110%);
+        transition: transform 0.28s ease;
+        z-index: 250;
+        pointer-events: none;
+      }
+
+      .mobile-drawer.open {
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(30, 27, 46, 0.42);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        z-index: 240;
+        pointer-events: none;
+      }
+
+      .drawer-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mobile-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .mobile-drawer-nav {
+        display: grid;
+        gap: 12px;
+      }
+
+      .mobile-drawer a {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(249, 168, 212, 0.16);
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .mobile-drawer a.active {
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.18), rgba(249, 168, 212, 0.18));
+      }
+
+      .hero {
+        max-width: 1180px;
+        margin: 0 auto 28px;
+        padding: 56px 28px;
+        border-radius: 32px;
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.16), rgba(249, 168, 212, 0.14));
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--purple-deep);
+        font-size: 0.86rem;
+        margin-bottom: 16px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Fraunces", serif;
+        line-height: 1.1;
+        margin: 0;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.2rem, 4vw, 3.2rem);
+        margin-bottom: 14px;
+      }
+
+      .hero p {
+        font-size: 1.04rem;
+        color: var(--muted);
+        line-height: 1.75;
+        max-width: 760px;
+      }
+
+      .section {
+        max-width: 1180px;
+        margin: 0 auto 24px;
+        padding: 28px;
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .section h2 {
+        font-size: 1.55rem;
+        margin-bottom: 12px;
+      }
+
+      .section p,
+      .section li {
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .section ul {
+        padding-left: 18px;
+      }
+
+      .highlight {
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid rgba(30, 27, 46, 0.08);
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-top: 12px;
+      }
+
+      footer {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 8px 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 860px) {
+        .topbar {
+          border-radius: 24px;
+          padding: 14px 16px;
+          flex-direction: row;
+          gap: 12px;
+        }
+
+        .topbar-nav {
+          display: none;
+        }
+
+        .mobile-menu-toggle {
+          display: inline-flex;
+        }
+
+        .hero,
+        .section {
+          padding: 24px 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a href="index.html" class="brand" aria-label="Go to home page">
+          <span class="brand-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          <span>Prom<em>pixs</em></span>
+        </a>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open navigation menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <nav class="topbar-nav" aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html" class="active" aria-current="page">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="contact.html">Contact Us</a>
+        </nav>
+      </header>
+
+      <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+        <div class="mobile-drawer-header">
+          <span>Menu</span>
+          <button class="mobile-menu-toggle" id="closeMobileDrawer" aria-label="Close navigation menu">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <nav class="mobile-drawer-nav" aria-label="Mobile primary navigation">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html" class="active" aria-current="page">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="contact.html">Contact Us</a>
+        </nav>
+      </div>
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+
+      <main>
+        <section class="hero">
+          <div class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Privacy Policy</div>
+          <h1>Your privacy matters to us.</h1>
+          <p>
+            This Privacy Policy explains what information Prompixs collects, how we use it, and how we protect it.
+            We believe in being transparent and respectful with the data that helps power your experience on the platform.
+          </p>
+          <div class="highlight">
+            <strong>Effective Date:</strong> To be updated upon official launch<br />
+            <strong>Last Updated:</strong> To be updated upon official launch
+          </div>
+        </section>
+
+        <section class="section" id="introduction">
+          <h2>Introduction</h2>
+          <p>
+            Prompixs is an AI prompt discovery platform where users can discover prompts, search by category or tags, view preview images,
+            bookmark favorites, explore trending and latest collections, open prompts in AI platforms such as ChatGPT and Gemini,
+            and create AI-generated images using carefully crafted prompts together with their own photos.
+          </p>
+          <p>
+            This Privacy Policy describes the information we collect when you use Prompixs and how that information is used, stored, and protected.
+            By using Prompixs, you agree to the practices described here.
+          </p>
+        </section>
+
+        <section class="section" id="information-we-collect">
+          <h2>Information We Collect</h2>
+          <p>
+            When you create an account on Prompixs, we collect the information needed to manage your account and personalize your experience.
+            This includes your username and email address.
+          </p>
+          <p>
+            If you sign in with Google, Prompixs may receive your Google account name, email address, and profile picture from Google to help create and maintain your account.
+          </p>
+          <p>
+            After signing in, you may optionally provide additional profile details such as your date of birth, gender, and bio.
+            These fields are completely optional and can be edited or removed at any time.
+          </p>
+        </section>
+
+        <section class="section" id="how-we-use-your-information">
+          <h2>How We Use Your Information</h2>
+          <p>
+            We use the information we collect to provide account access, support your profile, save your bookmarks, and improve the overall experience on Prompixs.
+            We also use certain platform activity data such as prompt likes and prompt views to display popularity and improve how prompts are presented to users.
+          </p>
+          <p>
+            We do not currently store your search history, browsing history, or recently viewed prompts.
+          </p>
+        </section>
+
+        <section class="section" id="optional-profile-information">
+          <h2>Optional Profile Information</h2>
+          <p>
+            The additional profile details you choose to provide are used only to make your experience on Prompixs more complete and personal.
+            You can update or remove this information whenever you want from your account settings.
+          </p>
+        </section>
+
+        <section class="section" id="google-sign-in-information">
+          <h2>Google Sign-In Information</h2>
+          <p>
+            When you sign in with Google, Prompixs uses the account information provided by Google to create and manage your account.
+            Prompixs may use your Google profile picture automatically as your profile picture on the platform.
+            At this time, users cannot upload a custom profile picture directly to Prompixs.
+          </p>
+        </section>
+
+        <section class="section" id="bookmarks-and-statistics">
+          <h2>Bookmarks and Platform Statistics</h2>
+          <p>
+            Prompixs stores your bookmarks and account preferences so that you can return to prompts you have saved.
+            We also track prompt likes and prompt views to help show which prompts are popular and to improve the platform experience.
+          </p>
+          <p>
+            Prompixs does not currently collect search history or browsing history for profiling or long-term tracking purposes.
+          </p>
+        </section>
+
+        <section class="section" id="cookies-and-local-storage">
+          <h2>Cookies and Local Storage</h2>
+          <p>
+            Prompixs may use browser storage features such as local storage to support basic account and interface functionality.
+            This may include remembering preferences or helping the site function properly while you are using it.
+            We do not use these features for unrelated tracking or advertising purposes.
+          </p>
+        </section>
+
+        <section class="section" id="third-party-services">
+          <h2>Third-Party Services</h2>
+          <p>
+            Prompixs uses Firebase Authentication, Cloud Firestore, and Firebase Hosting to manage account access, store profile and platform data,
+            and deliver the website securely. Prompixs also works with Cloudinary for hosting prompt preview images, but this is managed by Prompixs administrators.
+            Users do not upload images directly to the platform.
+          </p>
+          <p>
+            Prompixs also provides quick access to external AI platforms such as ChatGPT and Google Gemini.
+            Once you leave Prompixs and use those services, your activity will be governed by their own privacy practices and terms of use.
+            Prompixs is not responsible for the privacy practices of those third-party services.
+          </p>
+          <p>
+            Firebase, Google Sign-In, and Cloudinary each have their own Privacy Policies and Terms of Service, and users are encouraged to review those policies when using those services.
+          </p>
+        </section>
+
+        <section class="section" id="data-security">
+          <h2>Data Security</h2>
+          <p>
+            Prompixs takes reasonable steps to protect user information using the security features provided by Firebase services.
+            We use secure authentication and protected storage practices to reduce the risk of unauthorized access.
+            However, no online platform can guarantee absolute security, and users should also take care to protect their own account credentials.
+          </p>
+          <p>
+            Although we use strong security measures through Firebase and secure account access, no method of internet transmission or electronic storage can ever be completely secure.
+            We continue to review our practices and improve them as the platform grows.
+          </p>
+        </section>
+
+        <section class="section" id="account-deletion">
+          <h2>Account Deletion</h2>
+          <p>
+            If you delete your account, Prompixs will remove your personal account information, your Firebase Authentication account, your profile data, and your bookmarks.
+            This helps ensure that your account-related information is no longer active on the platform.
+          </p>
+          <p>
+            Aggregated platform statistics such as likes, views, popularity metrics, and analytics may remain because they are not personally identifiable and help maintain the integrity of the platform.
+            We do not remove prompt data, prompt likes, prompt views, prompt statistics, or admin-created content that is part of the platform itself.
+          </p>
+        </section>
+
+        <section class="section" id="childrens-privacy">
+          <h2>Children's Privacy</h2>
+          <p>
+            Prompixs is intended for a general audience and is designed to be used by people who are able to manage an online account responsibly.
+            If a user is under the age required by the laws of their country to manage an online account, they should use Prompixs with the permission or supervision of a parent or legal guardian.
+          </p>
+        </section>
+
+        <section class="section" id="changes-to-this-policy">
+          <h2>Changes to This Privacy Policy</h2>
+          <p>
+            Prompixs may update this Privacy Policy as the platform evolves and new features are introduced.
+            When significant changes are made, we will notify users through a notice on the website.
+            Please review this page regularly so you are aware of any updates.
+          </p>
+        </section>
+
+        <section class="section" id="contact-information">
+          <h2>Contact Information</h2>
+          <p>
+            If you have any questions about this Privacy Policy or how your information is handled, please contact us at
+            <a href="mailto:prompix@gmail.com" style="color: var(--purple-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px;">prompix@gmail.com</a>.
+          </p>
+        </section>
+      </main>
+
+      <footer>
+        <p>Built with passion by Anand S K and Anu N to help people explore the creative possibilities of AI.</p>
+      </footer>
+    </div>
+    <script>
+      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+      const closeMobileDrawer = document.getElementById("closeMobileDrawer");
+      const mobileDrawer = document.getElementById("mobileDrawer");
+      const drawerOverlay = document.getElementById("drawerOverlay");
+
+      function openDrawer() {
+        mobileDrawer.classList.add("open");
+        drawerOverlay.classList.add("open");
+        mobileDrawer.setAttribute("aria-hidden", "false");
+      }
+
+      function closeDrawer() {
+        mobileDrawer.classList.remove("open");
+        drawerOverlay.classList.remove("open");
+        mobileDrawer.setAttribute("aria-hidden", "true");
+      }
+
+      mobileMenuToggle.addEventListener("click", openDrawer);
+      closeMobileDrawer.addEventListener("click", closeDrawer);
+      drawerOverlay.addEventListener("click", closeDrawer);
+    </script>
+  </body>
+</html>
